@@ -5600,3 +5600,233 @@ body.app-dark-mode .hourly-forecast-select option {
   background: #ffffff;
   color: #082436;
 }
+/* Version 1.9 - Live current conditions */
+
+.current-conditions-card {
+  display: grid;
+  gap: 14px;
+}
+
+.current-conditions-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.current-conditions-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.current-conditions-copy .eyebrow {
+  margin: 0;
+}
+
+.current-conditions-copy h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.current-conditions-copy p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.76);
+  line-height: 1.45;
+}
+
+.current-conditions-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.current-conditions-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.current-conditions-select {
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  padding: 13px 14px;
+  color: var(--blue-dark);
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.current-conditions-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.current-conditions-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 13px 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.current-conditions-btn.primary {
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.current-conditions-btn.secondary {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--blue-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08);
+}
+
+.current-conditions-btn:active {
+  transform: scale(0.97);
+}
+
+.current-conditions-main {
+  padding: 16px;
+  border-radius: 26px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.36));
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 12px 28px rgba(18, 78, 112, 0.1);
+}
+
+.current-conditions-temp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.current-conditions-temp {
+  color: var(--blue-dark);
+  font-size: 46px;
+  font-weight: 1000;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.current-conditions-label {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+}
+
+.current-conditions-label strong {
+  color: var(--blue-dark);
+  font-size: 15px;
+}
+
+.current-conditions-label small {
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.current-conditions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.current-condition-mini {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+}
+
+.current-condition-mini span {
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.current-condition-mini strong {
+  color: var(--blue-dark);
+  font-size: 15px;
+}
+
+.current-conditions-status {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode current conditions */
+body.app-dark-mode .current-conditions-copy h3,
+body.app-dark-mode .current-conditions-temp,
+body.app-dark-mode .current-conditions-label strong,
+body.app-dark-mode .current-condition-mini strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .current-conditions-copy p,
+body.app-dark-mode .current-conditions-label small,
+body.app-dark-mode .current-condition-mini span,
+body.app-dark-mode .current-conditions-status {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .current-conditions-select,
+body.app-dark-mode .current-conditions-btn.secondary,
+body.app-dark-mode .current-conditions-main,
+body.app-dark-mode .current-condition-mini {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .current-conditions-select option {
+  background: #ffffff;
+  color: #082436;
+}
+
+@media (max-width: 365px) {
+  .current-conditions-top {
+    align-items: flex-start;
+  }
+
+  .current-conditions-actions,
+  .current-conditions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .current-conditions-temp-row {
+    align-items: flex-start;
+  }
+}

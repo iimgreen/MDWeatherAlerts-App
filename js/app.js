@@ -4457,5 +4457,466 @@ updateInstallAppCard();
   }
 
   loadHourlyForecast();
+})();/* Version 1.9 - Live current conditions */
+
+(function mdwaLiveCurrentConditions() {
+  const forecastScreen = document.getElementById("forecast");
+
+  if (!forecastScreen) return;
+
+  const conditionPoints = [
+    { name: "Allegany", place: "Cumberland", lat: 39.6529, lon: -78.7625 },
+    { name: "Anne Arundel", place: "Annapolis", lat: 38.9784, lon: -76.4922 },
+    { name: "Baltimore City", place: "Baltimore", lat: 39.2904, lon: -76.6122 },
+    { name: "Baltimore County", place: "Towson", lat: 39.4015, lon: -76.6019 },
+    { name: "Calvert", place: "Prince Frederick", lat: 38.5404, lon: -76.5844 },
+    { name: "Caroline", place: "Denton", lat: 38.8846, lon: -75.8272 },
+    { name: "Carroll", place: "Westminster", lat: 39.5754, lon: -76.9958 },
+    { name: "Cecil", place: "Elkton", lat: 39.6068, lon: -75.8333 },
+    { name: "Charles", place: "La Plata", lat: 38.5293, lon: -76.9753 },
+    { name: "Dorchester", place: "Cambridge", lat: 38.5632, lon: -76.0788 },
+    { name: "Frederick", place: "Frederick", lat: 39.4143, lon: -77.4105 },
+    { name: "Garrett", place: "Oakland", lat: 39.4079, lon: -79.4067 },
+    { name: "Harford", place: "Bel Air", lat: 39.5359, lon: -76.3483 },
+    { name: "Howard", place: "Columbia", lat: 39.2037, lon: -76.8610 },
+    { name: "Kent", place: "Chestertown", lat: 39.2189, lon: -76.0690 },
+    { name: "Montgomery", place: "Rockville", lat: 39.0840, lon: -77.1528 },
+    { name: "Prince George’s", place: "Upper Marlboro", lat: 38.8159, lon: -76.7497 },
+    { name: "Queen Anne’s", place: "Centreville", lat: 39.0418, lon: -76.0663 },
+    { name: "Somerset", place: "Princess Anne", lat: 38.2029, lon: -75.6924 },
+    { name: "St. Mary’s", place: "Leonardtown", lat: 38.2912, lon: -76.6358 },
+    { name: "Talbot", place: "Easton", lat: 38.7743, lon: -76.0763 },
+    { name: "Washington", place: "Hagerstown", lat: 39.6418, lon: -77.7200 },
+    { name: "Wicomico", place: "Salisbury", lat: 38.3607, lon: -75.5994 },
+    { name: "Worcester", place: "Ocean City", lat: 38.3365, lon: -75.0849 },
+  ];
+
+  function safeConditionText(text) {
+    const div = document.createElement("div");
+    div.textContent = text || "";
+    return div.innerHTML;
+  }
+
+  function celsiusToFahrenheit(value) {
+    if (typeof value !== "number") return null;
+    return Math.round((value * 9) / 5 + 32);
+  }
+
+  function metersPerSecondToMph(value) {
+    if (typeof value !== "number") return null;
+    return Math.round(value * 2.23694);
+  }
+
+  function metersToMiles(value) {
+    if (typeof value !== "number") return null;
+    return Math.round(value / 1609.344);
+  }
+
+  function getConditionIcon(text) {
+    const condition = (text || "").toLowerCase();
+
+    if (condition.includes("thunder")) return "⛈️";
+    if (condition.includes("rain") || condition.includes("shower")) return "🌧️";
+    if (condition.includes("snow") || condition.includes("ice") || condition.includes("sleet")) return "❄️";
+    if (condition.includes("fog") || condition.includes("mist") || condition.includes("haze")) return "🌫️";
+    if (condition.includes("cloud") || condition.includes("overcast")) return "☁️";
+    if (condition.includes("clear") || condition.includes("sun")) return "☀️";
+
+    return "🌡️";
+  }
+
+  function createCurrentConditionsCard() {
+    let card = document.getElementById("liveCurrentConditionsCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card current-conditions-card";
+    card.id = "liveCurrentConditionsCard";
+
+    card.innerHTML = `
+      <div class="current-conditions-top">
+        <div class="current-conditions-copy">
+          <p class="eyebrow">Current Conditions</p>
+          <h3 id="currentConditionsTitle">Checking conditions...</h3>
+          <p id="currentConditionsText">Loading nearby observation data from the National Weather Service.</p>
+        </div>
+
+        <div class="current-conditions-icon" id="currentConditionsIcon">⏳</div>
+      </div>
+
+      <div class="current-conditions-controls">
+        <select class="current-conditions-select" id="currentConditionsCountySelect"></select>
+
+        <div class="current-conditions-actions">
+          <button class="current-conditions-btn primary" id="currentConditionsRefreshBtn" type="button">
+            Refresh Conditions
+          </button>
+
+          <button class="current-conditions-btn secondary" id="currentConditionsLocationBtn" type="button">
+            Use My Location
+          </button>
+        </div>
+      </div>
+
+      <div class="current-conditions-main" id="currentConditionsMain">
+        <div class="current-conditions-temp-row">
+          <div class="current-conditions-temp" id="currentConditionsTemp">--°</div>
+
+          <div class="current-conditions-label">
+            <strong id="currentConditionsLabel">Loading</strong>
+            <small id="currentConditionsStation">Station pending</small>
+          </div>
+        </div>
+
+        <div class="current-conditions-grid">
+          <div class="current-condition-mini">
+            <span>Wind</span>
+            <strong id="currentConditionsWind">Loading</strong>
+          </div>
+
+          <div class="current-condition-mini">
+            <span>Humidity</span>
+            <strong id="currentConditionsHumidity">Loading</strong>
+          </div>
+
+          <div class="current-condition-mini">
+            <span>Dew Point</span>
+            <strong id="currentConditionsDewpoint">Loading</strong>
+          </div>
+
+          <div class="current-condition-mini">
+            <span>Visibility</span>
+            <strong id="currentConditionsVisibility">Loading</strong>
+          </div>
+        </div>
+      </div>
+
+      <p class="current-conditions-status" id="currentConditionsStatus">
+        Current conditions are based on nearby NWS observation stations and may vary locally.
+      </p>
+    `;
+
+    const liveForecastCard = document.getElementById("liveNwsForecastCard");
+
+    if (liveForecastCard && liveForecastCard.parentElement === forecastScreen) {
+      forecastScreen.insertBefore(card, liveForecastCard);
+      return card;
+    }
+
+    const pageTitle = forecastScreen.querySelector(".page-title");
+
+    if (pageTitle) {
+      pageTitle.insertAdjacentElement("afterend", card);
+    } else {
+      forecastScreen.prepend(card);
+    }
+
+    return card;
+  }
+
+  function populateCurrentConditionsSelect() {
+    const select = document.getElementById("currentConditionsCountySelect");
+
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    conditionPoints.forEach((point) => {
+      const option = document.createElement("option");
+      option.value = point.name;
+      option.textContent = `${point.name} — ${point.place}`;
+      select.appendChild(option);
+    });
+
+    const savedCounty =
+      localStorage.getItem("mdwa_live_forecast_county") || "Harford";
+
+    const savedExists = conditionPoints.some((point) => point.name === savedCounty);
+
+    select.value = savedExists ? savedCounty : "Harford";
+  }
+
+  function getSelectedConditionPoint() {
+    const select = document.getElementById("currentConditionsCountySelect");
+    const selectedCounty = select ? select.value : "Harford";
+
+    return (
+      conditionPoints.find((point) => point.name === selectedCounty) ||
+      conditionPoints.find((point) => point.name === "Harford") ||
+      conditionPoints[0]
+    );
+  }
+
+  function setCurrentConditionsStatus(message) {
+    const status = document.getElementById("currentConditionsStatus");
+    if (status) status.textContent = message;
+  }
+
+  function setCurrentConditionsLoading(pointLabel) {
+    document.getElementById("currentConditionsTitle").textContent =
+      `Checking ${pointLabel} conditions...`;
+    document.getElementById("currentConditionsText").textContent =
+      "Loading the nearest official observation station.";
+    document.getElementById("currentConditionsIcon").textContent = "⏳";
+    document.getElementById("currentConditionsTemp").textContent = "--°";
+    document.getElementById("currentConditionsLabel").textContent = "Loading";
+    document.getElementById("currentConditionsStation").textContent =
+      "Station pending";
+    document.getElementById("currentConditionsWind").textContent = "Loading";
+    document.getElementById("currentConditionsHumidity").textContent = "Loading";
+    document.getElementById("currentConditionsDewpoint").textContent = "Loading";
+    document.getElementById("currentConditionsVisibility").textContent = "Loading";
+
+    setCurrentConditionsStatus("Loading official NWS current conditions...");
+  }
+
+  function setCurrentConditionsError(pointLabel) {
+    document.getElementById("currentConditionsTitle").textContent =
+      "Conditions unavailable";
+    document.getElementById("currentConditionsText").textContent =
+      `The app could not load current conditions for ${pointLabel}.`;
+    document.getElementById("currentConditionsIcon").textContent = "⚠️";
+    document.getElementById("currentConditionsTemp").textContent = "--°";
+    document.getElementById("currentConditionsLabel").textContent = "NWS error";
+    document.getElementById("currentConditionsStation").textContent =
+      "Try refreshing";
+    document.getElementById("currentConditionsWind").textContent = "Unavailable";
+    document.getElementById("currentConditionsHumidity").textContent =
+      "Unavailable";
+    document.getElementById("currentConditionsDewpoint").textContent =
+      "Unavailable";
+    document.getElementById("currentConditionsVisibility").textContent =
+      "Unavailable";
+
+    setCurrentConditionsStatus(
+      "Current conditions could not load. Some NWS stations may be temporarily unavailable."
+    );
+  }
+
+  function renderCurrentConditions(observation, stationName, pointLabel) {
+    const props = observation.properties || {};
+
+    const tempF = celsiusToFahrenheit(props.temperature?.value);
+    const dewF = celsiusToFahrenheit(props.dewpoint?.value);
+    const windMph = metersPerSecondToMph(props.windSpeed?.value);
+    const gustMph = metersPerSecondToMph(props.windGust?.value);
+    const visibilityMiles = metersToMiles(props.visibility?.value);
+
+    const humidity =
+      typeof props.relativeHumidity?.value === "number"
+        ? `${Math.round(props.relativeHumidity.value)}%`
+        : "Not listed";
+
+    const conditionText = props.textDescription || "Current conditions";
+
+    const windText =
+      windMph === null
+        ? "Not listed"
+        : gustMph
+          ? `${windMph} mph, gusts ${gustMph}`
+          : `${windMph} mph`;
+
+    const checkedTime = new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+    document.getElementById("currentConditionsTitle").textContent =
+      `${pointLabel} now`;
+
+    document.getElementById("currentConditionsText").textContent =
+      conditionText;
+
+    document.getElementById("currentConditionsIcon").textContent =
+      getConditionIcon(conditionText);
+
+    document.getElementById("currentConditionsTemp").textContent =
+      tempF === null ? "--°" : `${tempF}°`;
+
+    document.getElementById("currentConditionsLabel").textContent =
+      conditionText;
+
+    document.getElementById("currentConditionsStation").textContent =
+      stationName || "Nearby NWS station";
+
+    document.getElementById("currentConditionsWind").textContent = windText;
+
+    document.getElementById("currentConditionsHumidity").textContent = humidity;
+
+    document.getElementById("currentConditionsDewpoint").textContent =
+      dewF === null ? "Not listed" : `${dewF}°`;
+
+    document.getElementById("currentConditionsVisibility").textContent =
+      visibilityMiles === null ? "Not listed" : `${visibilityMiles} mi`;
+
+    setCurrentConditionsStatus(
+      `Official observation loaded for ${pointLabel}. Checked ${checkedTime}.`
+    );
+  }
+
+  async function loadCurrentConditionsForPoint(point, customLabel) {
+    const pointLabel = customLabel || `${point.name} County`;
+
+    localStorage.setItem("mdwa_live_forecast_county", point.name);
+
+    setCurrentConditionsLoading(pointLabel);
+
+    try {
+      const pointsUrl = `https://api.weather.gov/points/${point.lat.toFixed(4)},${point.lon.toFixed(4)}`;
+
+      const pointResponse = await fetch(pointsUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!pointResponse.ok) {
+        throw new Error(`NWS point request failed: ${pointResponse.status}`);
+      }
+
+      const pointData = await pointResponse.json();
+      const stationsUrl = pointData.properties?.observationStations;
+
+      if (!stationsUrl) {
+        throw new Error("NWS observation station URL missing.");
+      }
+
+      const stationsResponse = await fetch(stationsUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!stationsResponse.ok) {
+        throw new Error(`NWS stations request failed: ${stationsResponse.status}`);
+      }
+
+      const stationsData = await stationsResponse.json();
+      const station = stationsData.features?.[0];
+
+      if (!station) {
+        throw new Error("No nearby NWS station found.");
+      }
+
+      const stationId = station.properties?.stationIdentifier;
+      const stationName = station.properties?.name || stationId || "Nearby NWS station";
+
+      if (!stationId) {
+        throw new Error("NWS station identifier missing.");
+      }
+
+      const latestObservationUrl =
+        `https://api.weather.gov/stations/${stationId}/observations/latest`;
+
+      const observationResponse = await fetch(latestObservationUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!observationResponse.ok) {
+        throw new Error(
+          `NWS latest observation request failed: ${observationResponse.status}`
+        );
+      }
+
+      const observationData = await observationResponse.json();
+
+      renderCurrentConditions(observationData, stationName, pointLabel);
+
+      if (typeof showToast === "function") {
+        showToast(`Current conditions loaded for ${pointLabel}.`);
+      }
+    } catch (error) {
+      console.error("Current conditions failed:", error);
+      setCurrentConditionsError(pointLabel);
+
+      if (typeof showToast === "function") {
+        showToast("Current conditions could not load.");
+      }
+    }
+  }
+
+  function loadSelectedCurrentConditions() {
+    const point = getSelectedConditionPoint();
+    loadCurrentConditionsForPoint(point, `${point.name} County`);
+  }
+
+  function useMyLocationCurrentConditions() {
+    if (!navigator.geolocation) {
+      setCurrentConditionsStatus("Location is not supported by this browser.");
+      return;
+    }
+
+    setCurrentConditionsStatus("Requesting your location for current conditions...");
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const point = {
+          name: "Your Location",
+          place: "Current Location",
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+
+        loadCurrentConditionsForPoint(point, "your location");
+      },
+      () => {
+        setCurrentConditionsStatus("Location permission was denied or unavailable.");
+
+        if (typeof showToast === "function") {
+          showToast("Location was not available.");
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 600000,
+      }
+    );
+  }
+
+  createCurrentConditionsCard();
+  populateCurrentConditionsSelect();
+
+  const select = document.getElementById("currentConditionsCountySelect");
+  const refreshBtn = document.getElementById("currentConditionsRefreshBtn");
+  const locationBtn = document.getElementById("currentConditionsLocationBtn");
+
+  if (select) {
+    select.addEventListener("change", () => {
+      loadSelectedCurrentConditions();
+
+      const liveForecastSelect = document.getElementById("liveForecastCountySelect");
+      const hourlySelect = document.getElementById("hourlyForecastCountySelect");
+      const homeForecastSelect = document.getElementById("homeForecastCountySelect");
+
+      if (liveForecastSelect) liveForecastSelect.value = select.value;
+      if (hourlySelect) hourlySelect.value = select.value;
+      if (homeForecastSelect) homeForecastSelect.value = select.value;
+    });
+  }
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", loadSelectedCurrentConditions);
+  }
+
+  if (locationBtn) {
+    locationBtn.addEventListener("click", useMyLocationCurrentConditions);
+  }
+
+  const liveForecastSelect = document.getElementById("liveForecastCountySelect");
+
+  if (liveForecastSelect) {
+    liveForecastSelect.addEventListener("change", () => {
+      if (select) {
+        select.value = liveForecastSelect.value;
+        loadSelectedCurrentConditions();
+      }
+    });
+  }
+
+  loadSelectedCurrentConditions();
 })();
-console.log("MD Weather Alerts Version 1.8 live hourly forecast timeline loaded successfully.");
+console.log("MD Weather Alerts Version 1.9 live current conditions loaded successfully.");
