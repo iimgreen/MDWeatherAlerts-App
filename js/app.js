@@ -4981,4 +4981,400 @@ updateInstallAppCard();
   setTimeout(safeHomeCleanup, 800);
   setTimeout(safeHomeCleanup, 1800);
 })();
-console.log("MD Weather Alerts Version 2.1.6 safe home layout cleanup loaded successfully.");
+/* Version 2.1.7 - More tab interactive cards */
+
+(function mdwaMoreTabInteractiveCards() {
+  const moreScreen = document.getElementById("more");
+
+  if (!moreScreen) return;
+
+  const MDWA_WEBSITE_URL = "https://mdweatheralerts.com";
+  const APP_VERSION = "2.1.7";
+
+  function showMoreToast(message) {
+    if (typeof showToast === "function") {
+      showToast(message);
+    }
+  }
+
+  function normalizeText(text) {
+    return (text || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function findMoreCardByText(searchText) {
+    const target = normalizeText(searchText);
+
+    const candidates = Array.from(
+      moreScreen.querySelectorAll(
+        ".section-card, button, a, div, li"
+      )
+    );
+
+    return (
+      candidates.find((element) => {
+        const text = normalizeText(element.textContent);
+
+        if (!text.includes(target)) return false;
+        if (element.closest(".more-info-panel")) return false;
+
+        const directCard =
+          element.classList.contains("section-card") ||
+          element.tagName === "BUTTON" ||
+          element.tagName === "A" ||
+          element.parentElement === moreScreen;
+
+        return directCard;
+      }) || null
+    );
+  }
+
+  function makeCardLookClickable(card, type) {
+    if (!card) return;
+
+    card.classList.add("more-interactive-card");
+    card.dataset.moreCardType = type;
+
+    if (!card.querySelector(".more-card-chevron") && type !== "website") {
+      const chevron = document.createElement("span");
+      chevron.className = "more-card-chevron";
+      chevron.textContent = "⌄";
+      card.appendChild(chevron);
+    }
+
+    if (!card.querySelector(".more-card-chevron") && type === "website") {
+      const chevron = document.createElement("span");
+      chevron.className = "more-card-chevron";
+      chevron.textContent = "↗";
+      card.appendChild(chevron);
+    }
+  }
+
+  function createPanel(id, html) {
+    let panel = document.getElementById(id);
+
+    if (panel) return panel;
+
+    panel = document.createElement("div");
+    panel.className = "more-info-panel";
+    panel.id = id;
+    panel.innerHTML = html;
+
+    return panel;
+  }
+
+  async function copyText(text, successMessage) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        showMoreToast(successMessage);
+        return;
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+
+      showMoreToast(successMessage);
+    } catch (error) {
+      alert(text);
+    }
+  }
+
+  function getAppLink() {
+    return window.location.href.split("#")[0];
+  }
+
+  function openWebsite() {
+    window.open(MDWA_WEBSITE_URL, "_blank", "noopener,noreferrer");
+  }
+
+  function shareApp() {
+    const shareText =
+      "Check out the MD Weather Alerts app for Maryland forecasts, alerts, radar, and local reports.";
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "MD Weather Alerts",
+          text: shareText,
+          url: getAppLink(),
+        })
+        .catch(() => {});
+      return;
+    }
+
+    copyText(`${shareText}\n${getAppLink()}`, "App link copied.");
+  }
+
+  function closeOtherPanels(activePanel) {
+    moreScreen.querySelectorAll(".more-info-panel").forEach((panel) => {
+      if (panel !== activePanel) {
+        panel.classList.remove("open");
+      }
+    });
+
+    moreScreen.querySelectorAll(".more-interactive-card").forEach((card) => {
+      const type = card.dataset.moreCardType;
+      const panel = document.getElementById(`more${type}Panel`);
+
+      if (panel !== activePanel) {
+        card.classList.remove("is-open");
+      }
+    });
+  }
+
+  function togglePanel(card, panel) {
+    if (!card || !panel) return;
+
+    const willOpen = !panel.classList.contains("open");
+
+    closeOtherPanels(panel);
+
+    panel.classList.toggle("open", willOpen);
+    card.classList.toggle("is-open", willOpen);
+  }
+
+  function setupSupportCard() {
+    const card = findMoreCardByText("Support MD Weather Alerts");
+
+    if (!card) return;
+
+    makeCardLookClickable(card, "Support");
+
+    const panel = createPanel(
+      "moreSupportPanel",
+      `
+        <h3>Support MD Weather Alerts</h3>
+        <p>
+          The easiest way to support the app is to share it, subscribe by email,
+          and send feedback while it is still being built.
+        </p>
+
+        <div class="more-info-list">
+          <div class="more-info-row">
+            <span>📲</span>
+            <div>
+              <strong>Share the app</strong>
+              <small>Send the live app link to other Marylanders who follow weather updates.</small>
+            </div>
+          </div>
+
+          <div class="more-info-row">
+            <span>✉️</span>
+            <div>
+              <strong>Subscribe by email</strong>
+              <small>Email subscribers help support the website and future app features.</small>
+            </div>
+          </div>
+
+          <div class="more-info-row">
+            <span>🧪</span>
+            <div>
+              <strong>Send feedback</strong>
+              <small>Testing feedback helps improve the layout, speed, and reliability.</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="more-info-actions">
+          <button class="more-info-btn primary" type="button" data-more-action="share">
+            Share App
+          </button>
+
+          <button class="more-info-btn secondary" type="button" data-more-action="copy-link">
+            Copy Link
+          </button>
+
+          <button class="more-info-btn secondary full" type="button" data-more-action="open-website">
+            Visit Website
+          </button>
+        </div>
+      `
+    );
+
+    card.insertAdjacentElement("afterend", panel);
+
+    card.addEventListener("click", () => {
+      togglePanel(card, panel);
+    });
+  }
+
+  function setupWebsiteCard() {
+    const card = findMoreCardByText("Visit Website");
+
+    if (!card) return;
+
+    makeCardLookClickable(card, "website");
+
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
+      openWebsite();
+    });
+  }
+
+  function setupSubscribeCard() {
+    const card = findMoreCardByText("Subscribe by Email");
+
+    if (!card) return;
+
+    makeCardLookClickable(card, "Subscribe");
+
+    const panel = createPanel(
+      "moreSubscribePanel",
+      `
+        <h3>Subscribe by Email</h3>
+        <p>
+          Email updates are one of the best ways to support MD Weather Alerts.
+          The app will send users to the website to subscribe.
+        </p>
+
+        <div class="more-info-list">
+          <div class="more-info-row">
+            <span>📬</span>
+            <div>
+              <strong>One email list</strong>
+              <small>Used for MD Weather Alerts updates, posts, and future app announcements.</small>
+            </div>
+          </div>
+
+          <div class="more-info-row">
+            <span>🔒</span>
+            <div>
+              <strong>Simple support</strong>
+              <small>No complicated account setup inside the app right now.</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="more-info-actions">
+          <button class="more-info-btn primary full" type="button" data-more-action="open-website">
+            Open Website to Subscribe
+          </button>
+        </div>
+      `
+    );
+
+    card.insertAdjacentElement("afterend", panel);
+
+    card.addEventListener("click", () => {
+      togglePanel(card, panel);
+    });
+  }
+
+  function setupAboutCard() {
+    const card = findMoreCardByText("About This App");
+
+    if (!card) return;
+
+    makeCardLookClickable(card, "About");
+
+    const panel = createPanel(
+      "moreAboutPanel",
+      `
+        <h3>About This App</h3>
+        <p>
+          MD Weather Alerts is a Maryland-first weather app focused on clear alerts,
+          forecasts, radar tools, blog posts, and community reports.
+        </p>
+
+        <div class="more-info-list">
+          <div class="more-info-row">
+            <span>🌦️</span>
+            <div>
+              <strong>Maryland-focused</strong>
+              <small>Built around Maryland counties, regions, and local weather impacts.</small>
+            </div>
+          </div>
+
+          <div class="more-info-row">
+            <span>🏢</span>
+            <div>
+              <strong>Official data</strong>
+              <small>Live alerts and forecasts use National Weather Service data when available.</small>
+            </div>
+          </div>
+
+          <div class="more-info-row">
+            <span>📍</span>
+            <div>
+              <strong>Community reports</strong>
+              <small>Local reports are designed for current conditions and approximate location privacy.</small>
+            </div>
+          </div>
+
+          <div class="more-info-row">
+            <span>📲</span>
+            <div>
+              <strong>App version</strong>
+              <small>Current test build: Version ${APP_VERSION}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="more-info-actions">
+          <button class="more-info-btn secondary full" type="button" data-more-action="copy-feedback">
+            Copy Feedback Template
+          </button>
+        </div>
+      `
+    );
+
+    card.insertAdjacentElement("afterend", panel);
+
+    card.addEventListener("click", () => {
+      togglePanel(card, panel);
+    });
+  }
+
+  moreScreen.addEventListener("click", (event) => {
+    const actionButton = event.target.closest("[data-more-action]");
+
+    if (!actionButton) return;
+
+    event.stopPropagation();
+
+    const action = actionButton.dataset.moreAction;
+
+    if (action === "share") {
+      shareApp();
+    }
+
+    if (action === "copy-link") {
+      copyText(getAppLink(), "App link copied.");
+    }
+
+    if (action === "open-website") {
+      openWebsite();
+    }
+
+    if (action === "copy-feedback") {
+      const feedbackText = [
+        "MD Weather Alerts App Feedback",
+        "",
+        "Device/browser:",
+        "",
+        "What worked well:",
+        "",
+        "What was confusing or broken:",
+        "",
+        "Feature idea:",
+        "",
+        `App version: ${APP_VERSION}`,
+        `App link: ${getAppLink()}`,
+      ].join("\n");
+
+      copyText(feedbackText, "Feedback template copied.");
+    }
+  });
+
+  setupSupportCard();
+  setupWebsiteCard();
+  setupSubscribeCard();
+  setupAboutCard();
+})();
+console.log("MD Weather Alerts Version 2.1.7 more tab interactive cards loaded successfully.");
