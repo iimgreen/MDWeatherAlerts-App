@@ -1495,4 +1495,328 @@ updateInstallAppCard();
     updateInstallAppCard();
   }
 })();
+/* Version 0.9 - Alerts tab upgrade */
+
+(function mdwaAlertsTabUpgrade() {
+  const countySelect = document.getElementById("alertCountySelect");
+  const alertList = document.getElementById("alertList");
+  const refreshBtn = document.getElementById("alertRefreshBtn");
+  const statusTitle = document.getElementById("alertStatusTitle");
+  const statusText = document.getElementById("alertStatusText");
+  const statusIcon = document.getElementById("alertStatusIcon");
+  const prefNote = document.getElementById("alertPrefNote");
+
+  const marylandCounties = [
+    "Allegany",
+    "Anne Arundel",
+    "Baltimore City",
+    "Baltimore County",
+    "Calvert",
+    "Caroline",
+    "Carroll",
+    "Cecil",
+    "Charles",
+    "Dorchester",
+    "Frederick",
+    "Garrett",
+    "Harford",
+    "Howard",
+    "Kent",
+    "Montgomery",
+    "Prince George’s",
+    "Queen Anne’s",
+    "Somerset",
+    "St. Mary’s",
+    "Talbot",
+    "Washington",
+    "Wicomico",
+    "Worcester",
+  ];
+
+  const demoAlerts = [
+    {
+      type: "watch",
+      label: "Watch",
+      title: "Severe Thunderstorm Watch",
+      summary:
+        "Conditions are favorable for strong to severe storms. Damaging wind, hail, and frequent lightning would be the main concerns.",
+      counties: [
+        "Baltimore City",
+        "Baltimore County",
+        "Harford",
+        "Cecil",
+        "Howard",
+        "Anne Arundel",
+        "Carroll",
+      ],
+      timing: "Demo timing: afternoon through evening",
+      office: "NWS demo card",
+      action: "Stay weather aware and have multiple ways to receive warnings.",
+    },
+    {
+      type: "advisory",
+      label: "Advisory",
+      title: "Coastal Flood Advisory",
+      summary:
+        "Minor coastal flooding may affect vulnerable shoreline areas near high tide.",
+      counties: [
+        "Anne Arundel",
+        "Calvert",
+        "St. Mary’s",
+        "Dorchester",
+        "Talbot",
+        "Queen Anne’s",
+        "Kent",
+      ],
+      timing: "Demo timing: near high tide",
+      office: "NWS demo card",
+      action: "Use caution near tidal shorelines and low-lying roads.",
+    },
+    {
+      type: "statement",
+      label: "Statement",
+      title: "Special Weather Statement",
+      summary:
+        "Localized downpours and gusty winds may create brief travel impacts in parts of Maryland.",
+      counties: [
+        "Montgomery",
+        "Prince George’s",
+        "Charles",
+        "Frederick",
+        "Washington",
+      ],
+      timing: "Demo timing: scattered coverage",
+      office: "NWS demo card",
+      action: "Slow down if roads become wet or visibility drops.",
+    },
+  ];
+
+  function alertEscape(text) {
+    const div = document.createElement("div");
+    div.textContent = text || "";
+    return div.innerHTML;
+  }
+
+  function populateAlertCountySelect() {
+    if (!countySelect) return;
+
+    const existingOptions = Array.from(countySelect.options).map(
+      (option) => option.value
+    );
+
+    marylandCounties.forEach((county) => {
+      if (existingOptions.includes(county)) return;
+
+      const option = document.createElement("option");
+      option.value = county;
+      option.textContent = county;
+      countySelect.appendChild(option);
+    });
+  }
+
+  function getSelectedAlertCounty() {
+    if (!countySelect) return "all";
+    return countySelect.value || "all";
+  }
+
+  function getFilteredDemoAlerts() {
+    const selectedCounty = getSelectedAlertCounty();
+
+    if (selectedCounty === "all") {
+      return demoAlerts;
+    }
+
+    return demoAlerts.filter((alert) =>
+      alert.counties.includes(selectedCounty)
+    );
+  }
+
+  function updateAlertStatus(filteredAlerts) {
+    if (!statusTitle || !statusText || !statusIcon) return;
+
+    const selectedCounty = getSelectedAlertCounty();
+    const locationLabel =
+      selectedCounty === "all" ? "Maryland" : `${selectedCounty} County`;
+
+    if (filteredAlerts.length === 0) {
+      statusTitle.textContent = `No demo alerts for ${locationLabel}`;
+      statusText.textContent =
+        "No demo watches, warnings, or advisories are showing for this selection.";
+      statusIcon.textContent = "✅";
+      return;
+    }
+
+    statusTitle.textContent = `${filteredAlerts.length} demo alert${
+      filteredAlerts.length === 1 ? "" : "s"
+    } for ${locationLabel}`;
+
+    statusText.textContent =
+      "These are app layout examples. Live official NWS alerts will be connected later.";
+    statusIcon.textContent = "⚠️";
+  }
+
+  function createAlertCard(alert) {
+    const card = document.createElement("article");
+    card.className = `alert-card ${alert.type}`;
+
+    card.innerHTML = `
+      <div class="alert-card-header">
+        <span class="alert-type-badge ${alert.type}">
+          ${alertEscape(alert.label)}
+        </span>
+        <small>Demo</small>
+      </div>
+
+      <h3>${alertEscape(alert.title)}</h3>
+      <p>${alertEscape(alert.summary)}</p>
+
+      <div class="alert-card-meta">
+        <span>📍 ${alertEscape(alert.counties.join(", "))}</span>
+        <span>⏱️ ${alertEscape(alert.timing)}</span>
+        <span>🏢 ${alertEscape(alert.office)}</span>
+      </div>
+
+      <div class="alert-actions">
+        <button class="alert-action-btn" type="button" data-alert-action="details">
+          View Details
+        </button>
+        <button class="alert-action-btn" type="button" data-alert-action="safety">
+          Safety Tips
+        </button>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function createNoAlertCard() {
+    const selectedCounty = getSelectedAlertCounty();
+    const locationLabel =
+      selectedCounty === "all" ? "Maryland" : `${selectedCounty} County`;
+
+    const card = document.createElement("article");
+    card.className = "alert-card none";
+
+    card.innerHTML = `
+      <div class="alert-card-header">
+        <span class="alert-type-badge none">No Demo Alerts</span>
+        <small>Demo</small>
+      </div>
+
+      <h3>No demo alerts for ${alertEscape(locationLabel)}</h3>
+      <p>
+        This is what the alert center will look like when no watches, warnings,
+        or advisories are active for your selected area.
+      </p>
+
+      <div class="alert-card-meta">
+        <span>✅ Calm alert status for this selection</span>
+        <span>🏢 Official NWS connection coming soon</span>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function renderAlertCards() {
+    if (!alertList) return;
+
+    const filteredAlerts = getFilteredDemoAlerts();
+
+    alertList.innerHTML = "";
+
+    if (filteredAlerts.length === 0) {
+      alertList.appendChild(createNoAlertCard());
+    } else {
+      filteredAlerts.forEach((alert) => {
+        alertList.appendChild(createAlertCard(alert));
+      });
+    }
+
+    updateAlertStatus(filteredAlerts);
+  }
+
+  function showAlertPreferenceSaved() {
+    if (!prefNote) return;
+
+    prefNote.textContent = "Alert preferences saved ✓";
+
+    setTimeout(() => {
+      prefNote.textContent =
+        "Preferences save automatically on this device. Push notifications will be added later.";
+    }, 1400);
+  }
+
+  function loadAlertPreferences() {
+    document.querySelectorAll(".alert-pref-toggle").forEach((toggle) => {
+      const prefName = toggle.dataset.pref;
+      const savedValue = localStorage.getItem(`mdwa_alert_pref_${prefName}`);
+
+      if (savedValue !== null) {
+        toggle.checked = savedValue === "on";
+      }
+
+      toggle.addEventListener("change", () => {
+        localStorage.setItem(
+          `mdwa_alert_pref_${prefName}`,
+          toggle.checked ? "on" : "off"
+        );
+
+        showAlertPreferenceSaved();
+      });
+    });
+  }
+
+  populateAlertCountySelect();
+  renderAlertCards();
+  loadAlertPreferences();
+
+  if (countySelect) {
+    countySelect.addEventListener("change", () => {
+      renderAlertCards();
+
+      if (typeof showToast === "function") {
+        const selectedCounty = getSelectedAlertCounty();
+        showToast(
+          selectedCounty === "all"
+            ? "Showing statewide demo alerts."
+            : `Showing demo alerts for ${selectedCounty}.`
+        );
+      }
+    });
+  }
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      renderAlertCards();
+
+      if (typeof showToast === "function") {
+        showToast("Alert view refreshed.");
+      }
+    });
+  }
+
+  if (alertList) {
+    alertList.addEventListener("click", (event) => {
+      const button = event.target.closest(".alert-action-btn");
+      if (!button) return;
+
+      if (button.dataset.alertAction === "details") {
+        if (typeof showToast === "function") {
+          showToast("Live NWS alert details will open here later.");
+        } else {
+          alert("Live NWS alert details will open here later.");
+        }
+      }
+
+      if (button.dataset.alertAction === "safety") {
+        if (typeof showToast === "function") {
+          showToast("Safety tips will be added with live alert support.");
+        } else {
+          alert("Safety tips will be added with live alert support.");
+        }
+      }
+    });
+  }
+})();
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");

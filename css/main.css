@@ -3445,3 +3445,340 @@ body.app-dark-mode .install-icon {
     radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.22), transparent 42%),
     linear-gradient(145deg, rgba(23, 59, 82, 0.86), rgba(8, 29, 43, 0.7)) !important;
 }
+/* Version 0.9 - Alerts tab upgrade */
+
+.alerts-status-card {
+  overflow: hidden;
+}
+
+.alerts-status-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.alerts-status-top h3 {
+  margin: 4px 0 6px;
+  color: var(--blue-dark);
+  font-size: 23px;
+  letter-spacing: -0.04em;
+}
+
+.alerts-status-top p {
+  margin: 0;
+}
+
+.alert-status-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.alert-status-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.alert-meta-pill {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.52);
+  color: rgba(45, 84, 103, 0.82);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.alerts-filter-card {
+  display: grid;
+  gap: 12px;
+}
+
+.alert-county-select {
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  padding: 13px 14px;
+  color: var(--blue-dark);
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.alert-refresh-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 13px 15px;
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  font-weight: 900;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  cursor: pointer;
+}
+
+.alert-refresh-btn:active {
+  transform: scale(0.97);
+}
+
+.alerts-list {
+  display: grid;
+  gap: 13px;
+  margin: 16px 0;
+}
+
+.alert-card {
+  position: relative;
+  overflow: hidden;
+  padding: 16px;
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.38));
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 18px 42px rgba(18, 78, 112, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(22px) saturate(1.25);
+  -webkit-backdrop-filter: blur(22px) saturate(1.25);
+}
+
+.alert-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 6px;
+  border-radius: 999px;
+}
+
+.alert-card.warning::before {
+  background: #ef4444;
+}
+
+.alert-card.watch::before {
+  background: #facc15;
+}
+
+.alert-card.advisory::before {
+  background: #a855f7;
+}
+
+.alert-card.statement::before {
+  background: #38bdf8;
+}
+
+.alert-card.none::before {
+  background: #4ade80;
+}
+
+.alert-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.alert-type-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 1000;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.alert-type-badge.warning {
+  background: rgba(239, 68, 68, 0.14);
+  color: #991b1b;
+}
+
+.alert-type-badge.watch {
+  background: rgba(250, 204, 21, 0.22);
+  color: #854d0e;
+}
+
+.alert-type-badge.advisory {
+  background: rgba(168, 85, 247, 0.15);
+  color: #6b21a8;
+}
+
+.alert-type-badge.statement {
+  background: rgba(56, 189, 248, 0.18);
+  color: #075985;
+}
+
+.alert-type-badge.none {
+  background: rgba(74, 222, 128, 0.18);
+  color: #166534;
+}
+
+.alert-card-header small {
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.alert-card h3 {
+  margin: 0 0 7px;
+  color: var(--blue-dark);
+  font-size: 19px;
+  letter-spacing: -0.03em;
+}
+
+.alert-card p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.78);
+  line-height: 1.45;
+}
+
+.alert-card-meta {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.alert-card-meta span {
+  color: rgba(45, 84, 103, 0.82);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.alert-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 13px;
+}
+
+.alert-action-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 11px;
+  background: rgba(255, 255, 255, 0.66);
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.alert-preferences-card {
+  display: grid;
+  gap: 13px;
+}
+
+.alert-pref-list {
+  display: grid;
+  gap: 10px;
+}
+
+.alert-pref-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.alert-pref-row span {
+  display: grid;
+  gap: 3px;
+}
+
+.alert-pref-row strong {
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.alert-pref-row small {
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.alert-pref-toggle {
+  width: 22px;
+  height: 22px;
+  accent-color: #1398d1;
+}
+
+.alert-pref-note {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.nws-coming-card {
+  margin-bottom: 20px;
+}
+
+/* Dark mode alerts */
+body.app-dark-mode .alerts-status-top h3,
+body.app-dark-mode .alert-card h3,
+body.app-dark-mode .alert-pref-row strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .alert-card,
+body.app-dark-mode .alert-pref-row,
+body.app-dark-mode .alert-meta-pill {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode .alert-card p,
+body.app-dark-mode .alert-card-meta span,
+body.app-dark-mode .alert-card-header small,
+body.app-dark-mode .alert-pref-row small,
+body.app-dark-mode .alert-pref-note,
+body.app-dark-mode .alert-meta-pill {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .alert-county-select {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(142, 218, 255, 0.15) !important;
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .alert-county-select option {
+  background: #ffffff;
+  color: #082436;
+}
+
+body.app-dark-mode .alert-action-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #f6fcff !important;
+}

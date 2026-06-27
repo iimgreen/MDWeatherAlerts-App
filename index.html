@@ -444,22 +444,131 @@
       </section>
 
       <!-- ALERTS -->
-      <section class="screen" id="alerts">
-        <div class="page-title">
-          <h2>Alerts</h2>
-          <p>Official weather alerts for Maryland.</p>
-        </div>
+      <!-- ALERTS -->
+<section class="screen" id="alerts">
+  <div class="page-title">
+    <h2>Alerts</h2>
+    <p>Maryland watches, warnings, advisories, and alert preferences.</p>
+  </div>
 
-        <section class="section-card alert-warning">
-          <h3>No Live Alerts Connected Yet</h3>
-          <p>NWS alerts will appear here by county once connected.</p>
-        </section>
+  <section class="section-card alerts-status-card">
+    <div class="alerts-status-top">
+      <div>
+        <p class="eyebrow">Maryland Alert Center</p>
+        <h3 id="alertStatusTitle">Checking Maryland alerts</h3>
+        <p id="alertStatusText">
+          Live National Weather Service alerts will appear here once connected.
+        </p>
+      </div>
 
-        <section class="section-card">
-          <h3>Notification Settings</h3>
-          <p>Push notifications will be added later for warnings, watches, advisories, and county alerts.</p>
-        </section>
-      </section>
+      <div class="alert-status-icon" id="alertStatusIcon">⚠️</div>
+    </div>
+
+    <div class="alert-status-meta">
+      <span class="alert-meta-pill">NWS-style demo</span>
+      <span class="alert-meta-pill">County filter</span>
+      <span class="alert-meta-pill">Notifications planned</span>
+    </div>
+  </section>
+
+  <section class="section-card alerts-filter-card">
+    <div class="section-title-row">
+      <div>
+        <h3>Filter Alerts</h3>
+        <p>Choose a county or view statewide demo alerts.</p>
+      </div>
+      <span class="pill calm">Maryland</span>
+    </div>
+
+    <select class="alert-county-select" id="alertCountySelect">
+      <option value="all">All Maryland</option>
+    </select>
+
+    <button class="alert-refresh-btn" id="alertRefreshBtn" type="button">
+      Refresh Alert View
+    </button>
+  </section>
+
+  <section class="alerts-list" id="alertList">
+    <article class="alert-card statement">
+      <div class="alert-card-header">
+        <span class="alert-type-badge statement">Loading</span>
+        <small>Demo Mode</small>
+      </div>
+      <h3>Loading alert center...</h3>
+      <p>Maryland alert cards will appear here.</p>
+    </article>
+  </section>
+
+  <section class="section-card alert-preferences-card">
+    <div class="section-title-row">
+      <div>
+        <h3>Alert Preferences</h3>
+        <p>Choose which alerts matter most to you.</p>
+      </div>
+      <span class="pill live">Saved</span>
+    </div>
+
+    <div class="alert-pref-list">
+      <label class="alert-pref-row">
+        <span>
+          <strong>Tornado Warnings</strong>
+          <small>Highest priority emergency alerts</small>
+        </span>
+        <input class="alert-pref-toggle" type="checkbox" data-pref="tornado" checked />
+      </label>
+
+      <label class="alert-pref-row">
+        <span>
+          <strong>Severe Thunderstorm Warnings</strong>
+          <small>Damaging wind, hail, and dangerous storms</small>
+        </span>
+        <input class="alert-pref-toggle" type="checkbox" data-pref="severeThunderstorm" checked />
+      </label>
+
+      <label class="alert-pref-row">
+        <span>
+          <strong>Flash Flood Warnings</strong>
+          <small>Rapid flooding and dangerous travel impacts</small>
+        </span>
+        <input class="alert-pref-toggle" type="checkbox" data-pref="flashFlood" checked />
+      </label>
+
+      <label class="alert-pref-row">
+        <span>
+          <strong>Winter Weather Alerts</strong>
+          <small>Snow, ice, sleet, and hazardous winter travel</small>
+        </span>
+        <input class="alert-pref-toggle" type="checkbox" data-pref="winter" checked />
+      </label>
+
+      <label class="alert-pref-row">
+        <span>
+          <strong>Tropical Weather Alerts</strong>
+          <small>Coastal/tropical impacts when needed</small>
+        </span>
+        <input class="alert-pref-toggle" type="checkbox" data-pref="tropical" checked />
+      </label>
+    </div>
+
+    <p class="alert-pref-note" id="alertPrefNote">
+      Preferences save automatically on this device. Push notifications will be added later.
+    </p>
+  </section>
+
+  <section class="section-card nws-coming-card">
+    <div class="section-title-row">
+      <div>
+        <h3>Official NWS Data Coming Soon</h3>
+        <p>
+          This section is built to connect with official National Weather Service
+          alerts by county.
+        </p>
+      </div>
+      <span class="pill calm">Planned</span>
+    </div>
+  </section>
+</section>
 
       <!-- MORE -->
       <section class="screen" id="more">
