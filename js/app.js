@@ -2564,4 +2564,242 @@ updateInstallAppCard();
     });
   }
 })();
-console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");
+/* Version 1.3 - Final app polish and launch info */
+
+(function mdwaFinalAppPolish() {
+  const APP_VERSION = "1.3";
+  const moreScreen = document.getElementById("more");
+
+  if (!moreScreen) return;
+
+  function createAppInfoCard() {
+    let card = document.getElementById("mdwaAppInfoCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card app-info-card";
+    card.id = "mdwaAppInfoCard";
+
+    card.innerHTML = `
+      <div class="section-title-row">
+        <div>
+          <h3>App Info</h3>
+          <p>MD Weather Alerts app details, data notes, and privacy reminders.</p>
+        </div>
+        <span class="pill live">Info</span>
+      </div>
+
+      <span class="app-version-badge">Version ${APP_VERSION}</span>
+
+      <div class="app-info-list">
+        <div class="app-info-row">
+          <span>🌦️</span>
+          <div>
+            <strong>Maryland-first weather</strong>
+            <small>Forecasts, alerts, radar tools, blog posts, and community reports built for Maryland.</small>
+          </div>
+        </div>
+
+        <div class="app-info-row">
+          <span>🏢</span>
+          <div>
+            <strong>Official alert source</strong>
+            <small>Live alert data is pulled from the National Weather Service when available.</small>
+          </div>
+        </div>
+
+        <div class="app-info-row">
+          <span>📍</span>
+          <div>
+            <strong>Report privacy</strong>
+            <small>Community reports use an approximate privacy-offset location, not your exact public location.</small>
+          </div>
+        </div>
+
+        <div class="app-info-row">
+          <span>📲</span>
+          <div>
+            <strong>Installable app</strong>
+            <small>This app supports home screen installation through supported browsers.</small>
+          </div>
+        </div>
+      </div>
+
+      <p class="app-disclaimer">
+        MD Weather Alerts is a community weather app. Always follow official National Weather Service alerts,
+        local emergency management, and public safety guidance during hazardous weather.
+      </p>
+    `;
+
+    return card;
+  }
+
+  function getLaunchChecks() {
+    const hasManifest = !!document.querySelector('link[rel="manifest"]');
+    const hasServiceWorker = "serviceWorker" in navigator;
+    const hasLocalStorage = (() => {
+      try {
+        localStorage.setItem("mdwa_test_storage", "yes");
+        localStorage.removeItem("mdwa_test_storage");
+        return true;
+      } catch (error) {
+        return false;
+      }
+    })();
+
+    const isOnline = navigator.onLine;
+    const hasInstallCard = !!document.getElementById("installAppCard");
+    const hasAlertsTab = !!document.getElementById("alerts");
+    const hasReportsTab = !!document.getElementById("reports");
+
+    return [
+      {
+        icon: hasManifest ? "✅" : "⚠️",
+        status: hasManifest ? "good" : "warn",
+        title: "App manifest",
+        text: hasManifest
+          ? "Manifest is connected for install support."
+          : "Manifest link not detected.",
+      },
+      {
+        icon: hasServiceWorker ? "✅" : "⚠️",
+        status: hasServiceWorker ? "good" : "warn",
+        title: "Service worker support",
+        text: hasServiceWorker
+          ? "This browser supports service workers."
+          : "This browser does not support service workers.",
+      },
+      {
+        icon: hasLocalStorage ? "✅" : "⚠️",
+        status: hasLocalStorage ? "good" : "warn",
+        title: "Saved settings",
+        text: hasLocalStorage
+          ? "Theme, radar, and alert preferences can save on this device."
+          : "Local saved settings may not work in this browser.",
+      },
+      {
+        icon: isOnline ? "✅" : "⚠️",
+        status: isOnline ? "good" : "warn",
+        title: "Connection status",
+        text: isOnline
+          ? "The app is currently online."
+          : "The app appears offline. Some live data may not update.",
+      },
+      {
+        icon: hasInstallCard ? "✅" : "⚠️",
+        status: hasInstallCard ? "good" : "warn",
+        title: "Install app card",
+        text: hasInstallCard
+          ? "Install card is available in the More tab."
+          : "Install card was not detected.",
+      },
+      {
+        icon: hasAlertsTab && hasReportsTab ? "✅" : "⚠️",
+        status: hasAlertsTab && hasReportsTab ? "good" : "warn",
+        title: "Core app tabs",
+        text:
+          hasAlertsTab && hasReportsTab
+            ? "Alerts and Reports tabs are present."
+            : "One or more core tabs may be missing.",
+      },
+    ];
+  }
+
+  function createLaunchChecklistCard() {
+    let card = document.getElementById("mdwaLaunchChecklistCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card launch-checklist-card";
+    card.id = "mdwaLaunchChecklistCard";
+
+    card.innerHTML = `
+      <div class="section-title-row">
+        <div>
+          <h3>Launch Checklist</h3>
+          <p>Quick app health check before sharing with users.</p>
+        </div>
+        <span class="pill calm">Check</span>
+      </div>
+
+      <div class="launch-check-list" id="mdwaLaunchCheckList"></div>
+
+      <button class="launch-refresh-btn" id="mdwaRefreshLaunchChecks" type="button">
+        Recheck App Status
+      </button>
+    `;
+
+    return card;
+  }
+
+  function renderLaunchChecks() {
+    const list = document.getElementById("mdwaLaunchCheckList");
+    if (!list) return;
+
+    const checks = getLaunchChecks();
+
+    list.innerHTML = "";
+
+    checks.forEach((check) => {
+      const row = document.createElement("div");
+      row.className = `launch-check-row ${check.status}`;
+
+      row.innerHTML = `
+        <span>${check.icon}</span>
+        <div>
+          <strong>${check.title}</strong>
+          <small>${check.text}</small>
+        </div>
+      `;
+
+      list.appendChild(row);
+    });
+  }
+
+  function placeFinalPolishCards() {
+    const appInfoCard = createAppInfoCard();
+    const launchChecklistCard = createLaunchChecklistCard();
+
+    const installCard = document.getElementById("installAppCard");
+    const forecastBlog = document.getElementById("moreBlogPosts");
+    const forecastBlogCard = forecastBlog
+      ? forecastBlog.closest(".section-card")
+      : null;
+
+    if (installCard && installCard.parentElement === moreScreen) {
+      moreScreen.insertBefore(appInfoCard, installCard);
+      moreScreen.insertBefore(launchChecklistCard, installCard.nextSibling);
+      return;
+    }
+
+    if (forecastBlogCard) {
+      moreScreen.insertBefore(appInfoCard, forecastBlogCard);
+      moreScreen.insertBefore(launchChecklistCard, forecastBlogCard);
+      return;
+    }
+
+    moreScreen.appendChild(appInfoCard);
+    moreScreen.appendChild(launchChecklistCard);
+  }
+
+  placeFinalPolishCards();
+  renderLaunchChecks();
+
+  const refreshChecksBtn = document.getElementById("mdwaRefreshLaunchChecks");
+
+  if (refreshChecksBtn) {
+    refreshChecksBtn.addEventListener("click", () => {
+      renderLaunchChecks();
+
+      if (typeof showToast === "function") {
+        showToast("App status rechecked.");
+      }
+    });
+  }
+
+  window.addEventListener("online", renderLaunchChecks);
+  window.addEventListener("offline", renderLaunchChecks);
+})();
+console.log("MD Weather Alerts Version 1.3 final polish loaded successfully.");
