@@ -6964,3 +6964,305 @@ console.log("MD Weather Alerts Version 2.3.6 clickable logo home button loaded s
 
   console.log("MD Weather Alerts Version 2.3.8 report weather top fix loaded.");
 })();
+/* =========================================================
+   MDWA 2.3.8 - Current Conditions Duplicate Text Cleanup
+   Hides the repeated condition line under "Harford conditions"
+   ========================================================= */
+
+(function mdwaCurrentConditionsDuplicateCleanupV238() {
+  const CONDITION_WORDS = [
+    "clear",
+    "sunny",
+    "cloudy",
+    "partly cloudy",
+    "mostly cloudy",
+    "overcast",
+    "rain",
+    "showers",
+    "storm",
+    "thunderstorm",
+    "fog",
+    "mist",
+    "snow",
+    "drizzle"
+  ];
+
+  function normalizeText(text) {
+    return (text || "").trim().replace(/\s+/g, " ").toLowerCase();
+  }
+
+  function isConditionText(text) {
+    const clean = normalizeText(text);
+    return CONDITION_WORDS.includes(clean);
+  }
+
+  function cleanupCurrentConditionsCard() {
+    const cards = Array.from(
+      document.querySelectorAll(".section-card, .glass-card, .forecast-card, .weather-card, .card, article")
+    );
+
+    const currentCard = cards.find((card) => {
+      const text = normalizeText(card.textContent);
+      return text.includes("current conditions") && text.includes("conditions");
+    });
+
+    if (!currentCard) return;
+
+    const leafElements = Array.from(currentCard.querySelectorAll("*")).filter((el) => {
+      const text = normalizeText(el.textContent);
+      const hasChildElements = el.children.length > 0;
+
+      return !hasChildElements && isConditionText(text);
+    });
+
+    if (leafElements.length < 2) return;
+
+    // Keep the condition inside the main temperature box.
+    // Hide the first standalone repeated condition under the title.
+    leafElements[0].style.setProperty("display", "none", "important");
+  }
+
+  function runCleanup() {
+    cleanupCurrentConditionsCard();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runCleanup);
+  } else {
+    runCleanup();
+  }
+
+  window.addEventListener("load", runCleanup);
+
+  setTimeout(runCleanup, 300);
+  setTimeout(runCleanup, 1000);
+  setTimeout(runCleanup, 2000);
+
+  document.addEventListener("click", function () {
+    setTimeout(runCleanup, 150);
+  });
+
+  console.log("MD Weather Alerts Version 2.3.8 current conditions duplicate cleanup loaded.");
+})();
+/* =========================================================
+   MDWA 2.4.1 - Strong Current Conditions Fallback
+   Tries multiple NWS stations, then hourly forecast fallback
+   ========================================================= */
+
+(function mdwaStrongCurrentConditionsFallbackV241() {
+  const DEFAULT_LAT = 39.5359;
+  const DEFAULT_LON = -76.3483;
+
+  function cToF(celsius) {
+    if (typeof celsius !== "number") return null;
+    return Math.round((celsius * 9) / 5 + 32);
+  }
+
+  function kmhToMph(kmh) {
+    if (typeof kmh !== "number") return null;
+    return Math.round(kmh * 0.621371);
+  }
+
+  function normalizeText(text) {
+    return (text || "").trim().replace(/\s+/g, " ").toLowerCase();
+  }
+
+  function findCurrentConditionsCard() {
+    const cards = Array.from(
+      document.querySelectorAll(".section-card, .glass-card, .forecast-card, .weather-card, .card, article")
+    );
+
+    return cards.find((card) => {
+      const text = normalizeText(card.textContent);
+      return text.includes("current conditions") && text.includes("harford");
+    });
+  }
+
+  function setSmallestMatchingText(card, matchPhrases, newText) {
+    if (!card || !newText) return;
+
+    const matches = Array.from(card.querySelectorAll("*"))
+      .filter((el) => {
+        const text = normalizeText(el.textContent);
+        return matchPhrases.some((phrase) => text.includes(phrase));
+      })
+      .sort((a, b) => a.textContent.length - b.textContent.length);
+
+    if (matches[0]) {
+      matches[0].textContent = newText;
+    }
+  }
+
+  function hideUnavailableNote(card) {
+    if (!card) return;
+
+    const matches = Array.from(card.querySelectorAll("*"))
+      .filter((el) => {
+        const text = normalizeText(el.textContent);
+        return (
+          text.includes("some observation values were unavailable") ||
+          text.includes("forecast data is still available below")
+        );
+      })
+      .sort((a, b) => b.textContent.length - a.textContent.length);
+
+    matches.forEach((el) => {
+      el.style.setProperty("display", "none", "important");
+    });
+  }
+
+  function updateCurrentConditionsUI(data) {
+    const card = findCurrentConditionsCard();
+    if (!card) return;
+
+    if (data.tempF !== null && data.tempF !== undefined) {
+      setSmallestMatchingText(card, ["temp unavailable", "temperature unavailable"], `${data.tempF}°`);
+    }
+
+    if (data.windText) {
+      setSmallestMatchingText(card, ["wind n/a"], `Wind ${data.windText}`);
+    }
+
+    if (data.humidityText) {
+      setSmallestMatchingText(card, ["humidity n/a"], `Humidity ${data.humidityText}`);
+    }
+
+    if (data.conditionText) {
+      setSmallestMatchingText(card, ["conditions unavailable", "weather unavailable"], data.conditionText);
+    }
+
+    hideUnavailableNote(card);
+  }
+
+  async function fetchJson(url) {
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/geo+json"
+      }
+    });
+
+    if (!response.ok) throw new Error(`Fetch failed: ${url}`);
+    return response.json();
+  }
+
+  async function getObservationFallback(pointData) {
+    const stationsUrl = pointData?.properties?.observationStations;
+    if (!stationsUrl) return {};
+
+    const stationsData = await fetchJson(stationsUrl);
+    const stations = stationsData?.features || [];
+
+    let tempF = null;
+    let windText = null;
+    let humidityText = null;
+    let conditionText = null;
+
+    for (const station of stations.slice(0, 10)) {
+      try {
+        const latestUrl = `${station.id}/observations/latest`;
+        const obs = await fetchJson(latestUrl);
+        const props = obs?.properties || {};
+
+        if (tempF === null) {
+          tempF = cToF(props?.temperature?.value);
+        }
+
+        if (!windText) {
+          const windMph = kmhToMph(props?.windSpeed?.value);
+          if (windMph !== null) windText = `${windMph} mph`;
+        }
+
+        if (!humidityText && typeof props?.relativeHumidity?.value === "number") {
+          humidityText = `${Math.round(props.relativeHumidity.value)}%`;
+        }
+
+        if (!conditionText && props?.textDescription) {
+          conditionText = props.textDescription;
+        }
+
+        if (tempF !== null && windText && humidityText) break;
+      } catch (error) {
+        // Try next nearby station.
+      }
+    }
+
+    return { tempF, windText, humidityText, conditionText };
+  }
+
+  async function getHourlyForecastFallback(pointData, existingData) {
+    const forecastHourlyUrl = pointData?.properties?.forecastHourly;
+    if (!forecastHourlyUrl) return existingData;
+
+    try {
+      const hourly = await fetchJson(forecastHourlyUrl);
+      const period = hourly?.properties?.periods?.[0];
+
+      if (!period) return existingData;
+
+      return {
+        tempF: existingData.tempF ?? period.temperature ?? null,
+        windText: existingData.windText ?? period.windSpeed ?? null,
+        humidityText:
+          existingData.humidityText ??
+          (typeof period?.relativeHumidity?.value === "number"
+            ? `${Math.round(period.relativeHumidity.value)}%`
+            : null),
+        conditionText: existingData.conditionText ?? period.shortForecast ?? null
+      };
+    } catch (error) {
+      return existingData;
+    }
+  }
+
+  async function loadCurrentConditions() {
+    try {
+      const pointData = await fetchJson(
+        `https://api.weather.gov/points/${DEFAULT_LAT},${DEFAULT_LON}`
+      );
+
+      let data = await getObservationFallback(pointData);
+      data = await getHourlyForecastFallback(pointData, data);
+
+      updateCurrentConditionsUI(data);
+
+      console.log("MD Weather Alerts Version 2.4.1 strong current conditions loaded.", data);
+    } catch (error) {
+      console.warn("MDWA 2.4.1 current conditions fallback failed:", error);
+    }
+  }
+
+  function setupRefreshButton() {
+    const card = findCurrentConditionsCard();
+    if (!card) return;
+
+    const refreshButton = Array.from(card.querySelectorAll("button, a")).find((btn) =>
+      normalizeText(btn.textContent).includes("refresh")
+    );
+
+    if (!refreshButton || refreshButton.dataset.mdwaCurrentConditionsRefresh === "true") return;
+
+    refreshButton.dataset.mdwaCurrentConditionsRefresh = "true";
+    refreshButton.addEventListener("click", function () {
+      setTimeout(loadCurrentConditions, 100);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      loadCurrentConditions();
+      setupRefreshButton();
+    });
+  } else {
+    loadCurrentConditions();
+    setupRefreshButton();
+  }
+
+  window.addEventListener("load", function () {
+    loadCurrentConditions();
+    setupRefreshButton();
+  });
+
+  setTimeout(loadCurrentConditions, 1000);
+
+  console.log("MD Weather Alerts Version 2.4.1 current conditions fallback ready.");
+})();
