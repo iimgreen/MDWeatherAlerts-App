@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>MD Weather Alerts App</title>
+
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Maryland Weather</p>
+        <h1>MD Weather Alerts</h1>
+      </div>
+      <div class="header-icon">☀️</div>
+    </header>
+
+    <main class="app-content">
+
+      <!-- HOME -->
+      <section class="screen active" id="home">
+        <section class="hero-card">
+          <div>
+            <p class="location-label">Maryland</p>
+            <h2>Good day, Maryland</h2>
+            <p class="hero-text">Forecasts, alerts, radar, and live community reports built for Maryland.</p>
+
+            <div class="weather-mini-row">
+              <span>Feels like --°</span>
+              <span>Wind -- mph</span>
+            </div>
+          </div>
+
+          <div class="temp-badge">
+            <span>--°</span>
+            <small>Loading</small>
+          </div>
+        </section>
+
+        <section class="quick-grid">
+          <button class="quick-card" data-screen="forecast">
+            <span>🌦️</span>
+            <strong>Forecast</strong>
+            <small>County outlooks</small>
+          </button>
+
+          <button class="quick-card" data-screen="alerts">
+            <span>⚠️</span>
+            <strong>Alerts</strong>
+            <small>NWS warnings</small>
+          </button>
+
+          <button class="quick-card" data-screen="radar">
+            <span>🛰️</span>
+            <strong>Radar</strong>
+            <small>Track storms</small>
+          </button>
+
+          <button class="quick-card featured" data-screen="reports">
+            <span>📍</span>
+            <strong>Report Weather</strong>
+            <small>What’s near you?</small>
+          </button>
+        </section>
+
+        <section class="section-card">
+          <div class="section-title-row">
+            <h3>Active Alerts</h3>
+            <span class="pill calm">Checking</span>
+          </div>
+          <p>Live Maryland alert data will appear here once we connect official weather sources.</p>
+        </section>
+
+        <section class="section-card">
+          <div class="section-title-row">
+            <h3>Community Reports Map</h3>
+            <span class="pill live">Coming Soon</span>
+          </div>
+
+          <div class="map-placeholder">
+            <div class="map-pin pin-one">🌧️</div>
+            <div class="map-pin pin-two">💨</div>
+            <div class="map-pin pin-three">🌅</div>
+            <p>Nearby reports will appear here for a few hours.</p>
+          </div>
+        </section>
+      </section>
+
+      <!-- FORECAST -->
+      <section class="screen" id="forecast">
+        <div class="page-title">
+          <h2>Forecast</h2>
+          <p>County-by-county Maryland weather outlooks.</p>
+        </div>
+
+        <section class="section-card">
+          <h3>Choose a County</h3>
+          <select class="county-select">
+            <option>Harford County</option>
+            <option>Baltimore County</option>
+            <option>Baltimore City</option>
+            <option>Anne Arundel County</option>
+            <option>Montgomery County</option>
+            <option>Prince George’s County</option>
+            <option>Frederick County</option>
+            <option>Washington County</option>
+            <option>Garrett County</option>
+            <option>Allegany County</option>
+            <option>Cecil County</option>
+            <option>Kent County</option>
+            <option>Queen Anne’s County</option>
+            <option>Talbot County</option>
+            <option>Caroline County</option>
+            <option>Dorchester County</option>
+            <option>Wicomico County</option>
+            <option>Worcester County</option>
+            <option>Somerset County</option>
+            <option>Calvert County</option>
+            <option>Charles County</option>
+            <option>St. Mary’s County</option>
+            <option>Howard County</option>
+            <option>Carroll County</option>
+          </select>
+        </section>
+
+        <section class="forecast-list">
+          <div class="forecast-row">
+            <span>Morning</span>
+            <strong>--°</strong>
+            <small>Commute forecast coming soon</small>
+          </div>
+          <div class="forecast-row">
+            <span>Afternoon</span>
+            <strong>--°</strong>
+            <small>Daytime forecast coming soon</small>
+          </div>
+          <div class="forecast-row">
+            <span>Evening</span>
+            <strong>--°</strong>
+            <small>Evening forecast coming soon</small>
+          </div>
+        </section>
+      </section>
+
+      <!-- REPORTS -->
+      <section class="screen" id="reports">
+        <div class="page-title">
+          <h2>Report Weather</h2>
+          <p>Share what’s happening at or near your location.</p>
+        </div>
+
+        <section class="section-card report-action-card">
+          <button class="location-btn" id="locationBtn">📍 Use My Current Location</button>
+          <p id="locationStatus">Location not added yet.</p>
+        </section>
+
+        <section class="section-card">
+          <h3>What’s happening near you?</h3>
+
+          <div class="checkbox-grid">
+            <label><input type="checkbox" value="Rain"> 🌧️ Rain</label>
+            <label><input type="checkbox" value="Heavy Rain"> 🌧️ Heavy Rain</label>
+            <label><input type="checkbox" value="Lightning"> ⚡ Lightning</label>
+            <label><input type="checkbox" value="Hail"> 🧊 Hail</label>
+            <label><input type="checkbox" value="Flooding"> 🌊 Flooding</label>
+            <label><input type="checkbox" value="Wind Damage"> 💨 Wind Damage</label>
+            <label><input type="checkbox" value="Snow/Ice"> ❄️ Snow/Ice</label>
+            <label><input type="checkbox" value="Fog"> 🌫️ Fog</label>
+            <label><input type="checkbox" value="Beautiful Sky"> 🌅 Beautiful Sky</label>
+          </div>
+
+          <textarea id="reportNote" placeholder="Optional details..."></textarea>
+
+          <button class="submit-report" id="submitReport">Submit Report</button>
+        </section>
+
+        <section class="section-card">
+          <div class="section-title-row">
+            <h3>Nearby Reports</h3>
+            <span class="pill live">Demo Map</span>
+          </div>
+
+          <div class="map-placeholder taller" id="reportMap">
+            <div class="map-pin pin-one">🌧️</div>
+            <div class="map-pin pin-two">⚡</div>
+            <div class="map-pin pin-three">🌅</div>
+            <p>Submitted reports will appear here.</p>
+          </div>
+        </section>
+      </section>
+
+      <!-- RADAR -->
+      <section class="screen" id="radar">
+        <div class="page-title">
+          <h2>Radar</h2>
+          <p>Track storms across Maryland.</p>
+        </div>
+
+        <section class="section-card">
+          <div class="radar-box">
+            <span>🛰️</span>
+            <h3>Interactive Radar Coming Soon</h3>
+            <p>We’ll connect radar and satellite views here.</p>
+          </div>
+        </section>
+      </section>
+
+      <!-- ALERTS -->
+      <section class="screen" id="alerts">
+        <div class="page-title">
+          <h2>Alerts</h2>
+          <p>Official weather alerts for Maryland.</p>
+        </div>
+
+        <section class="section-card alert-warning">
+          <h3>No Live Alerts Connected Yet</h3>
+          <p>NWS alerts will appear here by county once connected.</p>
+        </section>
+
+        <section class="section-card">
+          <h3>Notification Settings</h3>
+          <p>Push notifications will be added later for warnings, watches, advisories, and county alerts.</p>
+        </section>
+      </section>
+
+      <!-- MORE -->
+      <section class="screen" id="more">
+        <div class="page-title">
+          <h2>More</h2>
+          <p>Settings, support, and MD Weather Alerts links.</p>
+        </div>
+
+        <section class="more-list">
+          <button>❤️ Support MD Weather Alerts</button>
+          <button>🌐 Visit Website</button>
+          <button>📩 Subscribe by Email</button>
+          <button>ℹ️ About This App</button>
+        </section>
+      </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-screen="home">
+        <span>🏠</span>
+        <small>Home</small>
+      </button>
+
+      <button class="nav-item" data-screen="reports">
+        <span>🗺️</span>
+        <small>Reports</small>
+      </button>
+
+      <button class="nav-item" data-screen="radar">
+        <span>🛰️</span>
+        <small>Radar</small>
+      </button>
+
+      <button class="nav-item" data-screen="alerts">
+        <span>⚠️</span>
+        <small>Alerts</small>
+      </button>
+
+      <button class="nav-item" data-screen="more">
+        <span>☰</span>
+        <small>More</small>
+      </button>
+    </nav>
+
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
