@@ -4919,4 +4919,66 @@ updateInstallAppCard();
 
   loadSelectedCurrentConditions();
 })();
-console.log("MD Weather Alerts Version 1.9 live current conditions loaded successfully.");
+/* Version 2.1.6 - Safe home layout cleanup */
+
+(function mdwaSafeHomeLayoutCleanup() {
+  const home = document.getElementById("home");
+
+  if (!home) return;
+
+  function removeEmptyMoreHome() {
+    const morePanel = document.getElementById("homeMorePanel");
+
+    if (morePanel) {
+      morePanel.remove();
+    }
+
+    const moreChip = document.querySelector(
+      '#homeDashboardNav [data-home-panel="homeMorePanel"]'
+    );
+
+    if (moreChip) {
+      moreChip.remove();
+    }
+  }
+
+  function compactHomeForecastCard() {
+    const forecastCard = document.getElementById("homeLiveForecastCard");
+
+    if (!forecastCard) return;
+
+    forecastCard.classList.add("home-forecast-safe-compact");
+
+    let expandBtn = document.getElementById("homeForecastSafeExpandBtn");
+
+    if (expandBtn) return;
+
+    expandBtn = document.createElement("button");
+    expandBtn.id = "homeForecastSafeExpandBtn";
+    expandBtn.className = "home-safe-expand-btn";
+    expandBtn.type = "button";
+    expandBtn.textContent = "Show Forecast Details";
+
+    expandBtn.addEventListener("click", () => {
+      forecastCard.classList.toggle("expanded");
+
+      expandBtn.textContent = forecastCard.classList.contains("expanded")
+        ? "Hide Forecast Details"
+        : "Show Forecast Details";
+    });
+
+    forecastCard.appendChild(expandBtn);
+  }
+
+  function safeHomeCleanup() {
+    removeEmptyMoreHome();
+    compactHomeForecastCard();
+  }
+
+  safeHomeCleanup();
+
+  // Run again after live cards finish loading.
+  setTimeout(safeHomeCleanup, 800);
+  setTimeout(safeHomeCleanup, 1800);
+})();
+console.log("MD Weather Alerts Version 2.1.6 safe home layout cleanup loaded successfully.");
