@@ -91,62 +91,143 @@
         </section>
       </section>
 
-      <!-- FORECAST -->
-      <section class="screen" id="forecast">
-        <div class="page-title">
-          <h2>Forecast</h2>
-          <p>County-by-county Maryland weather outlooks.</p>
-        </div>
+     <!-- FORECAST -->
+<section class="screen" id="forecast">
+  <div class="page-title">
+    <h2>Forecast</h2>
+    <p>Maryland forecasts by county and region.</p>
+  </div>
 
-        <section class="section-card">
-          <h3>Choose a County</h3>
-          <select class="county-select">
-            <option>Harford County</option>
-            <option>Baltimore County</option>
-            <option>Baltimore City</option>
-            <option>Anne Arundel County</option>
-            <option>Montgomery County</option>
-            <option>Prince George’s County</option>
-            <option>Frederick County</option>
-            <option>Washington County</option>
-            <option>Garrett County</option>
-            <option>Allegany County</option>
-            <option>Cecil County</option>
-            <option>Kent County</option>
-            <option>Queen Anne’s County</option>
-            <option>Talbot County</option>
-            <option>Caroline County</option>
-            <option>Dorchester County</option>
-            <option>Wicomico County</option>
-            <option>Worcester County</option>
-            <option>Somerset County</option>
-            <option>Calvert County</option>
-            <option>Charles County</option>
-            <option>St. Mary’s County</option>
-            <option>Howard County</option>
-            <option>Carroll County</option>
-          </select>
-        </section>
+  <section class="section-card forecast-hero-card">
+    <div>
+      <span class="forecast-icon">🌦️</span>
+      <h3>County Forecast</h3>
+      <p>
+        Choose a Maryland county to view a quick forecast breakdown. Live official forecast data will be connected later.
+      </p>
+    </div>
+  </section>
 
-        <section class="forecast-list">
-          <div class="forecast-row">
-            <span>Morning</span>
-            <strong>--°</strong>
-            <small>Commute forecast coming soon</small>
-          </div>
-          <div class="forecast-row">
-            <span>Afternoon</span>
-            <strong>--°</strong>
-            <small>Daytime forecast coming soon</small>
-          </div>
-          <div class="forecast-row">
-            <span>Evening</span>
-            <strong>--°</strong>
-            <small>Evening forecast coming soon</small>
-          </div>
-        </section>
-      </section>
+  <section class="section-card">
+    <h3>Choose a County</h3>
 
+    <select class="county-select" id="countySelect">
+      <option>Allegany County</option>
+      <option>Anne Arundel County</option>
+      <option>Baltimore City</option>
+      <option>Baltimore County</option>
+      <option>Calvert County</option>
+      <option>Caroline County</option>
+      <option>Carroll County</option>
+      <option>Cecil County</option>
+      <option>Charles County</option>
+      <option>Dorchester County</option>
+      <option>Frederick County</option>
+      <option>Garrett County</option>
+      <option selected>Harford County</option>
+      <option>Howard County</option>
+      <option>Kent County</option>
+      <option>Montgomery County</option>
+      <option>Prince George’s County</option>
+      <option>Queen Anne’s County</option>
+      <option>Somerset County</option>
+      <option>St. Mary’s County</option>
+      <option>Talbot County</option>
+      <option>Washington County</option>
+      <option>Wicomico County</option>
+      <option>Worcester County</option>
+    </select>
+  </section>
+
+  <section class="section-card selected-forecast-card">
+    <div class="section-title-row">
+      <h3 id="selectedCountyTitle">Harford County</h3>
+      <span class="pill calm" id="selectedCountyRegion">North-Central MD</span>
+    </div>
+
+    <p id="selectedCountySummary">
+      Demo forecast: Warm summer conditions with a chance for isolated showers or storms. Live data coming soon.
+    </p>
+
+    <div class="forecast-metric-grid">
+      <div>
+        <span>High</span>
+        <strong id="forecastHigh">86°</strong>
+      </div>
+
+      <div>
+        <span>Low</span>
+        <strong id="forecastLow">69°</strong>
+      </div>
+
+      <div>
+        <span>Rain</span>
+        <strong id="forecastRain">30%</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="forecast-time-grid">
+    <div class="forecast-time-card">
+      <span>🌅</span>
+      <h3>Morning</h3>
+      <p id="morningForecast">Mild start with partly sunny skies and light winds.</p>
+    </div>
+
+    <div class="forecast-time-card">
+      <span>☀️</span>
+      <h3>Afternoon</h3>
+      <p id="afternoonForecast">Warm and humid with isolated pop-up showers possible.</p>
+    </div>
+
+    <div class="forecast-time-card">
+      <span>🌙</span>
+      <h3>Evening</h3>
+      <p id="eveningForecast">Comfortable evening with any isolated showers fading.</p>
+    </div>
+  </section>
+
+  <section class="section-card">
+    <div class="section-title-row">
+      <h3>Maryland Regions</h3>
+      <span class="pill live">Demo</span>
+    </div>
+
+    <div class="region-list">
+      <button class="region-card" data-region="western">
+        <strong>Western MD</strong>
+        <small>Garrett, Allegany, Washington</small>
+      </button>
+
+      <button class="region-card" data-region="central">
+        <strong>Central MD</strong>
+        <small>Baltimore metro, Harford, Howard, Carroll</small>
+      </button>
+
+      <button class="region-card" data-region="dc">
+        <strong>DC Suburbs</strong>
+        <small>Montgomery, Prince George’s, Frederick</small>
+      </button>
+
+      <button class="region-card" data-region="southern">
+        <strong>Southern MD</strong>
+        <small>Calvert, Charles, St. Mary’s</small>
+      </button>
+
+      <button class="region-card" data-region="shore">
+        <strong>Eastern Shore</strong>
+        <small>Cecil to Somerset, including beaches</small>
+      </button>
+    </div>
+  </section>
+
+  <section class="section-card forecast-note-card">
+    <h3>Coming Soon</h3>
+    <p>
+      This tab will eventually connect to live forecast data, NWS discussions, hourly forecasts, and MD Weather Alerts county breakdowns.
+    </p>
+  </section>
+</section>
       <!-- REPORTS -->
       <section class="screen" id="reports">
         <div class="page-title reports-title">

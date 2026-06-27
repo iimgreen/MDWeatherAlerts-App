@@ -626,5 +626,120 @@ setupReportFilters();
 
 setInterval(removeExpiredReports, 60 * 1000);
 setInterval(renderReports, 60 * 1000);
+const countyForecastData = {
+  "Garrett County": {
+    region: "Western MD",
+    high: "78°",
+    low: "62°",
+    rain: "40%",
+    summary:
+      "Demo forecast: Cooler mountain weather with a better chance for showers or storms, especially during the afternoon.",
+    morning: "Cool and comfortable with patchy clouds across the higher terrain.",
+    afternoon: "Scattered showers or storms possible, especially over the mountains.",
+    evening: "Showers fade with cooler air returning after sunset.",
+  },
+  "Allegany County": {
+    region: "Western MD",
+    high: "82°",
+    low: "64°",
+    rain: "35%",
+    summary:
+      "Demo forecast: Warm with partly sunny skies and a chance for scattered showers or storms.",
+    morning: "Mild start with some clouds around the ridges.",
+    afternoon: "Warm with a few showers or storms possible.",
+    evening: "Partly cloudy with any showers fading.",
+  },
+  "Washington County": {
+    region: "Western MD",
+    high: "84°",
+    low: "66°",
+    rain: "30%",
+    summary:
+      "Demo forecast: Warm with isolated showers or storms possible later in the day.",
+    morning: "Comfortable with a mix of sun and clouds.",
+    afternoon: "Warm with isolated storm chances near the mountains.",
+    evening: "Mainly dry with mild conditions.",
+  },
+  default: {
+    region: "Maryland",
+    high: "86°",
+    low: "69°",
+    rain: "30%",
+    summary:
+      "Demo forecast: Warm summer conditions with a chance for isolated showers or storms. Live data coming soon.",
+    morning: "Mild start with partly sunny skies and light winds.",
+    afternoon: "Warm and humid with isolated pop-up showers possible.",
+    evening: "Comfortable evening with any isolated showers fading.",
+  },
+};
 
+const countyRegions = {
+  "Harford County": "North-Central MD",
+  "Baltimore County": "Baltimore Metro",
+  "Baltimore City": "Baltimore Metro",
+  "Anne Arundel County": "Central MD",
+  "Howard County": "Central MD",
+  "Carroll County": "North-Central MD",
+  "Cecil County": "Upper Eastern Shore",
+  "Kent County": "Upper Eastern Shore",
+  "Queen Anne’s County": "Upper Eastern Shore",
+  "Talbot County": "Mid-Shore",
+  "Caroline County": "Mid-Shore",
+  "Dorchester County": "Lower Eastern Shore",
+  "Wicomico County": "Lower Eastern Shore",
+  "Worcester County": "Beaches / Coastal MD",
+  "Somerset County": "Lower Eastern Shore",
+  "Montgomery County": "DC Suburbs",
+  "Prince George’s County": "DC Suburbs",
+  "Frederick County": "North-Central MD",
+  "Calvert County": "Southern MD",
+  "Charles County": "Southern MD",
+  "St. Mary’s County": "Southern MD",
+};
+
+function updateCountyForecast(countyName) {
+  const forecast = countyForecastData[countyName] || countyForecastData.default;
+
+  const selectedCountyTitle = document.getElementById("selectedCountyTitle");
+  const selectedCountyRegion = document.getElementById("selectedCountyRegion");
+  const selectedCountySummary = document.getElementById("selectedCountySummary");
+  const forecastHigh = document.getElementById("forecastHigh");
+  const forecastLow = document.getElementById("forecastLow");
+  const forecastRain = document.getElementById("forecastRain");
+  const morningForecast = document.getElementById("morningForecast");
+  const afternoonForecast = document.getElementById("afternoonForecast");
+  const eveningForecast = document.getElementById("eveningForecast");
+
+  if (selectedCountyTitle) selectedCountyTitle.textContent = countyName;
+
+  if (selectedCountyRegion) {
+    selectedCountyRegion.textContent = countyRegions[countyName] || forecast.region;
+  }
+
+  if (selectedCountySummary) selectedCountySummary.textContent = forecast.summary;
+  if (forecastHigh) forecastHigh.textContent = forecast.high;
+  if (forecastLow) forecastLow.textContent = forecast.low;
+  if (forecastRain) forecastRain.textContent = forecast.rain;
+  if (morningForecast) morningForecast.textContent = forecast.morning;
+  if (afternoonForecast) afternoonForecast.textContent = forecast.afternoon;
+  if (eveningForecast) eveningForecast.textContent = forecast.evening;
+}
+
+const forecastCountySelect = document.getElementById("countySelect");
+
+if (forecastCountySelect) {
+  forecastCountySelect.addEventListener("change", () => {
+    updateCountyForecast(forecastCountySelect.value);
+    showToast(`${forecastCountySelect.value} forecast loaded.`);
+  });
+
+  updateCountyForecast(forecastCountySelect.value);
+}
+
+document.querySelectorAll(".region-card").forEach((button) => {
+  button.addEventListener("click", () => {
+    const regionName = button.querySelector("strong").textContent;
+    showToast(`${regionName} regional forecast coming soon.`);
+  });
+});
 console.log("MD Weather Alerts Version 0.4.3 report filters loaded successfully.");
