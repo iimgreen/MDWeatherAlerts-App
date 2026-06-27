@@ -7266,3 +7266,243 @@ console.log("MD Weather Alerts Version 2.3.6 clickable logo home button loaded s
 
   console.log("MD Weather Alerts Version 2.4.1 current conditions fallback ready.");
 })();
+/* =========================================================
+   MDWA 2.4.3 - Live Radar Button Fix
+   Opens official NWS radar for Maryland
+   ========================================================= */
+
+(function mdwaLiveRadarButtonFixV243() {
+  const NWS_RADAR_URL = "https://radar.weather.gov/";
+
+  function normalizeText(text) {
+    return (text || "").trim().replace(/\s+/g, " ").toLowerCase();
+  }
+
+  function openRadar() {
+    window.open(NWS_RADAR_URL, "_blank", "noopener,noreferrer");
+  }
+
+  function setupRadarButtons() {
+    const clickableElements = Array.from(document.querySelectorAll("button, a, .quick-card, .section-card"));
+
+    clickableElements.forEach((el) => {
+      const text = normalizeText(el.textContent);
+
+      const isRadarAction =
+        text.includes("radar") ||
+        text.includes("refresh radar view") ||
+        text.includes("maryland radar preview");
+
+      if (!isRadarAction) return;
+      if (el.dataset.mdwaRadarReady === "true") return;
+
+      el.dataset.mdwaRadarReady = "true";
+      el.style.cursor = "pointer";
+
+      el.addEventListener("click", function (event) {
+        const clickedText = normalizeText(event.currentTarget.textContent);
+
+        if (
+          clickedText.includes("radar") ||
+          clickedText.includes("refresh radar view") ||
+          clickedText.includes("maryland radar preview")
+        ) {
+          event.preventDefault();
+          openRadar();
+        }
+      });
+    });
+
+    updateRadarPreviewText();
+  }
+
+  function updateRadarPreviewText() {
+    const cards = Array.from(document.querySelectorAll(".section-card, .glass-card, .card, article"));
+
+    const radarCard = cards.find((card) => {
+      const text = normalizeText(card.textContent);
+      return text.includes("maryland radar preview");
+    });
+
+    if (!radarCard) return;
+
+    const paragraphs = Array.from(radarCard.querySelectorAll("p, span, div"));
+
+    paragraphs.forEach((el) => {
+      const text = normalizeText(el.textContent);
+
+      if (text.includes("preview graphic only")) {
+        el.textContent = "Tap this radar preview to open the official live NWS radar.";
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupRadarButtons);
+  } else {
+    setupRadarButtons();
+  }
+
+  window.addEventListener("load", setupRadarButtons);
+
+  setTimeout(setupRadarButtons, 300);
+  setTimeout(setupRadarButtons, 1000);
+
+  console.log("MD Weather Alerts Version 2.4.3 live radar button fix loaded.");
+})();
+/* =========================================================
+   MDWA 2.4.4 - Live Radar Preview
+   Replaces placeholder radar graphic with official NWS radar loops
+   ========================================================= */
+
+(function mdwaLiveRadarPreviewV244() {
+  const RADARS = {
+    central: {
+      label: "Central / Baltimore-Washington",
+      url: "https://radar.weather.gov/ridge/standard/KLWX_loop.gif"
+    },
+    eastern: {
+      label: "Eastern Shore / Delmarva",
+      url: "https://radar.weather.gov/ridge/standard/KDOX_loop.gif"
+    },
+    regional: {
+      label: "Regional View",
+      url: "https://radar.weather.gov/ridge/standard/CONUS_loop.gif"
+    }
+  };
+
+  function normalizeText(text) {
+    return (text || "").trim().replace(/\s+/g, " ").toLowerCase();
+  }
+
+  function findRadarPreviewCard() {
+    const cards = Array.from(
+      document.querySelectorAll(".section-card, .glass-card, .card, article")
+    );
+
+    return cards.find((card) => {
+      const text = normalizeText(card.textContent);
+      return text.includes("maryland radar preview");
+    });
+  }
+
+  function buildRadarPreview() {
+    const wrapper = document.createElement("div");
+    wrapper.className = "mdwa-live-radar-preview";
+    wrapper.innerHTML = `
+      <div class="mdwa-radar-frame">
+        <img
+          id="mdwaLiveRadarImage"
+          src="${RADARS.central.url}?t=${Date.now()}"
+          alt="Live NWS radar loop for Maryland"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="mdwa-radar-controls">
+        <button type="button" data-mdwa-radar="central">Central MD</button>
+        <button type="button" data-mdwa-radar="eastern">Eastern Shore</button>
+        <button type="button" data-mdwa-radar="regional">Regional</button>
+      </div>
+
+      <p class="mdwa-radar-caption">
+        Live official NWS radar loop. Use the buttons to switch Maryland radar views.
+      </p>
+    `;
+
+    return wrapper;
+  }
+
+  function injectRadarPreview() {
+    const card = findRadarPreviewCard();
+    if (!card) return;
+
+    if (card.dataset.mdwaLiveRadarReady === "true") return;
+    card.dataset.mdwaLiveRadarReady = "true";
+
+    const oldPreview =
+      card.querySelector("img") ||
+      Array.from(card.querySelectorAll("div")).find((el) => {
+        const text = normalizeText(el.textContent);
+        return !text.includes("maryland radar preview") && el.offsetHeight > 120;
+      });
+
+    const livePreview = buildRadarPreview();
+
+    if (oldPreview) {
+      oldPreview.replaceWith(livePreview);
+    } else {
+      card.appendChild(livePreview);
+    }
+
+    const oldCaptionElements = Array.from(card.querySelectorAll("p, span, div")).filter((el) => {
+      const text = normalizeText(el.textContent);
+      return text.includes("preview graphic only");
+    });
+
+    oldCaptionElements.forEach((el) => {
+      el.style.display = "none";
+    });
+
+    setupRadarControls(card);
+  }
+
+  function setupRadarControls(card) {
+    const image = card.querySelector("#mdwaLiveRadarImage");
+    const buttons = card.querySelectorAll("[data-mdwa-radar]");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const radarKey = button.dataset.mdwaRadar;
+        const radar = RADARS[radarKey];
+
+        if (!radar || !image) return;
+
+        image.src = `${radar.url}?t=${Date.now()}`;
+        image.alt = `Live NWS radar loop - ${radar.label}`;
+
+        buttons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+
+    const firstButton = card.querySelector('[data-mdwa-radar="central"]');
+    if (firstButton) firstButton.classList.add("active");
+  }
+
+  function setupOpenOfficialRadarButton() {
+    const buttons = Array.from(document.querySelectorAll("button, a"));
+
+    buttons.forEach((button) => {
+      const text = normalizeText(button.textContent);
+
+      if (!text.includes("open official nws radar")) return;
+      if (button.dataset.mdwaOfficialRadarReady === "true") return;
+
+      button.dataset.mdwaOfficialRadarReady = "true";
+
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        window.open("https://radar.weather.gov/", "_blank", "noopener,noreferrer");
+      });
+    });
+  }
+
+  function run() {
+    injectRadarPreview();
+    setupOpenOfficialRadarButton();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run);
+  } else {
+    run();
+  }
+
+  window.addEventListener("load", run);
+
+  setTimeout(run, 300);
+  setTimeout(run, 1000);
+
+  console.log("MD Weather Alerts Version 2.4.4 live radar preview loaded.");
+})();
