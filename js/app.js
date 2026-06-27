@@ -847,4 +847,825 @@ async function loadWordPressPosts() {
 }
 
 loadWordPressPosts();
+/* Version 0.7.3 - User Appearance Settings */
+
+const uiStyleSelect = document.getElementById("uiStyleSelect");
+const appMotionToggle = document.getElementById("appMotionToggle");
+const appearanceSettingsNote = document.getElementById("appearanceSettingsNote");
+
+function applyUserAppearanceSettings() {
+  const savedStyle = localStorage.getItem("mdwa_ui_style") || "liquid";
+  const savedMotion = localStorage.getItem("mdwa_smooth_motion");
+
+  document.body.classList.remove(
+    "ui-liquid-glass",
+    "ui-soft-glass",
+    "ui-classic",
+    "ui-high-contrast",
+    "reduce-app-motion"
+  );
+
+  if (savedStyle === "soft") {
+    document.body.classList.add("ui-soft-glass");
+  } else if (savedStyle === "classic") {
+    document.body.classList.add("ui-classic");
+  } else if (savedStyle === "contrast") {
+    document.body.classList.add("ui-high-contrast");
+  } else {
+    document.body.classList.add("ui-liquid-glass");
+  }
+
+  if (savedMotion === "off") {
+    document.body.classList.add("reduce-app-motion");
+  }
+
+  if (uiStyleSelect) {
+    uiStyleSelect.value = savedStyle;
+  }
+
+  if (appMotionToggle) {
+    appMotionToggle.checked = savedMotion !== "off";
+  }
+}
+
+function showAppearanceSavedMessage() {
+  if (!appearanceSettingsNote) return;
+
+  appearanceSettingsNote.textContent = "Saved ✓";
+  setTimeout(() => {
+    appearanceSettingsNote.textContent =
+      "Settings save automatically on this device.";
+  }, 1400);
+}
+
+if (uiStyleSelect) {
+  uiStyleSelect.addEventListener("change", () => {
+    localStorage.setItem("mdwa_ui_style", uiStyleSelect.value);
+    applyUserAppearanceSettings();
+    showAppearanceSavedMessage();
+  });
+}
+
+if (appMotionToggle) {
+  appMotionToggle.addEventListener("change", () => {
+    localStorage.setItem(
+      "mdwa_smooth_motion",
+      appMotionToggle.checked ? "on" : "off"
+    );
+
+    applyUserAppearanceSettings();
+    showAppearanceSavedMessage();
+  });
+}
+
+applyUserAppearanceSettings();
+/* Version 0.7.4 - Settings Modal */
+
+const mdwaSettingsOpenBtn = document.getElementById("settingsOpenBtn");
+const mdwaSettingsCloseBtn = document.getElementById("settingsCloseBtn");
+const mdwaSettingsModal = document.getElementById("settingsModal");
+
+function openSettingsModal() {
+  if (!mdwaSettingsModal) return;
+
+  mdwaSettingsModal.classList.add("open");
+  mdwaSettingsModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("settings-modal-open");
+}
+
+function closeSettingsModal() {
+  if (!mdwaSettingsModal) return;
+
+  mdwaSettingsModal.classList.remove("open");
+  mdwaSettingsModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("settings-modal-open");
+}
+
+if (mdwaSettingsOpenBtn) {
+  mdwaSettingsOpenBtn.addEventListener("click", openSettingsModal);
+}
+
+if (mdwaSettingsCloseBtn) {
+  mdwaSettingsCloseBtn.addEventListener("click", closeSettingsModal);
+}
+
+if (mdwaSettingsModal) {
+  mdwaSettingsModal.addEventListener("click", (event) => {
+    if (event.target === mdwaSettingsModal) {
+      closeSettingsModal();
+    }
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeSettingsModal();
+  }
+});
+/* Version 0.7.5 - Advanced App Settings */
+
+const mdwaDarkModeSelect = document.getElementById("darkModeSelect");
+const mdwaTextSizeSelect = document.getElementById("textSizeSelect");
+const mdwaCompactCardsToggle = document.getElementById("compactCardsToggle");
+
+function getSystemDarkModePreference() {
+  return (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+}
+
+function applyAdvancedAppSettings() {
+  const savedDarkMode = localStorage.getItem("mdwa_dark_mode") || "system";
+  const savedTextSize = localStorage.getItem("mdwa_text_size") || "default";
+  const savedCompactCards = localStorage.getItem("mdwa_compact_cards") || "off";
+
+  document.body.classList.remove(
+    "app-dark-mode",
+    "app-light-mode",
+    "text-large",
+    "compact-cards"
+  );
+
+  const shouldUseDarkMode =
+    savedDarkMode === "dark" ||
+    (savedDarkMode === "system" && getSystemDarkModePreference());
+
+  if (shouldUseDarkMode) {
+    document.body.classList.add("app-dark-mode");
+  } else {
+    document.body.classList.add("app-light-mode");
+  }
+
+  if (savedTextSize === "large") {
+    document.body.classList.add("text-large");
+  }
+
+  if (savedCompactCards === "on") {
+    document.body.classList.add("compact-cards");
+  }
+
+  if (mdwaDarkModeSelect) {
+    mdwaDarkModeSelect.value = savedDarkMode;
+  }
+
+  if (mdwaTextSizeSelect) {
+    mdwaTextSizeSelect.value = savedTextSize;
+  }
+
+  if (mdwaCompactCardsToggle) {
+    mdwaCompactCardsToggle.checked = savedCompactCards === "on";
+  }
+}
+
+function showAdvancedSettingsSavedMessage() {
+  const note = document.getElementById("appearanceSettingsNote");
+  if (!note) return;
+
+  note.textContent = "Saved ✓";
+
+  setTimeout(() => {
+    note.textContent = "Settings save automatically on this device.";
+  }, 1400);
+}
+
+if (mdwaDarkModeSelect) {
+  mdwaDarkModeSelect.addEventListener("change", () => {
+    localStorage.setItem("mdwa_dark_mode", mdwaDarkModeSelect.value);
+    applyAdvancedAppSettings();
+    showAdvancedSettingsSavedMessage();
+  });
+}
+
+if (mdwaTextSizeSelect) {
+  mdwaTextSizeSelect.addEventListener("change", () => {
+    localStorage.setItem("mdwa_text_size", mdwaTextSizeSelect.value);
+    applyAdvancedAppSettings();
+    showAdvancedSettingsSavedMessage();
+  });
+}
+
+if (mdwaCompactCardsToggle) {
+  mdwaCompactCardsToggle.addEventListener("change", () => {
+    localStorage.setItem(
+      "mdwa_compact_cards",
+      mdwaCompactCardsToggle.checked ? "on" : "off"
+    );
+
+    applyAdvancedAppSettings();
+    showAdvancedSettingsSavedMessage();
+  });
+}
+
+if (window.matchMedia) {
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", () => {
+      const savedDarkMode = localStorage.getItem("mdwa_dark_mode") || "system";
+
+      if (savedDarkMode === "system") {
+        applyAdvancedAppSettings();
+      }
+    });
+}
+
+applyAdvancedAppSettings();
+/* Version 0.7.6 - Cleaner Reports Page */
+
+const openReportSheetBtn = document.getElementById("openReportSheetBtn");
+const closeReportSheetBtn = document.getElementById("closeReportSheetBtn");
+const reportSheet = document.getElementById("reportSheet");
+const reportSheetContent = document.getElementById("reportSheetContent");
+const reportFormCard = document.getElementById("reportFormCard");
+
+function openReportSheet() {
+  if (!reportSheet) return;
+
+  reportSheet.classList.add("open");
+  reportSheet.setAttribute("aria-hidden", "false");
+  document.body.classList.add("report-sheet-open");
+}
+
+function closeReportSheet() {
+  if (!reportSheet) return;
+
+  reportSheet.classList.remove("open");
+  reportSheet.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("report-sheet-open");
+}
+
+if (reportFormCard && reportSheetContent) {
+  reportSheetContent.appendChild(reportFormCard);
+}
+
+if (openReportSheetBtn) {
+  openReportSheetBtn.addEventListener("click", openReportSheet);
+}
+
+if (closeReportSheetBtn) {
+  closeReportSheetBtn.addEventListener("click", closeReportSheet);
+}
+
+if (reportSheet) {
+  reportSheet.addEventListener("click", (event) => {
+    if (event.target === reportSheet) {
+      closeReportSheet();
+    }
+  });
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeReportSheet();
+  }
+});
+
+if (reportFormCard) {
+  const reportSubmitButton = reportFormCard.querySelector(".submit-report");
+
+  if (reportSubmitButton) {
+    reportSubmitButton.addEventListener("click", () => {
+      setTimeout(() => {
+        closeReportSheet();
+      }, 450);
+    });
+  }
+}/* Version 0.7.6.2 - Report sheet repair patch */
+
+const mdwaReportSheetPatch = document.getElementById("reportSheet");
+const mdwaReportSheetPanelPatch = mdwaReportSheetPatch
+  ? mdwaReportSheetPatch.querySelector(".report-sheet")
+  : null;
+const mdwaReportSheetContentPatch = document.getElementById("reportSheetContent");
+const mdwaOpenReportSheetPatch = document.getElementById("openReportSheetBtn");
+const mdwaCloseReportSheetPatch = document.getElementById("closeReportSheetBtn");
+
+function mdwaPrepareReportSheet() {
+  if (
+    mdwaReportSheetPanelPatch &&
+    mdwaReportSheetContentPatch &&
+    mdwaReportSheetContentPatch.parentElement !== mdwaReportSheetPanelPatch
+  ) {
+    mdwaReportSheetPanelPatch.appendChild(mdwaReportSheetContentPatch);
+  }
+
+  let formCard = document.getElementById("reportFormCard");
+
+  if (!formCard) {
+    const submitButton = document.querySelector("#reports .submit-report");
+    formCard = submitButton ? submitButton.closest(".section-card") : null;
+
+    if (formCard) {
+      formCard.id = "reportFormCard";
+    }
+  }
+
+  if (
+    formCard &&
+    mdwaReportSheetContentPatch &&
+    formCard.parentElement !== mdwaReportSheetContentPatch
+  ) {
+    mdwaReportSheetContentPatch.appendChild(formCard);
+  }
+}
+
+function mdwaOpenReportSheetFixed() {
+  mdwaPrepareReportSheet();
+
+  if (!mdwaReportSheetPatch) return;
+
+  mdwaReportSheetPatch.classList.add("open");
+  mdwaReportSheetPatch.setAttribute("aria-hidden", "false");
+  document.body.classList.add("report-sheet-open");
+
+  setTimeout(() => {
+    if (mdwaReportSheetContentPatch) {
+      mdwaReportSheetContentPatch.scrollTop = 0;
+    }
+  }, 40);
+}
+
+function mdwaCloseReportSheetFixed() {
+  if (!mdwaReportSheetPatch) return;
+
+  mdwaReportSheetPatch.classList.remove("open");
+  mdwaReportSheetPatch.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("report-sheet-open");
+}
+
+mdwaPrepareReportSheet();
+
+if (mdwaOpenReportSheetPatch) {
+  mdwaOpenReportSheetPatch.addEventListener("click", mdwaOpenReportSheetFixed);
+}
+
+if (mdwaCloseReportSheetPatch) {
+  mdwaCloseReportSheetPatch.addEventListener("click", mdwaCloseReportSheetFixed);
+}
+
+if (mdwaReportSheetPatch) {
+  mdwaReportSheetPatch.addEventListener("click", (event) => {
+    if (event.target === mdwaReportSheetPatch) {
+      mdwaCloseReportSheetFixed();
+    }
+  });
+}/* Version 0.7.6.3 - Close report sheet when switching tabs */
+
+function mdwaForceCloseReportSheet() {
+  const sheet = document.getElementById("reportSheet");
+
+  if (!sheet) return;
+
+  sheet.classList.remove("open");
+  sheet.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("report-sheet-open");
+}
+
+document.querySelectorAll(".nav-item").forEach((navButton) => {
+  navButton.addEventListener("click", () => {
+    mdwaForceCloseReportSheet();
+  });
+});
+
+mdwaForceCloseReportSheet();
+/* Version 0.7.6.4 - Hard lock active screen classes */
+
+function mdwaCloseReportSheetHard() {
+  const reportSheet = document.getElementById("reportSheet");
+
+  if (reportSheet) {
+    reportSheet.classList.remove("open");
+    reportSheet.setAttribute("aria-hidden", "true");
+  }
+
+  document.body.classList.remove("report-sheet-open");
+}
+
+function mdwaUpdateActiveScreenClass() {
+  const activeScreen =
+    document.querySelector(".screen.active") ||
+    document.querySelector(".screen:not([style*='display: none'])");
+
+  const activeId = activeScreen ? activeScreen.id : "home";
+
+  document.body.classList.remove(
+    "mdwa-active-home",
+    "mdwa-active-forecast",
+    "mdwa-active-reports",
+    "mdwa-active-radar",
+    "mdwa-active-alerts",
+    "mdwa-active-more"
+  );
+
+  document.body.classList.add(`mdwa-active-${activeId}`);
+
+  if (activeId !== "reports") {
+    mdwaCloseReportSheetHard();
+  }
+}
+
+document.querySelectorAll(".nav-item").forEach((navButton) => {
+  navButton.addEventListener("click", () => {
+    setTimeout(mdwaUpdateActiveScreenClass, 25);
+  });
+});
+
+mdwaUpdateActiveScreenClass();
+/* Version 0.7.6.5 - Force report form into popup only */
+
+(function fixReportFormLeak() {
+  const reportSheet = document.getElementById("reportSheet");
+  const reportSheetPanel = reportSheet
+    ? reportSheet.querySelector(".report-sheet")
+    : null;
+  const reportSheetContent = document.getElementById("reportSheetContent");
+  const openButton = document.getElementById("openReportSheetBtn");
+  const closeButton = document.getElementById("closeReportSheetBtn");
+
+  function findReportFormCard() {
+    let formCard = document.getElementById("reportFormCard");
+
+    if (!formCard) {
+      const submitButton = document.querySelector(".submit-report");
+      formCard = submitButton ? submitButton.closest(".section-card") : null;
+    }
+
+    if (formCard) {
+      formCard.id = "reportFormCard";
+      formCard.classList.add("mdwa-report-form-panel", "report-form-card");
+    }
+
+    return formCard;
+  }
+
+  function moveReportFormIntoPopup() {
+    if (!reportSheetPanel || !reportSheetContent) return;
+
+    if (reportSheetContent.parentElement !== reportSheetPanel) {
+      reportSheetPanel.appendChild(reportSheetContent);
+    }
+
+    const formCard = findReportFormCard();
+
+    if (formCard && formCard.parentElement !== reportSheetContent) {
+      reportSheetContent.appendChild(formCard);
+    }
+  }
+
+  function openReportPopupClean(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+
+    moveReportFormIntoPopup();
+
+    if (!reportSheet) return;
+
+    reportSheet.classList.add("open");
+    reportSheet.setAttribute("aria-hidden", "false");
+    document.body.classList.add("report-sheet-open");
+
+    setTimeout(() => {
+      if (reportSheetContent) {
+        reportSheetContent.scrollTop = 0;
+      }
+    }, 50);
+  }
+
+  function closeReportPopupClean(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+
+    if (!reportSheet) return;
+
+    reportSheet.classList.remove("open");
+    reportSheet.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("report-sheet-open");
+  }
+
+  moveReportFormIntoPopup();
+  closeReportPopupClean();
+
+  if (openButton) {
+    openButton.addEventListener("click", openReportPopupClean, true);
+  }
+
+  if (closeButton) {
+    closeButton.addEventListener("click", closeReportPopupClean, true);
+  }
+
+  if (reportSheet) {
+    reportSheet.addEventListener(
+      "click",
+      (event) => {
+        if (event.target === reportSheet) {
+          closeReportPopupClean(event);
+        }
+      },
+      true
+    );
+  }
+
+  document.querySelectorAll(".nav-item").forEach((button) => {
+    button.addEventListener("click", () => {
+      closeReportPopupClean();
+    });
+  });
+})();
+/* Version 0.7.6.6 - Restore Reports feed and popup scroll */
+
+(function restoreReportsFeedAndScroll() {
+  const submittedReports = document.getElementById("submittedReports");
+  const reportMap = document.getElementById("reportMap");
+  const reportSheetContent = document.getElementById("reportSheetContent");
+  const openReportButton = document.getElementById("openReportSheetBtn");
+
+  if (submittedReports) {
+    const feedCard = submittedReports.closest(".section-card");
+
+    if (feedCard) {
+      feedCard.classList.add("submitted-reports-card", "reports-feed-card");
+    }
+  }
+
+  if (reportMap) {
+    const mapCard = reportMap.closest(".section-card");
+
+    if (mapCard) {
+      mapCard.classList.add("map-card");
+    }
+  }
+
+  function resetReportSheetScroll() {
+    setTimeout(() => {
+      if (reportSheetContent) {
+        reportSheetContent.scrollTop = 0;
+      }
+    }, 80);
+  }
+
+  if (openReportButton) {
+    openReportButton.addEventListener("click", resetReportSheetScroll);
+  }
+})();
+/* Version 0.7.6.9 - Clean report panel open helper */
+
+(function fixCleanReportPanelOpen() {
+  const cleanReportPanel = document.getElementById("cleanReportPanel");
+
+  if (!cleanReportPanel) return;
+
+  cleanReportPanel.addEventListener("toggle", () => {
+    if (cleanReportPanel.open) {
+      setTimeout(() => {
+        cleanReportPanel.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 80);
+    }
+  });
+})();
+/* Version 0.7.6.10 - Clean Reports button action fix */
+
+(function fixCleanReportButtons() {
+  let cleanReportLocation = null;
+
+  function mdwaSafeText(text) {
+    const div = document.createElement("div");
+    div.textContent = text || "";
+    return div.innerHTML;
+  }
+
+  function mdwaShowMessage(message) {
+    if (typeof showToast === "function") {
+      showToast(message);
+    } else {
+      alert(message);
+    }
+  }
+
+  function mdwaSetKnownLocationVariables(coords) {
+    cleanReportLocation = coords;
+    window.mdwaCleanReportLocation = coords;
+
+    try {
+      userLocation = coords;
+    } catch (error) {}
+
+    try {
+      currentUserLocation = coords;
+    } catch (error) {}
+
+    try {
+      reportLocation = coords;
+    } catch (error) {}
+
+    try {
+      selectedLocation = coords;
+    } catch (error) {}
+  }
+
+  function handleCleanLocationClick(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const status = document.getElementById("locationStatus");
+    const locationButton = document.getElementById("useLocationBtn");
+
+    if (!navigator.geolocation) {
+      if (status) status.textContent = "Location is not supported on this device.";
+      mdwaShowMessage("Location is not supported on this device.");
+      return;
+    }
+
+    if (status) status.textContent = "Getting your location...";
+    if (locationButton) locationButton.textContent = "📍 Getting Location...";
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+
+        mdwaSetKnownLocationVariables(coords);
+
+        if (status) {
+          status.textContent =
+            "Location added. Public reports will be privacy-offset.";
+        }
+
+        if (locationButton) {
+          locationButton.textContent = "✅ Location Added";
+        }
+
+        mdwaShowMessage("Location added.");
+      },
+      () => {
+        if (status) {
+          status.textContent =
+            "Location permission was denied or unavailable.";
+        }
+
+        if (locationButton) {
+          locationButton.textContent = "📍 Use My Current Location";
+        }
+
+        mdwaShowMessage("Location permission was not granted.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
+      }
+    );
+  }
+
+  function handleCleanChooseAllClick(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const checkboxes = Array.from(
+      document.querySelectorAll(".clean-report-type")
+    );
+
+    const shouldCheckAll = checkboxes.some((checkbox) => !checkbox.checked);
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = shouldCheckAll;
+    });
+
+    const chooseAllButton = document.getElementById("cleanChooseAllReports");
+
+    if (chooseAllButton) {
+      chooseAllButton.textContent = shouldCheckAll ? "Clear all" : "Choose all";
+    }
+  }
+
+  function addFallbackFeedCard(reportTypes, details) {
+    const feed = document.getElementById("submittedReports");
+    if (!feed) return;
+
+    const now = new Date();
+    const timeText = now.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+    feed.innerHTML = "";
+
+    const card = document.createElement("div");
+    card.className = "submitted-report-card";
+    card.setAttribute("data-clean-fallback-report", "true");
+
+    card.innerHTML = `
+      <strong>${mdwaSafeText(reportTypes.join(", "))}</strong>
+      <small>Submitted ${timeText} • Demo report</small>
+      <p>${
+        details
+          ? mdwaSafeText(details)
+          : "No extra details added."
+      }</p>
+      <p class="report-expire-text">Expires automatically after a few hours.</p>
+    `;
+
+    feed.prepend(card);
+  }
+
+  function handleCleanSubmitClick(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const selectedTypes = Array.from(
+      document.querySelectorAll(".clean-report-type:checked")
+    ).map((checkbox) => checkbox.value);
+
+    const detailsInput = document.getElementById("reportDetails");
+    const details = detailsInput ? detailsInput.value.trim() : "";
+
+    if (selectedTypes.length === 0) {
+      mdwaShowMessage("Choose at least one report type.");
+      return;
+    }
+
+    try {
+      if (typeof addUserReport === "function") {
+        addUserReport(selectedTypes, details);
+      }
+    } catch (error) {
+      console.error("Clean report submit fallback used:", error);
+    }
+
+    setTimeout(() => {
+      const feed = document.getElementById("submittedReports");
+
+      if (
+        feed &&
+        (feed.textContent.includes("No submitted reports") ||
+          feed.textContent.includes("No submitted reports yet") ||
+          feed.children.length === 0)
+      ) {
+        addFallbackFeedCard(selectedTypes, details);
+      }
+    }, 200);
+
+    document.querySelectorAll(".clean-report-type").forEach((checkbox) => {
+      checkbox.checked = false;
+    });
+
+    if (detailsInput) {
+      detailsInput.value = "";
+    }
+
+    const chooseAllButton = document.getElementById("cleanChooseAllReports");
+    if (chooseAllButton) {
+      chooseAllButton.textContent = "Choose all";
+    }
+
+    const reportPanel = document.getElementById("cleanReportPanel");
+    if (reportPanel) {
+      reportPanel.open = false;
+    }
+
+    if (typeof renderReports === "function") {
+      try {
+        renderReports();
+      } catch (error) {
+        console.error("renderReports failed:", error);
+      }
+    }
+
+    mdwaShowMessage("Weather report submitted.");
+  }
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      const locationButton = event.target.closest("#useLocationBtn");
+      const chooseAllButton = event.target.closest("#cleanChooseAllReports");
+      const submitButton = event.target.closest("#cleanSubmitReport");
+
+      if (locationButton) {
+        handleCleanLocationClick(event);
+        return;
+      }
+
+      if (chooseAllButton) {
+        handleCleanChooseAllClick(event);
+        return;
+      }
+
+      if (submitButton) {
+        handleCleanSubmitClick(event);
+      }
+    },
+    true
+  );
+})();
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");

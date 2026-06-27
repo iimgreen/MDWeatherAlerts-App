@@ -11,14 +11,33 @@
 
 <body>
   <div class="app-shell">
+<div class="background-decor" aria-hidden="true">
+  <span class="sun-glow"></span>
+  <span class="soft-cloud cloud-one"></span>
+  <span class="soft-cloud cloud-two"></span>
+  <span class="soft-cloud cloud-three"></span>
+</div>
+    <header class="app-header premium-header">
+  <div class="brand-lockup">
+    <div class="brand-mark">
+      <span class="brand-sun">☀️</span>
+      <span class="brand-cloud">☁️</span>
+    </div>
 
-    <header class="app-header">
-      <div>
-        <p class="eyebrow">Maryland Weather</p>
-        <h1>MD Weather Alerts</h1>
-      </div>
-      <div class="header-icon">☀️</div>
-    </header>
+    <div class="brand-text">
+      <p class="eyebrow">Maryland weather • live local reports</p>
+      <h1>
+        <span>MD Weather</span>
+        <span>Alerts</span>
+      </h1>
+    </div>
+  </div>
+
+  <button class="header-status-pill" type="button">
+    <span class="status-dot"></span>
+    Live
+  </button>
+</header>
 
     <main class="app-content">
 
@@ -238,82 +257,144 @@
   </section>
 </section>
       <!-- REPORTS -->
-      <section class="screen" id="reports">
-        <div class="page-title reports-title">
-          <h2>Reports</h2>
-          <p>Report what’s happening near you and view nearby Maryland weather reports.</p>
+<section class="screen" id="reports">
+  <div class="page-title">
+    <h2>Reports</h2>
+    <p>View local Maryland weather reports and submit what you’re seeing nearby.</p>
+  </div>
+
+  <details class="clean-report-panel" id="cleanReportPanel">
+    <summary>
+      <div>
+        <strong>See something happening?</strong>
+        <small>Submit rain, flooding, wind damage, lightning, hail, fog, snow, or sky reports.</small>
+      </div>
+      <span>+ Report Weather</span>
+    </summary>
+
+    <div class="report-form-card" id="reportFormCard">
+      <div class="clean-report-info-grid">
+        <div class="clean-report-info-card">
+          <span>📍</span>
+          <strong>Privacy First</strong>
+          <small>Your exact location is not shown publicly. Reports display about 0.1 miles away.</small>
         </div>
 
-        <section class="section-card reports-hero">
-          <div>
-            <span class="reports-hero-icon">📍</span>
-            <h3>Live Community Reports</h3>
-            <p>
-              Submit rain, flooding, wind damage, lightning, hail, fog, snow, or sky reports.
-              Reports are designed to appear on the map for only a few hours.
-            </p>
-          </div>
-        </section>
+        <div class="clean-report-info-card">
+          <span>⏱️</span>
+          <strong>Temporary Reports</strong>
+          <small>Reports automatically expire after a few hours.</small>
+        </div>
+      </div>
 
-        <section class="section-card privacy-card">
-          <div class="privacy-icon">🔒</div>
-          <div>
-            <h3>Privacy First</h3>
-            <p>
-              Your exact location is not shown publicly. Reports are displayed about 0.1 miles away from your actual location.
-            </p>
-          </div>
-        </section>
+      <button class="location-btn" id="useLocationBtn" type="button">
+        📍 Use My Current Location
+      </button>
 
-        <section class="section-card report-action-card">
-          <button class="location-btn" id="locationBtn">📍 Use My Current Location</button>
-          <p id="locationStatus">Location not added yet.</p>
-        </section>
+      <p class="location-status" id="locationStatus">Location not added yet.</p>
 
-        <section class="section-card">
-          <div class="section-title-row">
-            <h3>What’s happening?</h3>
-            <span class="pill calm">Choose all</span>
-          </div>
+      <div class="clean-report-header">
+        <h3>What’s happening?</h3>
+        <button class="choose-all-reports" id="cleanChooseAllReports" type="button">
+          Choose all
+        </button>
+      </div>
 
-          <div class="checkbox-grid upgraded-report-grid">
-            <label><input type="checkbox" value="Rain"> <span>🌧️</span> Rain</label>
-            <label><input type="checkbox" value="Heavy Rain"> <span>🌧️</span> Heavy Rain</label>
-            <label><input type="checkbox" value="Lightning"> <span>⚡</span> Lightning</label>
-            <label><input type="checkbox" value="Hail"> <span>🧊</span> Hail</label>
-            <label><input type="checkbox" value="Flooding"> <span>🌊</span> Flooding</label>
-            <label><input type="checkbox" value="Wind Damage"> <span>💨</span> Wind Damage</label>
-            <label><input type="checkbox" value="Snow/Ice"> <span>❄️</span> Snow/Ice</label>
-            <label><input type="checkbox" value="Fog"> <span>🌫️</span> Fog</label>
-            <label><input type="checkbox" value="Beautiful Sky"> <span>🌅</span> Beautiful Sky</label>
-          </div>
+      <div class="upgraded-report-grid clean-report-grid">
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Rain" />
+          🌧️ <span>Rain</span>
+        </label>
 
-          <textarea id="reportNote" placeholder="Optional details, like road name, nearby landmark, timing, or intensity..."></textarea>
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Heavy Rain" />
+          🌧️ <span>Heavy Rain</span>
+        </label>
 
-          <button class="submit-report" id="submitReport">Submit Weather Report</button>
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Lightning" />
+          ⚡ <span>Lightning</span>
+        </label>
 
-          <p class="report-helper-text">
-            Reports are currently in demo mode. Live reports will later save to the Maryland reports map.
-          </p>
-        </section>
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Hail" />
+          🧊 <span>Hail</span>
+        </label>
 
-        <section class="section-card map-card">
-          <div class="section-title-row">
-            <h3>Nearby Reports</h3>
-            <span class="pill live">Demo Map</span>
-          </div>
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Flooding" />
+          🌊 <span>Flooding</span>
+        </label>
 
-         <div class="map-toolbar">
-  <button class="report-filter active" data-filter="all" type="button">All Active</button>
-  <button class="report-filter" data-filter="15min" type="button">15 Min</button>
-  <button class="report-filter" data-filter="1hr" type="button">1 Hour</button>
-  <button class="report-filter" data-filter="3hr" type="button">3 Hours</button>
-  <button class="report-filter impact-filter" data-filter="impact" type="button">Impact</button>
-  <button class="map-expand-btn" id="mapExpandBtn" type="button">⛶ Expand Map</button>
-</div>
-          <div class="real-report-map" id="reportMap"></div>
-        </section>
-      </section>
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Wind Damage" />
+          💨 <span>Wind Damage</span>
+        </label>
+
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Snow/Ice" />
+          ❄️ <span>Snow/Ice</span>
+        </label>
+
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Fog" />
+          🌫️ <span>Fog</span>
+        </label>
+
+        <label>
+          <input class="report-type clean-report-type" type="checkbox" value="Beautiful Sky" />
+          🌅 <span>Beautiful Sky</span>
+        </label>
+      </div>
+
+      <textarea
+        id="reportDetails"
+        class="report-details"
+        placeholder="Optional details, like road name, nearby landmark, timing, or intensity..."
+      ></textarea>
+
+      <button class="submit-report" id="cleanSubmitReport" type="button">
+        Submit Weather Report
+      </button>
+
+      <p class="report-demo-note">
+        Reports are currently in demo mode. Live reports will later save to the Maryland reports map.
+      </p>
+    </div>
+  </details>
+
+  <section class="section-card map-card clean-map-card">
+    <div class="section-title-row">
+      <div>
+        <h3>Nearby Reports Map</h3>
+        <p>Satellite view of active community reports.</p>
+      </div>
+      <span class="pill live">Map</span>
+    </div>
+
+    <div class="map-toolbar">
+      <button class="report-filter active" data-filter="all" type="button">All Active</button>
+      <button class="report-filter" data-filter="15min" type="button">15 Min</button>
+      <button class="report-filter" data-filter="1hr" type="button">1 Hour</button>
+      <button class="report-filter" data-filter="3hr" type="button">3 Hours</button>
+      <button class="report-filter impact-filter" data-filter="impact" type="button">Impact</button>
+      <button class="map-expand-btn" id="mapExpandBtn" type="button">⛶ Expand Map</button>
+    </div>
+
+    <div class="real-report-map" id="reportMap"></div>
+  </section>
+
+  <section class="section-card reports-feed-card submitted-reports-card clean-feed-card">
+    <div class="section-title-row">
+      <h3>Submitted Reports</h3>
+      <span class="pill calm">Local</span>
+    </div>
+
+    <div class="report-feed" id="submittedReports">
+      <p class="empty-feed">No submitted reports yet.</p>
+    </div>
+  </section>
+</section>
 
       <!-- RADAR -->
       <section class="screen" id="radar">
@@ -351,6 +432,87 @@
 
       <!-- MORE -->
       <section class="screen" id="more">
+        <button class="settings-gear-btn" id="settingsOpenBtn" type="button" aria-label="Open app settings">
+  ⚙️
+</button>
+
+<div class="settings-modal-backdrop" id="settingsModal" aria-hidden="true">
+  <div class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="settings-modal-header">
+      <div>
+        <p class="eyebrow">Customize app</p>
+        <h3 id="settingsModalTitle">Appearance Settings</h3>
+      </div>
+
+      <button class="settings-close-btn" id="settingsCloseBtn" type="button" aria-label="Close settings">
+        ✕
+      </button>
+    </div>
+
+    <p class="settings-modal-intro">
+      Adjust the look and motion of MD Weather Alerts on this device.
+      <label class="settings-row" for="darkModeSelect">
+  <span>
+    <strong>Dark Mode</strong>
+    <small>Automatic follows your phone settings</small>
+  </span>
+
+  <select class="settings-select" id="darkModeSelect">
+    <option value="system">Automatic</option>
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+  </select>
+</label>
+    </p>
+
+    <label class="settings-row" for="uiStyleSelect">
+      <span>
+        <strong>Visual Style</strong>
+        <small>Choose the app theme</small>
+      </span>
+
+      <select class="settings-select" id="uiStyleSelect">
+        <option value="liquid">Liquid Glass</option>
+        <option value="soft">Soft Glass</option>
+        <option value="classic">Classic</option>
+        <option value="contrast">High Contrast</option>
+      </select>
+    </label>
+
+    <label class="settings-toggle-row">
+      <span>
+        <strong>Smooth Motion</strong>
+        <label class="settings-row" for="textSizeSelect">
+  <span>
+    <strong>Text Size</strong>
+    <small>Make app text easier to read</small>
+  </span>
+
+  <select class="settings-select" id="textSizeSelect">
+    <option value="default">Default</option>
+    <option value="large">Large</option>
+  </select>
+</label>
+
+<label class="settings-toggle-row">
+  <span>
+    <strong>Compact Cards</strong>
+    <small>Show tighter cards with less spacing</small>
+  </span>
+
+  <input type="checkbox" id="compactCardsToggle" />
+</label>
+        <small>Clouds, transitions, and soft movement</small>
+      </span>
+
+      <input type="checkbox" id="appMotionToggle" checked />
+    </label>
+
+    <p class="settings-note" id="appearanceSettingsNote">
+      Settings save automatically on this device.
+    </p>
+  </div>
+</div>
         <div class="page-title">
           <h2>More</h2>
           <p>Settings, support, and MD Weather Alerts links.</p>
@@ -364,6 +526,7 @@
         </section>
         <section class="section-card blog-preview-card">
   <div class="section-title-row">
+   
     <h3>Forecast Blog</h3>
     <span class="pill live">Latest</span>
   </div>

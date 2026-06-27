@@ -1074,3 +1074,2842 @@ body.map-is-expanded .bottom-nav {
     grid-template-columns: 1fr;
   }
 }
+/* Version 0.6 - WordPress blog feed */
+
+.blog-preview-card {
+  background: linear-gradient(145deg, #ffffff, #f7fdff);
+}
+
+.blog-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.blog-list.compact {
+  gap: 10px;
+}
+
+.blog-post-card {
+  display: block;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(231, 247, 255, 0.78);
+  border: 1px solid rgba(15, 135, 189, 0.14);
+  color: var(--blue-dark);
+  text-decoration: none;
+  transition: 0.18s ease;
+}
+
+.blog-post-card:active {
+  transform: scale(0.98);
+}
+
+.blog-post-card strong {
+  display: block;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.blog-post-card small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.blog-post-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.read-post-pill {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+/* Version 0.6.1 - Cleaner blog cards */
+
+.blog-list {
+  display: grid !important;
+  gap: 12px !important;
+  margin-top: 12px !important;
+}
+
+.blog-post-card {
+  display: block !important;
+  padding: 14px 15px !important;
+  border-radius: 18px !important;
+  background: rgba(231, 247, 255, 0.82) !important;
+  border: 1px solid rgba(15, 135, 189, 0.14) !important;
+  color: var(--blue-dark) !important;
+  text-decoration: none !important;
+  box-shadow: 0 8px 18px rgba(35, 107, 139, 0.08);
+}
+
+.blog-post-card strong {
+  display: block !important;
+  color: var(--blue-dark) !important;
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+  text-decoration: none !important;
+}
+
+.blog-post-card small {
+  display: block !important;
+  margin-top: 7px !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+}
+
+.blog-post-card p {
+  margin: 9px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+.blog-post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.read-post-pill {
+  display: inline-flex !important;
+  padding: 7px 10px !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: var(--blue-dark) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+}
+
+.blog-source-pill {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.blog-list.compact .blog-post-card p {
+  display: none !important;
+}
+
+.blog-list.compact .blog-post-card:not(:first-child) {
+  display: none !important;
+}
+/* Version 0.7 - Premium UI Polish */
+
+:root {
+  --premium-glass: rgba(255, 255, 255, 0.82);
+  --premium-border: rgba(255, 255, 255, 0.72);
+  --premium-shadow: 0 18px 45px rgba(21, 91, 123, 0.18);
+  --premium-shadow-strong: 0 22px 55px rgba(21, 91, 123, 0.24);
+  --premium-blue-gradient: linear-gradient(135deg, #1398d1, #0b4564);
+  --premium-green-gradient: linear-gradient(135deg, #eaffdf, #ffffff);
+}
+
+/* Smoother app rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.75), transparent 36%),
+    linear-gradient(180deg, #9adff5 0%, #dff8ff 45%, #f8fff2 100%);
+}
+
+/* Premium app container */
+.app-shell {
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255, 242, 168, 0.95) 0 48px, transparent 49px),
+    radial-gradient(circle at 12% 16%, rgba(255, 255, 255, 0.55), transparent 88px),
+    linear-gradient(180deg, #9bdff5 0%, #dff8ff 42%, #f8fff2 100%);
+}
+
+/* Better top header */
+.app-header {
+  padding-top: 24px;
+  padding-bottom: 14px;
+}
+
+.app-header::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: -2px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  opacity: 0.92;
+}
+
+h1 {
+  font-size: 29px;
+  letter-spacing: -0.04em;
+}
+
+.header-icon {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(231, 247, 255, 0.72));
+  box-shadow: 0 14px 32px rgba(21, 91, 123, 0.18);
+}
+
+.header-icon::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+}
+
+/* Smooth screen changes */
+.screen {
+  animation: premiumScreenIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes premiumScreenIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Premium cards */
+.hero-card,
+.section-card,
+.quick-card,
+.forecast-time-card,
+.forecast-row,
+.more-list button {
+  background: var(--premium-glass);
+  border: 1px solid var(--premium-border);
+  box-shadow: var(--premium-shadow);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+}
+
+.hero-card {
+  min-height: 168px;
+  border-radius: 34px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 213, 106, 0.23), transparent 92px),
+    radial-gradient(circle at 8% 100%, rgba(139, 217, 109, 0.16), transparent 110px);
+  pointer-events: none;
+}
+
+.hero-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-card h2 {
+  letter-spacing: -0.04em;
+}
+
+.temp-badge {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.85),
+    0 12px 24px rgba(255, 190, 72, 0.18);
+}
+
+/* Better quick cards */
+.quick-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.quick-card::after {
+  content: "";
+  position: absolute;
+  right: -26px;
+  top: -26px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgba(231, 247, 255, 0.75);
+  pointer-events: none;
+}
+
+.quick-card span,
+.quick-card strong,
+.quick-card small {
+  position: relative;
+  z-index: 1;
+}
+
+.quick-card:hover {
+  box-shadow: var(--premium-shadow-strong);
+}
+
+.quick-card:active {
+  transform: scale(0.965);
+}
+
+.quick-card.featured {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(139, 217, 109, 0.28), transparent 70px),
+    linear-gradient(145deg, #ffffff, #eaffdf);
+}
+
+/* Section cards */
+.section-card {
+  border-radius: 30px;
+}
+
+.section-title-row h3,
+.section-card h3,
+.page-title h2 {
+  letter-spacing: -0.035em;
+}
+
+.page-title h2 {
+  font-size: 34px;
+}
+
+.page-title p {
+  max-width: 330px;
+}
+
+/* Pills */
+.pill {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.pill.live {
+  background: linear-gradient(135deg, #efffe8, #dcffd2);
+}
+
+.pill.calm {
+  background: linear-gradient(135deg, #e7f7ff, #f5fcff);
+}
+
+/* Better form feel */
+.county-select,
+textarea {
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.location-btn,
+.submit-report,
+.map-expand-btn {
+  transition:
+    transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.16s ease,
+    filter 0.16s ease;
+}
+
+.location-btn:active,
+.submit-report:active,
+.map-expand-btn:active {
+  transform: scale(0.965);
+}
+
+.submit-report {
+  background: var(--premium-blue-gradient);
+  box-shadow: 0 14px 26px rgba(15, 92, 132, 0.24);
+}
+
+.submit-report:hover {
+  filter: brightness(1.03);
+}
+
+/* Report checkboxes */
+.upgraded-report-grid label {
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.82));
+}
+
+.upgraded-report-grid label:has(input:checked) {
+  background:
+    radial-gradient(circle at 92% 12%, rgba(19, 152, 209, 0.15), transparent 52px),
+    linear-gradient(145deg, #ffffff, #e7f7ff);
+}
+
+/* Map polish */
+.real-report-map {
+  border-radius: 26px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.65),
+    0 14px 30px rgba(21, 91, 123, 0.13);
+}
+
+.leaflet-control-zoom a {
+  border-radius: 10px !important;
+  margin: 3px;
+  border: none !important;
+  color: var(--blue-dark) !important;
+  font-weight: 900;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 10px 22px rgba(24, 50, 71, 0.18) !important;
+}
+
+.weather-report-marker {
+  transition: transform 0.18s ease;
+}
+
+.weather-report-marker:hover {
+  transform: scale(1.08);
+}
+
+/* Blog cards */
+.blog-post-card {
+  border-radius: 20px !important;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(19, 152, 209, 0.12), transparent 62px),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(231, 247, 255, 0.84)) !important;
+}
+
+.blog-post-card strong {
+  letter-spacing: -0.025em;
+}
+
+.read-post-pill {
+  background: var(--premium-blue-gradient) !important;
+  color: #ffffff !important;
+}
+
+/* Forecast polish */
+.forecast-metric-grid div,
+.region-card,
+.forecast-time-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(231, 247, 255, 0.82));
+}
+
+.region-card {
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.region-card:active {
+  transform: scale(0.965);
+}
+
+/* Bottom nav premium */
+.bottom-nav {
+  padding: 10px 9px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 18px 42px rgba(24, 50, 71, 0.23),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.nav-item {
+  transition:
+    transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.nav-item span {
+  font-size: 23px;
+}
+
+.nav-item.active {
+  color: #ffffff;
+  background: var(--premium-blue-gradient);
+  box-shadow: 0 10px 22px rgba(15, 92, 132, 0.22);
+}
+
+.nav-item.active small {
+  color: #ffffff;
+}
+
+.nav-item:active {
+  transform: scale(0.94);
+}
+
+/* Fullscreen map polish */
+.map-card.map-expanded {
+  border-radius: 32px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.map-card.map-expanded .real-report-map {
+  border-radius: 26px;
+}
+
+/* Toast polish */
+.toast {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 36, 55, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+/* Version 0.7.1 - Premium header and animated background */
+
+.background-decor {
+  position: fixed;
+  inset: 0;
+  width: min(430px, 100%);
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.sun-glow {
+  position: absolute;
+  top: 38px;
+  right: 26px;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 224, 122, 0.72) 0%, rgba(255, 224, 122, 0.28) 42%, transparent 72%);
+  filter: blur(1px);
+  animation: sunFloat 7s ease-in-out infinite;
+}
+
+.soft-cloud {
+  position: absolute;
+  display: block;
+  width: 92px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.48);
+  box-shadow:
+    22px -12px 0 rgba(255, 255, 255, 0.36),
+    46px 0 0 rgba(255, 255, 255, 0.32);
+  filter: blur(0.2px);
+}
+
+.cloud-one {
+  top: 118px;
+  left: -40px;
+  animation: cloudDriftOne 18s linear infinite;
+}
+
+.cloud-two {
+  top: 238px;
+  right: -72px;
+  transform: scale(0.75);
+  animation: cloudDriftTwo 24s linear infinite;
+}
+
+.cloud-three {
+  top: 420px;
+  left: -90px;
+  transform: scale(0.62);
+  opacity: 0.72;
+  animation: cloudDriftThree 28s linear infinite;
+}
+
+@keyframes sunFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(8px) scale(1.04);
+  }
+}
+
+@keyframes cloudDriftOne {
+  from {
+    transform: translateX(-20px);
+  }
+
+  to {
+    transform: translateX(560px);
+  }
+}
+
+@keyframes cloudDriftTwo {
+  from {
+    transform: translateX(40px) scale(0.75);
+  }
+
+  to {
+    transform: translateX(-560px) scale(0.75);
+  }
+}
+
+@keyframes cloudDriftThree {
+  from {
+    transform: translateX(-30px) scale(0.62);
+  }
+
+  to {
+    transform: translateX(570px) scale(0.62);
+  }
+}
+
+.premium-header {
+  padding: 22px 16px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand-mark {
+  width: 58px;
+  height: 58px;
+  min-width: 58px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.45), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(231, 247, 255, 0.78));
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 16px 34px rgba(21, 91, 123, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+}
+
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+}
+
+.brand-sun {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  font-size: 24px;
+  filter: drop-shadow(0 4px 8px rgba(255, 183, 62, 0.25));
+}
+
+.brand-cloud {
+  position: absolute;
+  left: 8px;
+  bottom: 7px;
+  font-size: 29px;
+  filter: drop-shadow(0 5px 10px rgba(21, 91, 123, 0.14));
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-text .eyebrow {
+  margin: 0 0 5px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.brand-text h1 {
+  margin: 0;
+  display: grid;
+  gap: 0;
+  font-size: 27px;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.brand-text h1 span:first-child {
+  color: #07334f;
+}
+
+.brand-text h1 span:last-child {
+  background: linear-gradient(135deg, #1398d1, #0b4564);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.header-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 11px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow:
+    0 12px 26px rgba(21, 91, 123, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.18);
+  animation: livePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.72);
+    opacity: 0.72;
+  }
+}
+
+.app-content,
+.app-header,
+.bottom-nav {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 370px) {
+  .brand-text h1 {
+    font-size: 24px;
+  }
+
+  .brand-text .eyebrow {
+    font-size: 9.5px;
+  }
+
+  .header-status-pill {
+    padding: 8px 9px;
+    font-size: 11px;
+  }
+}
+/* Version 0.7.2 - Liquid Glass UI */
+
+:root {
+  --liquid-glass-bg: rgba(255, 255, 255, 0.54);
+  --liquid-glass-bg-strong: rgba(255, 255, 255, 0.68);
+  --liquid-glass-border: rgba(255, 255, 255, 0.82);
+  --liquid-glass-shadow: 0 22px 55px rgba(18, 78, 112, 0.18);
+  --liquid-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* App background: soft liquid sky */
+body {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.9), transparent 26%),
+    radial-gradient(circle at 86% 8%, rgba(255, 223, 116, 0.5), transparent 22%),
+    radial-gradient(circle at 20% 72%, rgba(116, 215, 255, 0.35), transparent 30%),
+    linear-gradient(180deg, #8fdaf4 0%, #dff8ff 48%, #f9fff1 100%) !important;
+}
+
+.app-shell {
+  background:
+    radial-gradient(circle at 82% 6%, rgba(255, 226, 119, 0.48), transparent 18%),
+    radial-gradient(circle at 12% 22%, rgba(255, 255, 255, 0.62), transparent 24%),
+    radial-gradient(circle at 70% 78%, rgba(126, 219, 255, 0.2), transparent 28%),
+    linear-gradient(180deg, rgba(145, 222, 247, 0.92), rgba(241, 255, 244, 0.94)) !important;
+}
+
+/* Main liquid glass surfaces */
+.hero-card,
+.section-card,
+.quick-card,
+.selected-forecast-card,
+.forecast-time-card,
+.forecast-row,
+.region-card,
+.blog-post-card,
+.more-list button,
+.bottom-nav,
+.header-status-pill,
+.brand-mark {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.74),
+      rgba(255, 255, 255, 0.38)
+    ) !important;
+  border: 1px solid var(--liquid-glass-border) !important;
+  box-shadow:
+    var(--liquid-glass-shadow),
+    var(--liquid-inner-glow) !important;
+  backdrop-filter: blur(24px) saturate(1.35) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.35) !important;
+}
+
+/* Glass highlight */
+.hero-card::after,
+.section-card::after,
+.quick-card::after,
+.selected-forecast-card::after,
+.forecast-time-card::after,
+.region-card::after,
+.blog-post-card::after,
+.more-list button::after,
+.bottom-nav::after,
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.72) 0%,
+      rgba(255, 255, 255, 0.18) 34%,
+      rgba(255, 255, 255, 0.04) 60%,
+      rgba(255, 255, 255, 0.32) 100%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Liquid color bloom inside cards */
+.hero-card::before,
+.section-card::before,
+.quick-card::before,
+.selected-forecast-card::before,
+.forecast-time-card::before,
+.region-card::before,
+.blog-post-card::before {
+  content: "";
+  position: absolute;
+  width: 145px;
+  height: 145px;
+  right: -58px;
+  top: -58px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(116, 215, 255, 0.28), transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Keep content above glass effects */
+.hero-card > *,
+.section-card > *,
+.quick-card > *,
+.selected-forecast-card > *,
+.forecast-time-card > *,
+.region-card > *,
+.blog-post-card > *,
+.more-list button > *,
+.bottom-nav > *,
+.brand-mark > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Premium rounded shape language */
+.hero-card {
+  border-radius: 36px !important;
+}
+
+.section-card,
+.selected-forecast-card {
+  border-radius: 32px !important;
+}
+
+.quick-card,
+.forecast-time-card,
+.region-card,
+.blog-post-card {
+  border-radius: 26px !important;
+}
+
+/* Header: more glassy and app-like */
+.premium-header {
+  padding-top: 24px;
+}
+
+.brand-mark {
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at 70% 28%, rgba(255, 219, 111, 0.58), transparent 38%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.34)) !important;
+}
+
+.brand-text .eyebrow {
+  color: rgba(7, 51, 79, 0.68);
+}
+
+.brand-text h1 span:first-child {
+  color: rgba(7, 51, 79, 0.92);
+}
+
+.brand-text h1 span:last-child {
+  background: linear-gradient(135deg, #087eb4, #07334f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Live pill liquid look */
+.header-status-pill {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.38)) !important;
+  box-shadow:
+    0 15px 32px rgba(18, 78, 112, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Buttons feel like real app controls */
+.location-btn,
+.submit-report,
+.map-expand-btn,
+.read-post-pill,
+.report-filter,
+.county-select,
+.alert-county-select,
+textarea {
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+}
+
+.submit-report,
+.read-post-pill,
+.nav-item.active {
+  background:
+    linear-gradient(135deg, rgba(19, 152, 209, 0.95), rgba(7, 51, 79, 0.95)) !important;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+/* Bottom nav: floating glass dock */
+.bottom-nav {
+  border-radius: 34px !important;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.42)) !important;
+  box-shadow:
+    0 24px 55px rgba(18, 78, 112, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.nav-item {
+  border-radius: 24px;
+}
+
+.nav-item.active {
+  border-radius: 24px;
+}
+
+/* Liquid movement, lightweight */
+.quick-card,
+.section-card,
+.hero-card,
+.blog-post-card,
+.region-card,
+.forecast-time-card,
+.more-list button {
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.quick-card:active,
+.blog-post-card:active,
+.region-card:active,
+.more-list button:active {
+  transform: scale(0.965) translateY(1px);
+}
+
+.hero-card:active,
+.section-card:active {
+  transform: scale(0.992);
+}
+
+/* Glassy report/map area */
+.real-report-map {
+  border: 1px solid rgba(255, 255, 255, 0.76) !important;
+  box-shadow:
+    0 18px 42px rgba(18, 78, 112, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Inputs and filters */
+.county-select,
+.alert-county-select,
+textarea,
+.report-filter {
+  background: rgba(255, 255, 255, 0.58) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08) !important;
+}
+
+.report-filter.active {
+  background:
+    linear-gradient(135deg, rgba(19, 152, 209, 0.92), rgba(7, 51, 79, 0.92)) !important;
+  color: #ffffff !important;
+}
+
+/* Slightly cleaner text contrast on glass */
+.page-title p,
+.hero-card p,
+.section-card p,
+.blog-post-card p,
+small,
+.empty-feed {
+  color: rgba(45, 84, 103, 0.76) !important;
+}
+
+/* Performance-friendly motion */
+.screen {
+  will-change: transform, opacity;
+}
+
+.quick-card,
+.nav-item,
+.blog-post-card,
+.region-card,
+.more-list button {
+  will-change: transform;
+}
+
+/* Fallback if glass blur is not supported */
+@supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+  .hero-card,
+  .section-card,
+  .quick-card,
+  .selected-forecast-card,
+  .forecast-time-card,
+  .forecast-row,
+  .region-card,
+  .blog-post-card,
+  .more-list button,
+  .bottom-nav,
+  .header-status-pill,
+  .brand-mark {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+}
+/* Version 0.7.3 - User Appearance Settings */
+
+.appearance-settings-card {
+  display: grid;
+  gap: 14px;
+}
+
+.settings-row,
+.settings-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.settings-row span,
+.settings-toggle-row span {
+  display: grid;
+  gap: 3px;
+}
+
+.settings-row strong,
+.settings-toggle-row strong {
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.settings-row small,
+.settings-toggle-row small {
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.settings-select {
+  min-width: 128px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 12px;
+  color: var(--blue-dark);
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 8px 18px rgba(18, 78, 112, 0.1);
+}
+
+.settings-toggle-row input {
+  width: 22px;
+  height: 22px;
+  accent-color: #1398d1;
+}
+
+.settings-note {
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 800;
+}
+
+/* Soft Glass Mode */
+body.ui-soft-glass .hero-card,
+body.ui-soft-glass .section-card,
+body.ui-soft-glass .quick-card,
+body.ui-soft-glass .selected-forecast-card,
+body.ui-soft-glass .forecast-time-card,
+body.ui-soft-glass .forecast-row,
+body.ui-soft-glass .region-card,
+body.ui-soft-glass .blog-post-card,
+body.ui-soft-glass .more-list button,
+body.ui-soft-glass .bottom-nav,
+body.ui-soft-glass .header-status-pill,
+body.ui-soft-glass .brand-mark {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(14px) saturate(1.12) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(1.12) !important;
+  box-shadow: 0 14px 32px rgba(18, 78, 112, 0.13) !important;
+}
+
+body.ui-soft-glass .background-decor {
+  opacity: 0.72;
+}
+
+/* Classic Mode */
+body.ui-classic {
+  background: linear-gradient(180deg, #bfeeff, #f8fff2) !important;
+}
+
+body.ui-classic .app-shell {
+  background: linear-gradient(180deg, #bfeeff, #f8fff2) !important;
+}
+
+body.ui-classic .hero-card,
+body.ui-classic .section-card,
+body.ui-classic .quick-card,
+body.ui-classic .selected-forecast-card,
+body.ui-classic .forecast-time-card,
+body.ui-classic .forecast-row,
+body.ui-classic .region-card,
+body.ui-classic .blog-post-card,
+body.ui-classic .more-list button,
+body.ui-classic .bottom-nav,
+body.ui-classic .header-status-pill,
+body.ui-classic .brand-mark {
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(15, 135, 189, 0.12) !important;
+  box-shadow: 0 10px 24px rgba(18, 78, 112, 0.1) !important;
+}
+
+body.ui-classic .background-decor {
+  opacity: 0.3;
+}
+
+/* High Contrast Mode */
+body.ui-high-contrast {
+  background: #eaf8ff !important;
+}
+
+body.ui-high-contrast .app-shell {
+  background: #eaf8ff !important;
+}
+
+body.ui-high-contrast .hero-card,
+body.ui-high-contrast .section-card,
+body.ui-high-contrast .quick-card,
+body.ui-high-contrast .selected-forecast-card,
+body.ui-high-contrast .forecast-time-card,
+body.ui-high-contrast .forecast-row,
+body.ui-high-contrast .region-card,
+body.ui-high-contrast .blog-post-card,
+body.ui-high-contrast .more-list button,
+body.ui-high-contrast .bottom-nav,
+body.ui-high-contrast .header-status-pill,
+body.ui-high-contrast .brand-mark {
+  background: #ffffff !important;
+  color: #05283f !important;
+  border: 2px solid rgba(5, 40, 63, 0.18) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 8px 18px rgba(5, 40, 63, 0.12) !important;
+}
+
+body.ui-high-contrast .background-decor {
+  display: none;
+}
+
+body.ui-high-contrast p,
+body.ui-high-contrast small,
+body.ui-high-contrast .empty-feed {
+  color: #24465a !important;
+}
+
+/* Reduce Motion Setting */
+body.reduce-app-motion *,
+body.reduce-app-motion *::before,
+body.reduce-app-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+body.reduce-app-motion .soft-cloud,
+body.reduce-app-motion .sun-glow {
+  animation: none !important;
+}
+/* Version 0.7.4 - Settings gear and modal */
+
+#more {
+  position: relative;
+}
+
+.settings-gear-btn {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  z-index: 8;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.38));
+  box-shadow:
+    0 15px 32px rgba(18, 78, 112, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(1.25);
+  -webkit-backdrop-filter: blur(20px) saturate(1.25);
+  color: var(--blue-dark);
+  font-size: 21px;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.settings-gear-btn:active {
+  transform: scale(0.94) rotate(12deg);
+}
+
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(5, 40, 63, 0.28);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.settings-modal-backdrop.open {
+  display: flex;
+  animation: settingsFadeIn 0.18s ease;
+}
+
+@keyframes settingsFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.settings-modal {
+  width: min(360px, 100%);
+  max-height: 82vh;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 90% 8%, rgba(255, 226, 119, 0.24), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.48));
+  border: 1px solid rgba(255, 255, 255, 0.84);
+  box-shadow:
+    0 28px 80px rgba(5, 40, 63, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(28px) saturate(1.35);
+  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+  animation: settingsPopIn 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes settingsPopIn {
+  from {
+    transform: translateY(12px) scale(0.96);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.settings-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.settings-modal-header h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 25px;
+  letter-spacing: -0.04em;
+}
+
+.settings-close-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--blue-dark);
+  font-size: 18px;
+  font-weight: 900;
+  box-shadow:
+    0 10px 22px rgba(18, 78, 112, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.settings-modal-intro {
+  margin: 0 0 16px;
+  color: rgba(45, 84, 103, 0.78);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.settings-modal .settings-row,
+.settings-modal .settings-toggle-row {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.settings-modal .settings-row {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 15px;
+}
+
+.settings-modal .settings-toggle-row {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 15px;
+}
+
+.settings-modal .settings-select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.settings-modal .settings-note {
+  margin-top: 4px !important;
+}
+
+body.settings-modal-open {
+  overflow: hidden;
+}
+/* Version 0.7.5 - Advanced settings, dark mode, and page scrolling */
+
+/* Better page scrolling */
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  overflow-y: auto;
+}
+
+.app-shell {
+  min-height: 100dvh;
+  height: auto;
+}
+
+.app-content {
+  padding-bottom: calc(118px + env(safe-area-inset-bottom));
+}
+
+.screen {
+  padding-bottom: 18px;
+}
+
+/* Dark Mode */
+body.app-dark-mode {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(75, 140, 190, 0.28), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(255, 207, 96, 0.18), transparent 22%),
+    linear-gradient(180deg, #071a28 0%, #0b2638 48%, #092015 100%) !important;
+  color: #eef9ff;
+}
+
+body.app-dark-mode .app-shell {
+  background:
+    radial-gradient(circle at 84% 8%, rgba(255, 207, 96, 0.16), transparent 20%),
+    radial-gradient(circle at 14% 24%, rgba(78, 177, 232, 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(7, 26, 40, 0.96), rgba(9, 32, 21, 0.96)) !important;
+}
+
+body.app-dark-mode .background-decor {
+  opacity: 0.34;
+}
+
+body.app-dark-mode .hero-card,
+body.app-dark-mode .section-card,
+body.app-dark-mode .quick-card,
+body.app-dark-mode .selected-forecast-card,
+body.app-dark-mode .forecast-time-card,
+body.app-dark-mode .forecast-row,
+body.app-dark-mode .region-card,
+body.app-dark-mode .blog-post-card,
+body.app-dark-mode .more-list button,
+body.app-dark-mode .bottom-nav,
+body.app-dark-mode .header-status-pill,
+body.app-dark-mode .brand-mark,
+body.app-dark-mode .settings-modal {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(18, 50, 69, 0.72),
+      rgba(9, 31, 44, 0.48)
+    ) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #eef9ff !important;
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+body.app-dark-mode h1,
+body.app-dark-mode h2,
+body.app-dark-mode h3,
+body.app-dark-mode strong,
+body.app-dark-mode .brand-text h1 span:first-child,
+body.app-dark-mode .settings-modal-header h3 {
+  color: #f5fbff !important;
+}
+
+body.app-dark-mode .brand-text h1 span:last-child {
+  background: linear-gradient(135deg, #78d8ff, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+body.app-dark-mode p,
+body.app-dark-mode small,
+body.app-dark-mode .page-title p,
+body.app-dark-mode .hero-card p,
+body.app-dark-mode .section-card p,
+body.app-dark-mode .blog-post-card p,
+body.app-dark-mode .empty-feed,
+body.app-dark-mode .settings-modal-intro,
+body.app-dark-mode .settings-note {
+  color: rgba(226, 244, 255, 0.76) !important;
+}
+
+body.app-dark-mode .settings-row,
+body.app-dark-mode .settings-toggle-row,
+body.app-dark-mode .settings-select,
+body.app-dark-mode .county-select,
+body.app-dark-mode textarea,
+body.app-dark-mode .report-filter {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #f5fbff !important;
+}
+
+body.app-dark-mode .settings-select option {
+  color: #05283f;
+}
+
+body.app-dark-mode .nav-item {
+  color: rgba(226, 244, 255, 0.72);
+}
+
+body.app-dark-mode .nav-item small {
+  color: rgba(226, 244, 255, 0.72);
+}
+
+body.app-dark-mode .nav-item.active,
+body.app-dark-mode .submit-report,
+body.app-dark-mode .read-post-pill,
+body.app-dark-mode .report-filter.active {
+  background: linear-gradient(135deg, #1398d1, #08283c) !important;
+  color: #ffffff !important;
+}
+
+body.app-dark-mode .settings-close-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+/* Text size setting */
+body.text-large {
+  font-size: 17px;
+}
+
+body.text-large p,
+body.text-large small,
+body.text-large .blog-post-card p,
+body.text-large .settings-modal-intro {
+  font-size: 15px !important;
+}
+
+body.text-large .nav-item small {
+  font-size: 11px !important;
+}
+
+body.text-large .blog-post-card strong,
+body.text-large .settings-row strong,
+body.text-large .settings-toggle-row strong {
+  font-size: 16px !important;
+}
+
+/* Compact cards setting */
+body.compact-cards .section-card,
+body.compact-cards .quick-card,
+body.compact-cards .blog-post-card,
+body.compact-cards .forecast-time-card,
+body.compact-cards .region-card {
+  padding: 12px !important;
+}
+
+body.compact-cards .hero-card {
+  min-height: 138px !important;
+  padding: 18px !important;
+}
+
+body.compact-cards .quick-grid,
+body.compact-cards .blog-list,
+body.compact-cards .forecast-time-grid,
+body.compact-cards .region-list {
+  gap: 9px !important;
+}
+
+body.compact-cards .blog-post-card p {
+  display: none !important;
+}
+
+body.compact-cards .section-card {
+  border-radius: 24px !important;
+}
+/* Version 0.7.5.1 - Better Night Glass Dark Mode */
+
+body.app-dark-mode {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(96, 184, 255, 0.18), transparent 28%),
+    radial-gradient(circle at 88% 10%, rgba(255, 217, 122, 0.12), transparent 20%),
+    radial-gradient(circle at 50% 90%, rgba(88, 196, 140, 0.08), transparent 34%),
+    linear-gradient(180deg, #061824 0%, #082436 48%, #071d2a 100%) !important;
+  color: #f3fbff !important;
+}
+
+body.app-dark-mode .app-shell {
+  background:
+    radial-gradient(circle at 84% 7%, rgba(255, 220, 128, 0.11), transparent 22%),
+    radial-gradient(circle at 16% 22%, rgba(91, 188, 255, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(6, 24, 36, 0.98), rgba(7, 29, 42, 0.98)) !important;
+}
+
+body.app-dark-mode .background-decor {
+  opacity: 0.22;
+}
+
+body.app-dark-mode .sun-glow {
+  background:
+    radial-gradient(circle, rgba(255, 219, 126, 0.24) 0%, rgba(255, 219, 126, 0.1) 42%, transparent 72%);
+}
+
+body.app-dark-mode .soft-cloud {
+  background: rgba(157, 213, 255, 0.16);
+  box-shadow:
+    22px -12px 0 rgba(157, 213, 255, 0.11),
+    46px 0 0 rgba(157, 213, 255, 0.09);
+}
+
+/* Dark cards should feel like glass, not inverted white cards */
+body.app-dark-mode .hero-card,
+body.app-dark-mode .section-card,
+body.app-dark-mode .quick-card,
+body.app-dark-mode .selected-forecast-card,
+body.app-dark-mode .forecast-time-card,
+body.app-dark-mode .forecast-row,
+body.app-dark-mode .region-card,
+body.app-dark-mode .blog-post-card,
+body.app-dark-mode .more-list button,
+body.app-dark-mode .bottom-nav,
+body.app-dark-mode .header-status-pill,
+body.app-dark-mode .brand-mark,
+body.app-dark-mode .settings-modal {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border: 1px solid rgba(142, 218, 255, 0.16) !important;
+  color: #f3fbff !important;
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(24px) saturate(1.15) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.15) !important;
+}
+
+/* Tone down bright liquid highlights in dark mode */
+body.app-dark-mode .hero-card::after,
+body.app-dark-mode .section-card::after,
+body.app-dark-mode .quick-card::after,
+body.app-dark-mode .selected-forecast-card::after,
+body.app-dark-mode .forecast-time-card::after,
+body.app-dark-mode .region-card::after,
+body.app-dark-mode .blog-post-card::after,
+body.app-dark-mode .more-list button::after,
+body.app-dark-mode .bottom-nav::after,
+body.app-dark-mode .brand-mark::after {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.04) 42%,
+      rgba(120, 216, 255, 0.08) 100%
+    ) !important;
+}
+
+body.app-dark-mode .hero-card::before,
+body.app-dark-mode .section-card::before,
+body.app-dark-mode .quick-card::before,
+body.app-dark-mode .selected-forecast-card::before,
+body.app-dark-mode .forecast-time-card::before,
+body.app-dark-mode .region-card::before,
+body.app-dark-mode .blog-post-card::before {
+  background:
+    radial-gradient(circle, rgba(85, 190, 255, 0.12), transparent 68%) !important;
+}
+
+/* Text */
+body.app-dark-mode h1,
+body.app-dark-mode h2,
+body.app-dark-mode h3,
+body.app-dark-mode strong,
+body.app-dark-mode .page-title h2,
+body.app-dark-mode .brand-text h1 span:first-child,
+body.app-dark-mode .settings-modal-header h3 {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .brand-text h1 span:last-child {
+  background: linear-gradient(135deg, #7fdbff, #dff7ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+
+body.app-dark-mode p,
+body.app-dark-mode small,
+body.app-dark-mode .page-title p,
+body.app-dark-mode .hero-card p,
+body.app-dark-mode .section-card p,
+body.app-dark-mode .blog-post-card p,
+body.app-dark-mode .empty-feed,
+body.app-dark-mode .settings-modal-intro,
+body.app-dark-mode .settings-note,
+body.app-dark-mode .eyebrow {
+  color: rgba(222, 244, 255, 0.74) !important;
+}
+
+/* Inputs and settings */
+body.app-dark-mode .settings-row,
+body.app-dark-mode .settings-toggle-row,
+body.app-dark-mode .settings-select,
+body.app-dark-mode .county-select,
+body.app-dark-mode .alert-county-select,
+body.app-dark-mode textarea,
+body.app-dark-mode .report-filter {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(142, 218, 255, 0.15) !important;
+  color: #f6fcff !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 8px 18px rgba(0, 0, 0, 0.16) !important;
+}
+
+body.app-dark-mode .settings-select option,
+body.app-dark-mode .county-select option,
+body.app-dark-mode .alert-county-select option {
+  color: #082436;
+  background: #ffffff;
+}
+
+/* Buttons */
+body.app-dark-mode .submit-report,
+body.app-dark-mode .read-post-pill,
+body.app-dark-mode .report-filter.active,
+body.app-dark-mode .nav-item.active {
+  background: linear-gradient(135deg, #159bd5, #0a4c70) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+body.app-dark-mode .settings-close-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #f6fcff !important;
+  border: 1px solid rgba(142, 218, 255, 0.15);
+}
+
+body.app-dark-mode .settings-modal-backdrop {
+  background: rgba(0, 9, 16, 0.54) !important;
+}
+
+/* Bottom nav */
+body.app-dark-mode .bottom-nav {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(19, 50, 72, 0.86),
+      rgba(7, 25, 38, 0.74)
+    ) !important;
+}
+
+body.app-dark-mode .nav-item {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .nav-item small {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .nav-item.active small {
+  color: #ffffff !important;
+}
+
+/* Pills */
+body.app-dark-mode .pill,
+body.app-dark-mode .pill.live,
+body.app-dark-mode .pill.calm {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #dff7ff !important;
+  border: 1px solid rgba(142, 218, 255, 0.16);
+}
+
+/* Forecast metric cards */
+body.app-dark-mode .forecast-metric-grid div {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(142, 218, 255, 0.14) !important;
+}
+
+/* Map stays readable */
+body.app-dark-mode .real-report-map {
+  border-color: rgba(142, 218, 255, 0.18) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+/* Version 0.7.6 - Cleaner Reports Page */
+
+.report-action-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding: 15px;
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.38));
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 18px 42px rgba(18, 78, 112, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(22px) saturate(1.25);
+  -webkit-backdrop-filter: blur(22px) saturate(1.25);
+}
+
+.report-action-card div {
+  display: grid;
+  gap: 3px;
+}
+
+.report-action-card strong {
+  color: var(--blue-dark);
+  font-size: 15px;
+}
+
+.report-action-card small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.open-report-sheet-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 11px 14px;
+  min-width: 138px;
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 13px;
+  box-shadow:
+    0 14px 28px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+}
+
+.open-report-sheet-btn:active {
+  transform: scale(0.96);
+}
+
+/* Report bottom sheet */
+.report-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(5, 40, 63, 0.28);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.report-sheet-backdrop.open {
+  display: flex;
+  animation: reportSheetFadeIn 0.18s ease;
+}
+
+@keyframes reportSheetFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.report-sheet {
+  width: min(430px, 100%);
+  max-height: 86vh;
+  overflow-y: auto;
+  padding: 18px;
+  border-radius: 34px 34px 26px 26px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(255, 226, 119, 0.24), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.5));
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  box-shadow:
+    0 28px 80px rgba(5, 40, 63, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(28px) saturate(1.35);
+  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+  animation: reportSheetSlideUp 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes reportSheetSlideUp {
+  from {
+    transform: translateY(28px) scale(0.98);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.report-sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.report-sheet-header h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 25px;
+  letter-spacing: -0.04em;
+}
+
+.report-sheet-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--blue-dark);
+  font-size: 18px;
+  font-weight: 900;
+  box-shadow:
+    0 10px 22px rgba(18, 78, 112, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+/* The moved form should not feel like a giant page section inside the popup */
+#reportSheetContent #reportFormCard {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+#reportSheetContent #reportFormCard::before,
+#reportSheetContent #reportFormCard::after {
+  display: none !important;
+}
+
+body.report-sheet-open {
+  overflow: hidden;
+}
+
+/* Dark mode report sheet */
+body.app-dark-mode .report-action-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode .report-action-card strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .report-action-card small {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .report-sheet {
+  background:
+    radial-gradient(circle at 92% 8%, rgba(255, 226, 119, 0.1), transparent 34%),
+    linear-gradient(145deg, rgba(23, 59, 82, 0.9), rgba(8, 29, 43, 0.82)) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode .report-sheet-header h3 {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .report-sheet-close {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #f6fcff !important;
+  border: 1px solid rgba(142, 218, 255, 0.15);
+}
+/* Version 0.7.6.1 - Reports cleanup fix */
+
+/* Hide the leftover report intro/privacy/location pieces from the main Reports page */
+#reports > .section-card:not(.map-card):not(.reports-feed-card):not(.blog-preview-card):not(.forecast-note-card):not(#reportFormCard),
+#reports > .location-btn,
+#reports > #locationStatus {
+  display: none !important;
+}
+
+/* Keep submitted reports visible */
+#reports .submitted-reports-card,
+#reports #submittedReports,
+#reports .report-feed,
+#reports .reports-feed-card {
+  display: block !important;
+}
+
+/* Make the top report action card cleaner */
+.report-action-card {
+  margin-top: 8px;
+  margin-bottom: 18px;
+}
+
+/* Make the report popup start higher and use more of the phone screen */
+.report-sheet-backdrop {
+  align-items: flex-end !important;
+}
+
+.report-sheet {
+  max-height: 88vh !important;
+  padding-bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+}
+
+/* The long report type list should feel less massive */
+#reportSheetContent .upgraded-report-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px !important;
+}
+
+#reportSheetContent .upgraded-report-grid label {
+  min-height: 46px;
+  padding: 10px 11px !important;
+  border-radius: 16px !important;
+  font-size: 13px !important;
+}
+
+#reportSheetContent textarea {
+  min-height: 86px !important;
+}
+
+/* On tiny phones, keep report options one column */
+@media (max-width: 365px) {
+  #reportSheetContent .upgraded-report-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Version 0.7.6.2 - Report sheet containment fix */
+
+.report-sheet-backdrop.open {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  background: rgba(0, 9, 16, 0.62) !important;
+}
+
+.report-sheet {
+  width: min(430px, 100%) !important;
+  max-height: 88vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.report-sheet-header {
+  flex: 0 0 auto !important;
+}
+
+#reportSheetContent {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding: 0 2px 6px !important;
+  box-sizing: border-box !important;
+}
+
+#reportSheetContent #reportFormCard {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* If the form is still sitting as a direct child of the reports page, hide it */
+#reports > #reportFormCard {
+  display: none !important;
+}
+
+/* Make the report form inside the popup feel compact */
+#reportSheetContent .section-card,
+#reportSheetContent #reportFormCard {
+  margin: 0 !important;
+  border-radius: 24px !important;
+}
+
+/* Compact the report choices */
+#reportSheetContent .upgraded-report-grid,
+#reportSheetContent .report-type-grid,
+#reportSheetContent .report-options-grid,
+#reportSheetContent .checkbox-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 9px !important;
+}
+
+#reportSheetContent .upgraded-report-grid label,
+#reportSheetContent .report-type-grid label,
+#reportSheetContent .report-options-grid label,
+#reportSheetContent .checkbox-grid label {
+  min-height: 44px !important;
+  padding: 10px !important;
+  border-radius: 16px !important;
+  font-size: 13px !important;
+}
+
+#reportSheetContent textarea {
+  min-height: 82px !important;
+}
+
+@media (max-width: 365px) {
+  #reportSheetContent .upgraded-report-grid,
+  #reportSheetContent .report-type-grid,
+  #reportSheetContent .report-options-grid,
+  #reportSheetContent .checkbox-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* Version 0.7.6.3 - Stop Reports content leaking onto Home */
+
+/* Make sure only the active tab screen is visible */
+.screen {
+  display: none !important;
+}
+
+.screen.active {
+  display: block !important;
+}
+
+/* Home should not show the Reports map, report form, or submitted reports feed */
+#home .map-card,
+#home .real-report-map,
+#home #reportMap,
+#home .report-form-card,
+#home #reportFormCard,
+#home .upgraded-report-grid,
+#home .location-btn,
+#home #locationStatus,
+#home .submitted-reports-card,
+#home #submittedReports,
+#home .reports-feed-card,
+#home .report-feed {
+  display: none !important;
+}
+
+/* Extra guard: hide any Home card that contains report/map form pieces */
+#home .section-card:has(.real-report-map),
+#home .section-card:has(#reportMap),
+#home .section-card:has(.upgraded-report-grid),
+#home .section-card:has(.submit-report),
+#home .section-card:has(#submittedReports) {
+  display: none !important;
+}
+
+/* Report popup should only exist visually when opened */
+.report-sheet-backdrop:not(.open) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.report-sheet-backdrop.open {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+/* Version 0.7.6.4 - Hard lock Reports content to Reports tab only */
+
+/* When NOT on Reports, hide anything related to the Reports page */
+body:not(.mdwa-active-reports) #reportMap,
+body:not(.mdwa-active-reports) .map-card:has(#reportMap),
+body:not(.mdwa-active-reports) .report-action-card,
+body:not(.mdwa-active-reports) #reportSheet,
+body:not(.mdwa-active-reports) .report-sheet-backdrop,
+body:not(.mdwa-active-reports) #reportSheetContent,
+body:not(.mdwa-active-reports) #reportFormCard,
+body:not(.mdwa-active-reports) .report-form-card,
+body:not(.mdwa-active-reports) .upgraded-report-grid,
+body:not(.mdwa-active-reports) .submitted-reports-card,
+body:not(.mdwa-active-reports) #submittedReports,
+body:not(.mdwa-active-reports) .report-feed,
+body:not(.mdwa-active-reports) .reports-feed-card,
+body:not(.mdwa-active-reports) #locationStatus {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Extra guard for Home and More specifically */
+#home #reportMap,
+#home .map-card,
+#home .report-form-card,
+#home #reportFormCard,
+#home .upgraded-report-grid,
+#home #submittedReports,
+#home .report-sheet-backdrop,
+#more #reportMap,
+#more .map-card,
+#more .report-form-card,
+#more #reportFormCard,
+#more .upgraded-report-grid,
+#more #submittedReports,
+#more .report-sheet-backdrop {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Only allow the report popup to show while on Reports and opened */
+body.mdwa-active-reports .report-sheet-backdrop.open {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Keep normal screens clean */
+.screen:not(.active) {
+  display: none !important;
+}
+
+.screen.active {
+  display: block !important;
+}/* Version 0.7.6.5 - Force report form to only show inside popup */
+
+/* Hide report form everywhere unless the report sheet is open */
+body:not(.report-sheet-open) #reportFormCard,
+body:not(.report-sheet-open) .report-form-card,
+body:not(.report-sheet-open) .mdwa-report-form-panel,
+body:not(.report-sheet-open) #reportSheetContent,
+body:not(.report-sheet-open) .section-card:has(.submit-report) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* When the sheet is open, only show the form inside the report sheet */
+body.report-sheet-open .report-sheet #reportSheetContent,
+body.report-sheet-open .report-sheet #reportFormCard,
+body.report-sheet-open .report-sheet .report-form-card,
+body.report-sheet-open .report-sheet .mdwa-report-form-panel {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Make sure the report sheet content stays inside the popup */
+.report-sheet {
+  overflow: hidden !important;
+}
+
+#reportSheetContent {
+  max-height: calc(88vh - 105px) !important;
+  overflow-y: auto !important;
+}
+
+/* The popup should only display when open */
+.report-sheet-backdrop:not(.open) {
+  display: none !important;
+}
+
+.report-sheet-backdrop.open {
+  display: flex !important;
+}
+/* Version 0.7.6.6 - Report popup scroll and feed restore */
+
+/* Make report popup scroll correctly */
+body.report-sheet-open {
+  overflow: hidden !important;
+}
+
+.report-sheet-backdrop.open {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.report-sheet {
+  height: auto !important;
+  max-height: 92dvh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.report-sheet-header {
+  flex: 0 0 auto !important;
+  margin-bottom: 12px !important;
+}
+
+#reportSheetContent {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: calc(92dvh - 105px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 0 2px calc(24px + env(safe-area-inset-bottom)) !important;
+  box-sizing: border-box !important;
+}
+
+/* Make the report form compact enough to reach submit */
+#reportSheetContent #reportFormCard {
+  display: block !important;
+  visibility: visible !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#reportSheetContent .upgraded-report-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+#reportSheetContent .upgraded-report-grid label {
+  min-height: 42px !important;
+  padding: 9px 10px !important;
+  border-radius: 15px !important;
+  font-size: 12.5px !important;
+}
+
+#reportSheetContent textarea {
+  min-height: 74px !important;
+  max-height: 95px !important;
+}
+
+#reportSheetContent .submit-report {
+  margin-bottom: 18px !important;
+}
+
+/* Restore submitted reports feed on the Reports tab */
+body.mdwa-active-reports #reports .section-card:has(#submittedReports),
+body.mdwa-active-reports #reports .submitted-reports-card,
+body.mdwa-active-reports #reports .reports-feed-card,
+body.mdwa-active-reports #reports #submittedReports {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Restore map card only on Reports tab */
+body.mdwa-active-reports #reports .map-card,
+body.mdwa-active-reports #reports .map-card:has(#reportMap),
+body.mdwa-active-reports #reports #reportMap {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Keep report form hidden on the page itself */
+#reports > #reportFormCard,
+#reports > .report-form-card,
+#reports > .section-card:has(.submit-report) {
+  display: none !important;
+}
+
+/* But allow it inside the popup */
+body.report-sheet-open #reportSheetContent #reportFormCard,
+body.report-sheet-open #reportSheetContent .report-form-card,
+body.report-sheet-open #reportSheetContent .section-card:has(.submit-report) {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 365px) {
+  #reportSheetContent .upgraded-report-grid {
+    grid-template-columns: 1fr !important;
+  }
+}/* Version 0.7.6.7 - Emergency Reports scroll/feed fix */
+
+/* Let the report popup itself scroll like a real mobile sheet */
+.report-sheet-backdrop.open {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999 !important;
+  display: block !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 18px 14px calc(90px + env(safe-area-inset-bottom)) !important;
+  background: rgba(0, 9, 16, 0.62) !important;
+}
+
+.report-sheet {
+  width: min(430px, 100%) !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  display: block !important;
+  margin: 20px auto 40px !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.report-sheet-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 5 !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 10px !important;
+  border-radius: 24px !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.72),
+      rgba(255, 255, 255, 0.34)
+    ) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+body.app-dark-mode .report-sheet-header {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.92),
+      rgba(8, 29, 43, 0.82)
+    ) !important;
+}
+
+#reportSheetContent {
+  display: block !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 0 0 30px !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep form hidden everywhere unless popup is open */
+body:not(.report-sheet-open) #reportFormCard,
+body:not(.report-sheet-open) .report-form-card,
+body:not(.report-sheet-open) .section-card:has(.submit-report) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* But show form inside the popup when open */
+body.report-sheet-open #reportSheetContent #reportFormCard,
+body.report-sheet-open #reportSheetContent .report-form-card,
+body.report-sheet-open #reportSheetContent .section-card:has(.submit-report) {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Compact the report options so the submit button is reachable */
+body.report-sheet-open #reportSheetContent .upgraded-report-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+body.report-sheet-open #reportSheetContent .upgraded-report-grid label {
+  min-height: 40px !important;
+  padding: 8px 10px !important;
+  border-radius: 15px !important;
+  font-size: 12.5px !important;
+}
+
+body.report-sheet-open #reportSheetContent textarea {
+  min-height: 72px !important;
+  max-height: 95px !important;
+}
+
+body.report-sheet-open #reportSheetContent .submit-report {
+  margin-bottom: 40px !important;
+}
+
+/* Force map and feed to show only on the Reports tab */
+html body #reports.screen.active .map-card,
+html body #reports.screen.active .section-card:has(#reportMap),
+html body #reports.screen.active #reportMap,
+html body #reports.screen.active .section-card:has(#submittedReports),
+html body #reports.screen.active .submitted-reports-card,
+html body #reports.screen.active .reports-feed-card,
+html body #reports.screen.active #submittedReports {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Keep report/map/feed off Home and More */
+html body #home #reportMap,
+html body #home .map-card,
+html body #home #submittedReports,
+html body #home .reports-feed-card,
+html body #home .submitted-reports-card,
+html body #more #reportMap,
+html body #more .map-card,
+html body #more #submittedReports,
+html body #more .reports-feed-card,
+html body #more .submitted-reports-card {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 365px) {
+  body.report-sheet-open #reportSheetContent .upgraded-report-grid {
+    grid-template-columns: 1fr !important;
+  }
+}/* Version 0.7.6.8 - Clean Reports reset */
+
+/* Kill the broken old popup system */
+#reportSheet,
+.report-sheet-backdrop,
+.report-sheet {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.report-sheet-open {
+  overflow-y: auto !important;
+}
+
+/* Reports clean layout */
+.clean-report-panel {
+  margin: 14px 0 16px;
+  border-radius: 30px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.38));
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow:
+    0 18px 42px rgba(18, 78, 112, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(22px) saturate(1.25);
+  -webkit-backdrop-filter: blur(22px) saturate(1.25);
+  overflow: hidden;
+}
+
+.clean-report-panel summary {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.clean-report-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.clean-report-panel summary div {
+  display: grid;
+  gap: 3px;
+}
+
+.clean-report-panel summary strong {
+  color: var(--blue-dark);
+  font-size: 15px;
+}
+
+.clean-report-panel summary small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.clean-report-panel summary span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 11px 14px;
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow:
+    0 14px 28px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.clean-report-panel[open] summary {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.clean-report-panel #reportFormCard {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  padding: 16px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.clean-report-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.clean-report-info-card {
+  padding: 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+}
+
+.clean-report-info-card span {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.clean-report-info-card strong {
+  display: block;
+  color: var(--blue-dark);
+  font-size: 13px;
+}
+
+.clean-report-info-card small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.clean-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 10px;
+}
+
+.clean-report-header h3 {
+  margin: 0;
+}
+
+.choose-all-reports {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 11px;
+  background: rgba(255, 255, 255, 0.64);
+  color: var(--blue-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.clean-report-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+}
+
+.clean-report-grid label {
+  min-height: 42px !important;
+  padding: 9px 10px !important;
+  border-radius: 16px !important;
+  font-size: 12.5px !important;
+}
+
+.clean-report-panel textarea {
+  width: 100%;
+  min-height: 82px;
+  margin-top: 12px;
+  box-sizing: border-box;
+}
+
+.clean-report-panel .submit-report {
+  margin-top: 12px;
+}
+
+.report-demo-note {
+  margin: 10px 0 0 !important;
+  font-size: 12px !important;
+  line-height: 1.4;
+}
+
+.clean-map-card,
+.clean-feed-card {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Force map and feed to appear on Reports */
+#reports.screen.active #reportMap,
+#reports.screen.active .map-card,
+#reports.screen.active #submittedReports,
+#reports.screen.active .reports-feed-card,
+#reports.screen.active .submitted-reports-card {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Keep Reports stuff off Home/More */
+#home #reportMap,
+#home .map-card,
+#home #submittedReports,
+#home .reports-feed-card,
+#home .submitted-reports-card,
+#more #reportMap,
+#more .map-card,
+#more #submittedReports,
+#more .reports-feed-card,
+#more .submitted-reports-card {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Dark mode clean reports */
+body.app-dark-mode .clean-report-panel,
+body.app-dark-mode .clean-report-info-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode .clean-report-panel summary strong,
+body.app-dark-mode .clean-report-info-card strong,
+body.app-dark-mode .clean-report-header h3 {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .clean-report-panel summary small,
+body.app-dark-mode .clean-report-info-card small,
+body.app-dark-mode .report-demo-note {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+@media (max-width: 365px) {
+  .clean-report-info-grid,
+  .clean-report-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .clean-report-panel summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}/* Version 0.7.6.9 - Fix clean report panel opening */
+
+/* Old popup cleanup rules were hiding the new clean report form.
+   This forces the clean Reports form to show when the panel is opened. */
+
+html body #reports .clean-report-panel[open] #reportFormCard,
+html body #reports .clean-report-panel[open] .report-form-card,
+html body #reports .clean-report-panel[open] .clean-report-grid,
+html body #reports .clean-report-panel[open] .upgraded-report-grid,
+html body #reports .clean-report-panel[open] .submit-report,
+html body #reports .clean-report-panel[open] #reportDetails {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Keep the weather type grid as a grid when open */
+html body #reports .clean-report-panel[open] .clean-report-grid,
+html body #reports .clean-report-panel[open] .upgraded-report-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+}
+
+/* Hide only when the clean panel is closed */
+html body #reports .clean-report-panel:not([open]) #reportFormCard {
+  display: none !important;
+}
+
+/* Make the blue summary button feel clickable */
+.clean-report-panel summary span {
+  cursor: pointer;
+}
+
+/* Small animation when the report panel opens */
+.clean-report-panel[open] #reportFormCard {
+  animation: cleanReportOpen 0.22s ease;
+}
+
+@keyframes cleanReportOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
