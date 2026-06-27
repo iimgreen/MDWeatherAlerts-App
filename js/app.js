@@ -2567,7 +2567,7 @@ updateInstallAppCard();
 /* Version 1.3 - Final app polish and launch info */
 
 (function mdwaFinalAppPolish() {
-  const APP_VERSION = "1.3";
+  const APP_VERSION = "2.2";
   const moreScreen = document.getElementById("more");
 
   if (!moreScreen) return;
@@ -4989,7 +4989,7 @@ updateInstallAppCard();
   if (!moreScreen) return;
 
   const MDWA_WEBSITE_URL = "https://mdweatheralerts.com";
-  const APP_VERSION = "2.1.7";
+  const APP_VERSION = "2.2";
 
   function showMoreToast(message) {
     if (typeof showToast === "function") {
@@ -5385,7 +5385,7 @@ updateInstallAppCard();
 
   // Replace this with the email address you want app feedback sent to.
   const MDWA_FEEDBACK_EMAIL = "mdweatheralerts@gmail.com";
-  const APP_VERSION = "2.1.8";
+  const APP_VERSION = "2.2";
 
   function showFeedbackToast(message) {
     if (typeof showToast === "function") {
@@ -5557,4 +5557,331 @@ updateInstallAppCard();
     });
   }
 })();
-consoconsole.log("MD Weather Alerts Version 2.1.8 contact feedback button loaded successfully.");
+/* Version 2.2 - Live app launch polish */
+
+(function mdwaLiveAppLaunchPolish() {
+  const moreScreen = document.getElementById("more");
+
+  if (!moreScreen) return;
+
+  const APP_VERSION = "2.2";
+
+  function showLaunchToast(message) {
+    if (typeof showToast === "function") {
+      showToast(message);
+    }
+  }
+
+  function getAppLink() {
+    return window.location.href.split("#")[0].split("?")[0];
+  }
+
+  function hasSavedAppData() {
+    return Object.keys(localStorage).some((key) => key.startsWith("mdwa_"));
+  }
+
+  function getSavedDataLabel() {
+    return hasSavedAppData() ? "Saved locally" : "No saved data";
+  }
+
+  async function copyText(text, successMessage) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        showLaunchToast(successMessage);
+        return;
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+
+      showLaunchToast(successMessage);
+    } catch (error) {
+      alert(text);
+    }
+  }
+
+  function createBetaLaunchCard() {
+    let card = document.getElementById("mdwaBetaLaunchCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card beta-launch-card";
+    card.id = "mdwaBetaLaunchCard";
+
+    card.innerHTML = `
+      <div class="beta-launch-hero">
+        <div class="beta-launch-copy">
+          <p class="eyebrow">Beta Test Build</p>
+          <h3>Live App Launch Center</h3>
+          <p>Use these tools before sharing the app with testers.</p>
+        </div>
+
+        <div class="beta-launch-icon">🚀</div>
+      </div>
+
+      <div class="beta-status-grid">
+        <div class="beta-status-pill">
+          <span>App Version</span>
+          <strong id="betaAppVersion">Version ${APP_VERSION}</strong>
+        </div>
+
+        <div class="beta-status-pill">
+          <span>Connection</span>
+          <strong id="betaOnlineStatus">Checking</strong>
+        </div>
+
+        <div class="beta-status-pill">
+          <span>Saved Data</span>
+          <strong id="betaSavedDataStatus">Checking</strong>
+        </div>
+
+        <div class="beta-status-pill">
+          <span>Install Support</span>
+          <strong id="betaInstallStatus">Checking</strong>
+        </div>
+      </div>
+
+      <div class="beta-launch-actions">
+        <button class="beta-launch-btn primary" id="betaRefreshAppBtn" type="button">
+          Refresh App Data
+        </button>
+
+        <button class="beta-launch-btn secondary" id="betaCopyChecklistBtn" type="button">
+          Copy Test Checklist
+        </button>
+
+        <button class="beta-launch-btn secondary" id="betaCopyLiveLinkBtn" type="button">
+          Copy Live Link
+        </button>
+
+        <button class="beta-launch-btn secondary" id="betaRecheckStatusBtn" type="button">
+          Recheck Status
+        </button>
+
+        <button class="beta-launch-btn danger" id="betaClearSavedDataBtn" type="button">
+          Clear Saved App Data
+        </button>
+      </div>
+
+      <p class="beta-launch-note">
+        This is a beta/test build. Live weather data comes from official National Weather Service feeds when available.
+        Community reports and app settings may save locally on this device.
+      </p>
+    `;
+
+    return card;
+  }
+
+  function updateVisibleVersionText() {
+    const versionTargets = [
+      ".app-version-badge",
+      "#betaAppVersion",
+    ];
+
+    versionTargets.forEach((selector) => {
+      document.querySelectorAll(selector).forEach((element) => {
+        element.textContent = `Version ${APP_VERSION}`;
+      });
+    });
+
+    moreScreen.querySelectorAll("small, p, span, strong").forEach((element) => {
+      const text = element.textContent;
+
+      if (!text) return;
+
+      if (
+        text.includes("Version 1.3") ||
+        text.includes("Version 2.1.7") ||
+        text.includes("Version 2.1.8")
+      ) {
+        element.textContent = text
+          .replace("Version 1.3", `Version ${APP_VERSION}`)
+          .replace("Version 2.1.7", `Version ${APP_VERSION}`)
+          .replace("Version 2.1.8", `Version ${APP_VERSION}`);
+      }
+    });
+  }
+
+  function updateBetaStatus() {
+    const onlineStatus = document.getElementById("betaOnlineStatus");
+    const savedDataStatus = document.getElementById("betaSavedDataStatus");
+    const installStatus = document.getElementById("betaInstallStatus");
+
+    if (onlineStatus) {
+      onlineStatus.textContent = navigator.onLine ? "Online" : "Offline";
+    }
+
+    if (savedDataStatus) {
+      savedDataStatus.textContent = getSavedDataLabel();
+    }
+
+    if (installStatus) {
+      installStatus.textContent =
+        "serviceWorker" in navigator ? "Supported" : "Limited";
+    }
+
+    updateVisibleVersionText();
+  }
+
+  function placeBetaLaunchCard() {
+    const card = createBetaLaunchCard();
+
+    const feedbackCard = document.getElementById("mdwaFeedbackContactCard");
+    const shareCard = document.getElementById("mdwaShareAppCard");
+    const appInfoCard = document.getElementById("mdwaAppInfoCard");
+    const forecastBlog = document.getElementById("moreBlogPosts");
+    const forecastBlogCard = forecastBlog
+      ? forecastBlog.closest(".section-card")
+      : null;
+
+    if (feedbackCard && feedbackCard.parentElement === moreScreen) {
+      feedbackCard.insertAdjacentElement("afterend", card);
+      return;
+    }
+
+    if (shareCard && shareCard.parentElement === moreScreen) {
+      shareCard.insertAdjacentElement("afterend", card);
+      return;
+    }
+
+    if (appInfoCard && appInfoCard.parentElement === moreScreen) {
+      appInfoCard.insertAdjacentElement("afterend", card);
+      return;
+    }
+
+    if (forecastBlogCard) {
+      moreScreen.insertBefore(card, forecastBlogCard);
+      return;
+    }
+
+    moreScreen.appendChild(card);
+  }
+
+  async function refreshAppData() {
+    showLaunchToast("Refreshing app data...");
+
+    try {
+      if ("serviceWorker" in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+
+        await Promise.all(
+          registrations.map((registration) => registration.update())
+        );
+      }
+    } catch (error) {
+      console.warn("Service worker refresh skipped:", error);
+    }
+
+    const cleanUrl = getAppLink();
+    window.location.href = `${cleanUrl}?refresh=${Date.now()}`;
+  }
+
+  function clearSavedAppData() {
+    const confirmClear = confirm(
+      "Clear saved app data on this device? This can reset settings, saved reports, radar choices, and alert preferences."
+    );
+
+    if (!confirmClear) return;
+
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("mdwa_")) {
+        localStorage.removeItem(key);
+      }
+    });
+
+    updateBetaStatus();
+    showLaunchToast("Saved app data cleared.");
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 800);
+  }
+
+  function copyTestChecklist() {
+    const checklist = [
+      "MD Weather Alerts App Test Checklist",
+      "",
+      `App version: ${APP_VERSION}`,
+      `App link: ${getAppLink()}`,
+      "",
+      "Tested on device/browser:",
+      "",
+      "Check these tabs:",
+      "✅ Home",
+      "✅ Forecast",
+      "✅ Reports",
+      "✅ Radar",
+      "✅ Alerts",
+      "✅ More",
+      "",
+      "Check these features:",
+      "✅ Live NWS alerts",
+      "✅ Live forecast",
+      "✅ Hourly forecast",
+      "✅ Current conditions",
+      "✅ Community reports",
+      "✅ Report map",
+      "✅ Blog preview",
+      "✅ Install app card",
+      "✅ Share/contact/feedback buttons",
+      "✅ Dark mode",
+      "",
+      "Issues found:",
+      "",
+      "Feature ideas:",
+    ].join("\n");
+
+    copyText(checklist, "Test checklist copied.");
+  }
+
+  function setupBetaLaunchButtons() {
+    const refreshBtn = document.getElementById("betaRefreshAppBtn");
+    const copyChecklistBtn = document.getElementById("betaCopyChecklistBtn");
+    const copyLiveLinkBtn = document.getElementById("betaCopyLiveLinkBtn");
+    const recheckStatusBtn = document.getElementById("betaRecheckStatusBtn");
+    const clearSavedDataBtn = document.getElementById("betaClearSavedDataBtn");
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", refreshAppData);
+    }
+
+    if (copyChecklistBtn) {
+      copyChecklistBtn.addEventListener("click", copyTestChecklist);
+    }
+
+    if (copyLiveLinkBtn) {
+      copyLiveLinkBtn.addEventListener("click", () => {
+        copyText(getAppLink(), "Live app link copied.");
+      });
+    }
+
+    if (recheckStatusBtn) {
+      recheckStatusBtn.addEventListener("click", () => {
+        updateBetaStatus();
+        showLaunchToast("Launch status rechecked.");
+      });
+    }
+
+    if (clearSavedDataBtn) {
+      clearSavedDataBtn.addEventListener("click", clearSavedAppData);
+    }
+  }
+
+  placeBetaLaunchCard();
+  setupBetaLaunchButtons();
+  updateBetaStatus();
+
+  window.addEventListener("online", updateBetaStatus);
+  window.addEventListener("offline", updateBetaStatus);
+
+  setTimeout(updateVisibleVersionText, 1000);
+})();
+console.log("MD Weather Alerts Version 2.2 live app launch polish loaded successfully.");

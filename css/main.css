@@ -6221,3 +6221,179 @@ body.app-dark-mode .feedback-contact-note {
     grid-column: auto;
   }
 }
+/* Version 2.2 - Live app launch polish */
+
+.beta-launch-card {
+  display: grid;
+  gap: 14px;
+}
+
+.beta-launch-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.beta-launch-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.beta-launch-copy .eyebrow {
+  margin: 0;
+}
+
+.beta-launch-copy h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.beta-launch-copy p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.76);
+  line-height: 1.45;
+}
+
+.beta-launch-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.beta-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.beta-status-pill {
+  display: grid;
+  gap: 3px;
+  padding: 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.beta-status-pill span {
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.beta-status-pill strong {
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.beta-launch-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.beta-launch-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.beta-launch-btn.primary {
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.beta-launch-btn.secondary {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--blue-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08);
+}
+
+.beta-launch-btn.danger {
+  grid-column: 1 / -1;
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+}
+
+.beta-launch-btn:active {
+  transform: scale(0.97);
+}
+
+.beta-launch-note {
+  margin: 0 !important;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  color: rgba(45, 84, 103, 0.76) !important;
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode launch polish */
+body.app-dark-mode .beta-launch-copy h3,
+body.app-dark-mode .beta-status-pill strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .beta-launch-copy p,
+body.app-dark-mode .beta-status-pill span,
+body.app-dark-mode .beta-launch-note {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .beta-status-pill,
+body.app-dark-mode .beta-launch-btn.secondary,
+body.app-dark-mode .beta-launch-note {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .beta-launch-btn.danger {
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #fecaca !important;
+  border-color: rgba(239, 68, 68, 0.22) !important;
+}
+
+@media (max-width: 365px) {
+  .beta-status-grid,
+  .beta-launch-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .beta-launch-btn.danger {
+    grid-column: auto;
+  }
+}
