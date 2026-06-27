@@ -6800,3 +6800,43 @@ body.app-dark-mode .hero-replacement-badge-v235 strong {
 body.app-dark-mode .hero-replacement-badge-v235 small {
   color: rgba(222, 244, 255, 0.72) !important;
 }
+/* Version 2.3.6 - Clickable logo home button */
+
+.mdwa-logo-home-button {
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 20;
+}
+
+.mdwa-logo-home-button:active {
+  transform: scale(0.98);
+}
+
+.mdwa-logo-home-button::after {
+  content: "Home";
+  position: absolute;
+  left: 4px;
+  top: calc(100% + 6px);
+  opacity: 0;
+  pointer-events: none;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--blue-dark);
+  font-size: 10px;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(18, 78, 112, 0.1);
+  transition: opacity 0.15s ease;
+}
+
+.mdwa-logo-home-button:hover::after,
+.mdwa-logo-home-button:focus-visible::after {
+  opacity: 1;
+}
+
+body.app-dark-mode .mdwa-logo-home-button::after {
+  background: rgba(8, 29, 43, 0.86);
+  color: #f6fcff;
+}

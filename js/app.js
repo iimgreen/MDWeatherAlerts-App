@@ -6675,5 +6675,116 @@ updateInstallAppCard();
   setTimeout(forceCleanDemoWeather, 5000);
 
   console.log("MDWA 2.3.5 fake demo weather cleanup ran");
+})();/* Version 2.3.6 - Clickable logo home button */
+
+(function mdwaClickableLogoHomeButton() {
+  function goHomeFromLogo() {
+    const homeNavButton =
+      document.querySelector('.nav-item[data-screen="home"]') ||
+      document.querySelector('[data-target="home"]') ||
+      document.querySelector('[data-screen="home"]');
+
+    if (homeNavButton) {
+      homeNavButton.click();
+      return;
+    }
+
+    document.querySelectorAll(".screen").forEach((screen) => {
+      screen.classList.remove("active");
+    });
+
+    document.querySelectorAll(".nav-item").forEach((item) => {
+      item.classList.remove("active");
+    });
+
+    const homeScreen = document.getElementById("home");
+
+    if (homeScreen) {
+      homeScreen.classList.add("active");
+    }
+
+    const homeNav = document.querySelector('.nav-item[data-screen="home"]');
+
+    if (homeNav) {
+      homeNav.classList.add("active");
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  function findLogoTarget() {
+    const directSelectors = [
+      ".app-brand",
+      ".brand",
+      ".brand-wrap",
+      ".brand-lockup",
+      ".logo-lockup",
+      ".header-brand",
+      ".top-brand",
+      ".app-logo",
+      ".brand-mark",
+    ];
+
+    for (const selector of directSelectors) {
+      const element = document.querySelector(selector);
+
+      if (element) {
+        return element.closest(".app-brand, .brand, .brand-wrap, .brand-lockup, .logo-lockup, .header-brand, .top-brand") || element;
+      }
+    }
+
+    const possibleHeader =
+      document.querySelector(".app-header") ||
+      document.querySelector("header");
+
+    if (!possibleHeader) return null;
+
+    const headerChildren = Array.from(possibleHeader.children);
+
+    return (
+      headerChildren.find((child) => {
+        const text = child.textContent.toLowerCase();
+
+        return (
+          text.includes("md weather") ||
+          text.includes("weather alerts") ||
+          text.includes("alerts")
+        );
+      }) || null
+    );
+  }
+
+  function setupLogoHomeButton() {
+    const logoTarget = findLogoTarget();
+
+    if (!logoTarget) return;
+    if (logoTarget.dataset.logoHomeReady === "true") return;
+
+    logoTarget.dataset.logoHomeReady = "true";
+    logoTarget.classList.add("mdwa-logo-home-button");
+    logoTarget.setAttribute("role", "button");
+    logoTarget.setAttribute("tabindex", "0");
+    logoTarget.setAttribute("title", "Go to Home");
+    logoTarget.setAttribute("aria-label", "Go to Home");
+
+    logoTarget.addEventListener("click", (event) => {
+      event.preventDefault();
+      goHomeFromLogo();
+    });
+
+    logoTarget.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        goHomeFromLogo();
+      }
+    });
+  }
+
+  setupLogoHomeButton();
+
+  setTimeout(setupLogoHomeButton, 800);
 })();
-console.log("MD Weather Alerts Version 2.3.5 force remove fake home demo weather loaded successfully.");
+console.log("MD Weather Alerts Version 2.3.6 clickable logo home button loaded successfully.");
