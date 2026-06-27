@@ -5421,3 +5421,182 @@ body.app-dark-mode .share-app-note {
     grid-template-columns: 1fr;
   }
 }
+/* Version 1.8 - Live hourly forecast timeline */
+
+.hourly-forecast-card {
+  display: grid;
+  gap: 14px;
+}
+
+.hourly-forecast-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.hourly-forecast-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.hourly-forecast-copy .eyebrow {
+  margin: 0;
+}
+
+.hourly-forecast-copy h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.hourly-forecast-copy p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.76);
+  line-height: 1.45;
+}
+
+.hourly-forecast-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.hourly-forecast-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.hourly-forecast-select {
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  padding: 13px 14px;
+  color: var(--blue-dark);
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.hourly-refresh-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 13px 15px;
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  font-weight: 900;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+  cursor: pointer;
+}
+
+.hourly-refresh-btn:active {
+  transform: scale(0.97);
+}
+
+.hourly-forecast-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 2px 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hourly-forecast-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.hourly-forecast-strip::-webkit-scrollbar-thumb {
+  background: rgba(19, 152, 209, 0.28);
+  border-radius: 999px;
+}
+
+.hourly-card {
+  min-width: 138px;
+  scroll-snap-align: start;
+  display: grid;
+  gap: 7px;
+  padding: 13px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.hourly-card .hourly-time {
+  color: rgba(45, 84, 103, 0.78);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.hourly-card .hourly-icon {
+  font-size: 25px;
+}
+
+.hourly-card strong {
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.hourly-card small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.hourly-forecast-status {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode hourly forecast */
+body.app-dark-mode .hourly-forecast-copy h3,
+body.app-dark-mode .hourly-card strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .hourly-forecast-copy p,
+body.app-dark-mode .hourly-card .hourly-time,
+body.app-dark-mode .hourly-card small,
+body.app-dark-mode .hourly-forecast-status {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .hourly-forecast-select,
+body.app-dark-mode .hourly-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .hourly-forecast-select option {
+  background: #ffffff;
+  color: #082436;
+}
