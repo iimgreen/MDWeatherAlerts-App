@@ -5376,5 +5376,185 @@ updateInstallAppCard();
   setupWebsiteCard();
   setupSubscribeCard();
   setupAboutCard();
+})();/* Version 2.1.8 - Contact and feedback button */
+
+(function mdwaContactFeedbackButton() {
+  const moreScreen = document.getElementById("more");
+
+  if (!moreScreen) return;
+
+  // Replace this with the email address you want app feedback sent to.
+  const MDWA_FEEDBACK_EMAIL = "mdweatheralerts@gmail.com";
+  const APP_VERSION = "2.1.8";
+
+  function showFeedbackToast(message) {
+    if (typeof showToast === "function") {
+      showToast(message);
+    }
+  }
+
+  function getAppLink() {
+    return window.location.href.split("#")[0];
+  }
+
+  function getFeedbackTemplate() {
+    return [
+      "MD Weather Alerts App Feedback",
+      "",
+      `App version: ${APP_VERSION}`,
+      `App link: ${getAppLink()}`,
+      "",
+      "Device/browser:",
+      "",
+      "What worked well:",
+      "",
+      "What was confusing or broken:",
+      "",
+      "Feature idea:",
+      "",
+      "Other notes:",
+    ].join("\n");
+  }
+
+  async function copyText(text, successMessage) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        showFeedbackToast(successMessage);
+        return;
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+
+      showFeedbackToast(successMessage);
+    } catch (error) {
+      alert(text);
+    }
+  }
+
+  function openFeedbackEmail() {
+    const feedbackTemplate = getFeedbackTemplate();
+
+    if (
+      !MDWA_FEEDBACK_EMAIL ||
+      MDWA_FEEDBACK_EMAIL === "REPLACE_WITH_YOUR_EMAIL"
+    ) {
+      copyText(
+        feedbackTemplate,
+        "Feedback template copied. Add your feedback email in the code later."
+      );
+      return;
+    }
+
+    const subject = encodeURIComponent("MD Weather Alerts App Feedback");
+    const body = encodeURIComponent(feedbackTemplate);
+
+    window.location.href = `mailto:${MDWA_FEEDBACK_EMAIL}?subject=${subject}&body=${body}`;
+  }
+
+  function createFeedbackContactCard() {
+    let card = document.getElementById("mdwaFeedbackContactCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card feedback-contact-card";
+    card.id = "mdwaFeedbackContactCard";
+
+    card.innerHTML = `
+      <div class="feedback-contact-hero">
+        <div class="feedback-contact-copy">
+          <p class="eyebrow">App Feedback</p>
+          <h3>Contact MD Weather Alerts</h3>
+          <p>Send feedback, report a bug, or suggest a feature for the app.</p>
+        </div>
+
+        <div class="feedback-contact-icon">💬</div>
+      </div>
+
+      <div class="feedback-contact-actions">
+        <button class="feedback-contact-btn primary" id="mdwaEmailFeedbackBtn" type="button">
+          Email Feedback
+        </button>
+
+        <button class="feedback-contact-btn secondary" id="mdwaCopyFeedbackTemplateBtn" type="button">
+          Copy Template
+        </button>
+
+        <button class="feedback-contact-btn secondary full" id="mdwaCopyFeedbackLinkBtn" type="button">
+          Copy App Link
+        </button>
+      </div>
+
+      <p class="feedback-contact-note">
+        Feedback helps improve the app while it is still in testing. The email button opens your device’s email app with a pre-filled message.
+      </p>
+    `;
+
+    return card;
+  }
+
+  function placeFeedbackContactCard() {
+    const card = createFeedbackContactCard();
+
+    const shareCard = document.getElementById("mdwaShareAppCard");
+    const aboutPanel = document.getElementById("moreAboutPanel");
+    const appInfoCard = document.getElementById("mdwaAppInfoCard");
+    const forecastBlog = document.getElementById("moreBlogPosts");
+    const forecastBlogCard = forecastBlog
+      ? forecastBlog.closest(".section-card")
+      : null;
+
+    if (shareCard && shareCard.parentElement === moreScreen) {
+      shareCard.insertAdjacentElement("afterend", card);
+      return;
+    }
+
+    if (aboutPanel && aboutPanel.parentElement === moreScreen) {
+      aboutPanel.insertAdjacentElement("afterend", card);
+      return;
+    }
+
+    if (appInfoCard && appInfoCard.parentElement === moreScreen) {
+      appInfoCard.insertAdjacentElement("afterend", card);
+      return;
+    }
+
+    if (forecastBlogCard) {
+      moreScreen.insertBefore(card, forecastBlogCard);
+      return;
+    }
+
+    moreScreen.appendChild(card);
+  }
+
+  placeFeedbackContactCard();
+
+  const emailBtn = document.getElementById("mdwaEmailFeedbackBtn");
+  const copyTemplateBtn = document.getElementById("mdwaCopyFeedbackTemplateBtn");
+  const copyLinkBtn = document.getElementById("mdwaCopyFeedbackLinkBtn");
+
+  if (emailBtn) {
+    emailBtn.addEventListener("click", openFeedbackEmail);
+  }
+
+  if (copyTemplateBtn) {
+    copyTemplateBtn.addEventListener("click", () => {
+      copyText(getFeedbackTemplate(), "Feedback template copied.");
+    });
+  }
+
+  if (copyLinkBtn) {
+    copyLinkBtn.addEventListener("click", () => {
+      copyText(getAppLink(), "App link copied.");
+    });
+  }
 })();
-console.log("MD Weather Alerts Version 2.1.7 more tab interactive cards loaded successfully.");
+consoconsole.log("MD Weather Alerts Version 2.1.8 contact feedback button loaded successfully.");

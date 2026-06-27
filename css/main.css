@@ -6087,3 +6087,137 @@ body.app-dark-mode .more-info-row small {
     grid-column: auto;
   }
 }
+/* Version 2.1.8 - Contact and feedback button */
+
+.feedback-contact-card {
+  display: grid;
+  gap: 14px;
+}
+
+.feedback-contact-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.feedback-contact-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.feedback-contact-copy .eyebrow {
+  margin: 0;
+}
+
+.feedback-contact-copy h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.feedback-contact-copy p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.76);
+  line-height: 1.45;
+}
+
+.feedback-contact-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.feedback-contact-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.feedback-contact-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.feedback-contact-btn.primary {
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.feedback-contact-btn.secondary {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--blue-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08);
+}
+
+.feedback-contact-btn.full {
+  grid-column: 1 / -1;
+}
+
+.feedback-contact-btn:active {
+  transform: scale(0.97);
+}
+
+.feedback-contact-note {
+  margin: 0 !important;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  color: rgba(45, 84, 103, 0.76) !important;
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode contact card */
+body.app-dark-mode .feedback-contact-copy h3 {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .feedback-contact-copy p,
+body.app-dark-mode .feedback-contact-note {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .feedback-contact-btn.secondary,
+body.app-dark-mode .feedback-contact-note {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+@media (max-width: 365px) {
+  .feedback-contact-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .feedback-contact-btn.full {
+    grid-column: auto;
+  }
+}
