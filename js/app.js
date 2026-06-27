@@ -5884,4 +5884,796 @@ updateInstallAppCard();
 
   setTimeout(updateVisibleVersionText, 1000);
 })();
-console.log("MD Weather Alerts Version 2.2 live app launch polish loaded successfully.");
+/* Version 2.3 - Home current conditions snapshot */
+
+(function mdwaHomeCurrentConditionsSnapshot() {
+  const home = document.getElementById("home");
+
+  if (!home) return;
+
+  const conditionPoints = [
+    { name: "Allegany", place: "Cumberland", lat: 39.6529, lon: -78.7625 },
+    { name: "Anne Arundel", place: "Annapolis", lat: 38.9784, lon: -76.4922 },
+    { name: "Baltimore City", place: "Baltimore", lat: 39.2904, lon: -76.6122 },
+    { name: "Baltimore County", place: "Towson", lat: 39.4015, lon: -76.6019 },
+    { name: "Calvert", place: "Prince Frederick", lat: 38.5404, lon: -76.5844 },
+    { name: "Caroline", place: "Denton", lat: 38.8846, lon: -75.8272 },
+    { name: "Carroll", place: "Westminster", lat: 39.5754, lon: -76.9958 },
+    { name: "Cecil", place: "Elkton", lat: 39.6068, lon: -75.8333 },
+    { name: "Charles", place: "La Plata", lat: 38.5293, lon: -76.9753 },
+    { name: "Dorchester", place: "Cambridge", lat: 38.5632, lon: -76.0788 },
+    { name: "Frederick", place: "Frederick", lat: 39.4143, lon: -77.4105 },
+    { name: "Garrett", place: "Oakland", lat: 39.4079, lon: -79.4067 },
+    { name: "Harford", place: "Bel Air", lat: 39.5359, lon: -76.3483 },
+    { name: "Howard", place: "Columbia", lat: 39.2037, lon: -76.8610 },
+    { name: "Kent", place: "Chestertown", lat: 39.2189, lon: -76.0690 },
+    { name: "Montgomery", place: "Rockville", lat: 39.0840, lon: -77.1528 },
+    { name: "Prince George’s", place: "Upper Marlboro", lat: 38.8159, lon: -76.7497 },
+    { name: "Queen Anne’s", place: "Centreville", lat: 39.0418, lon: -76.0663 },
+    { name: "Somerset", place: "Princess Anne", lat: 38.2029, lon: -75.6924 },
+    { name: "St. Mary’s", place: "Leonardtown", lat: 38.2912, lon: -76.6358 },
+    { name: "Talbot", place: "Easton", lat: 38.7743, lon: -76.0763 },
+    { name: "Washington", place: "Hagerstown", lat: 39.6418, lon: -77.7200 },
+    { name: "Wicomico", place: "Salisbury", lat: 38.3607, lon: -75.5994 },
+    { name: "Worcester", place: "Ocean City", lat: 38.3365, lon: -75.0849 },
+  ];
+
+  function celsiusToFahrenheit(value) {
+    if (typeof value !== "number") return null;
+    return Math.round((value * 9) / 5 + 32);
+  }
+
+  function metersPerSecondToMph(value) {
+    if (typeof value !== "number") return null;
+    return Math.round(value * 2.23694);
+  }
+
+  function getConditionIcon(text) {
+    const condition = (text || "").toLowerCase();
+
+    if (condition.includes("thunder")) return "⛈️";
+    if (condition.includes("rain") || condition.includes("shower")) return "🌧️";
+    if (condition.includes("snow") || condition.includes("ice") || condition.includes("sleet")) return "❄️";
+    if (condition.includes("fog") || condition.includes("mist") || condition.includes("haze")) return "🌫️";
+    if (condition.includes("cloud") || condition.includes("overcast")) return "☁️";
+    if (condition.includes("clear") || condition.includes("sun")) return "☀️";
+
+    return "🌡️";
+  }
+
+  function getSelectedHomePoint() {
+    const savedCounty =
+      localStorage.getItem("mdwa_live_forecast_county") || "Harford";
+
+    return (
+      conditionPoints.find((point) => point.name === savedCounty) ||
+      conditionPoints.find((point) => point.name === "Harford") ||
+      conditionPoints[0]
+    );
+  }
+
+  function createHomeCurrentCard() {
+    let card = document.getElementById("homeCurrentConditionsCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card home-current-card";
+    card.id = "homeCurrentConditionsCard";
+
+    card.innerHTML = `
+      <div class="home-current-main">
+        <div class="home-current-copy">
+          <p class="eyebrow">Current Conditions</p>
+          <h3 id="homeCurrentTitle">Checking conditions...</h3>
+          <p id="homeCurrentText">Loading nearby NWS observation data.</p>
+        </div>
+
+        <div class="home-current-icon" id="homeCurrentIcon">⏳</div>
+      </div>
+
+      <div class="home-current-temp-row">
+        <div class="home-current-temp" id="homeCurrentTemp">--°</div>
+
+        <div class="home-current-details">
+          <strong id="homeCurrentCondition">Loading</strong>
+          <small id="homeCurrentStation">Station pending</small>
+        </div>
+      </div>
+
+      <div class="home-current-meta">
+        <span class="home-current-pill" id="homeCurrentWind">Wind loading</span>
+        <span class="home-current-pill" id="homeCurrentHumidity">Humidity loading</span>
+        <span class="home-current-pill" id="homeCurrentChecked">Updating</span>
+      </div>
+
+      <div class="home-current-actions">
+        <button class="home-current-btn primary" id="homeCurrentRefreshBtn" type="button">
+          Refresh
+        </button>
+
+        <button class="home-current-btn secondary" id="homeCurrentForecastBtn" type="button">
+          View Forecast
+        </button>
+      </div>
+
+      <p class="home-current-status" id="homeCurrentStatus">
+        Current conditions are based on nearby official NWS observation stations.
+      </p>
+    `;
+
+    return card;
+  }
+
+  function placeHomeCurrentCard() {
+    const card = createHomeCurrentCard();
+
+    const weatherBody = document.getElementById("homeWeatherPanelBody");
+    const alertCard = document.getElementById("homeLiveAlertCard");
+    const forecastCard = document.getElementById("homeLiveForecastCard");
+    const weatherPanel = document.getElementById("homeWeatherPanel");
+
+    if (weatherBody) {
+      if (alertCard && alertCard.parentElement === weatherBody) {
+        alertCard.insertAdjacentElement("afterend", card);
+        return;
+      }
+
+      weatherBody.prepend(card);
+      return;
+    }
+
+    if (weatherPanel && weatherPanel.parentElement === home) {
+      weatherPanel.insertAdjacentElement("afterbegin", card);
+      return;
+    }
+
+    if (forecastCard && forecastCard.parentElement === home) {
+      forecastCard.insertAdjacentElement("beforebegin", card);
+      return;
+    }
+
+    const pageTitle = home.querySelector(".page-title");
+
+    if (pageTitle) {
+      pageTitle.insertAdjacentElement("afterend", card);
+    } else {
+      home.prepend(card);
+    }
+  }
+
+  function setHomeCurrentLoading(point) {
+    document.getElementById("homeCurrentTitle").textContent =
+      `Checking ${point.name} conditions...`;
+    document.getElementById("homeCurrentText").textContent =
+      `Loading the nearest observation station near ${point.place}.`;
+    document.getElementById("homeCurrentIcon").textContent = "⏳";
+    document.getElementById("homeCurrentTemp").textContent = "--°";
+    document.getElementById("homeCurrentCondition").textContent = "Loading";
+    document.getElementById("homeCurrentStation").textContent = "Station pending";
+    document.getElementById("homeCurrentWind").textContent = "Wind loading";
+    document.getElementById("homeCurrentHumidity").textContent = "Humidity loading";
+    document.getElementById("homeCurrentChecked").textContent = "Updating";
+    document.getElementById("homeCurrentStatus").textContent =
+      "Loading official NWS current conditions...";
+  }
+
+  function setHomeCurrentError(point) {
+    document.getElementById("homeCurrentTitle").textContent =
+      "Conditions unavailable";
+    document.getElementById("homeCurrentText").textContent =
+      `Could not load current conditions near ${point.place}.`;
+    document.getElementById("homeCurrentIcon").textContent = "⚠️";
+    document.getElementById("homeCurrentTemp").textContent = "--°";
+    document.getElementById("homeCurrentCondition").textContent = "NWS error";
+    document.getElementById("homeCurrentStation").textContent = "Try refresh";
+    document.getElementById("homeCurrentWind").textContent = "Wind unavailable";
+    document.getElementById("homeCurrentHumidity").textContent = "Humidity unavailable";
+    document.getElementById("homeCurrentChecked").textContent = "Error";
+    document.getElementById("homeCurrentStatus").textContent =
+      "Some NWS stations may be temporarily unavailable.";
+  }
+
+  function renderHomeCurrentConditions(observation, stationName, point) {
+    const props = observation.properties || {};
+
+    const tempF = celsiusToFahrenheit(props.temperature?.value);
+    const windMph = metersPerSecondToMph(props.windSpeed?.value);
+    const gustMph = metersPerSecondToMph(props.windGust?.value);
+
+    const conditionText = props.textDescription || "Current conditions";
+
+    const humidity =
+      typeof props.relativeHumidity?.value === "number"
+        ? `${Math.round(props.relativeHumidity.value)}%`
+        : "Humidity N/A";
+
+    const windText =
+      windMph === null
+        ? "Wind N/A"
+        : gustMph
+          ? `Wind ${windMph} mph, gusts ${gustMph}`
+          : `Wind ${windMph} mph`;
+
+    const checkedTime = new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+    document.getElementById("homeCurrentTitle").textContent =
+      `${point.name} conditions`;
+
+    document.getElementById("homeCurrentText").textContent = conditionText;
+
+    document.getElementById("homeCurrentIcon").textContent =
+      getConditionIcon(conditionText);
+
+    document.getElementById("homeCurrentTemp").textContent =
+      tempF === null ? "--°" : `${tempF}°`;
+
+    document.getElementById("homeCurrentCondition").textContent = conditionText;
+
+    document.getElementById("homeCurrentStation").textContent =
+      stationName || "Nearby NWS station";
+
+    document.getElementById("homeCurrentWind").textContent = windText;
+
+    document.getElementById("homeCurrentHumidity").textContent = humidity;
+
+    document.getElementById("homeCurrentChecked").textContent =
+      `Checked ${checkedTime}`;
+
+    document.getElementById("homeCurrentStatus").textContent =
+      `Official observation near ${point.place}.`;
+  }
+
+  async function loadHomeCurrentConditions() {
+    const point = getSelectedHomePoint();
+
+    setHomeCurrentLoading(point);
+
+    try {
+      const pointsUrl = `https://api.weather.gov/points/${point.lat.toFixed(4)},${point.lon.toFixed(4)}`;
+
+      const pointResponse = await fetch(pointsUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!pointResponse.ok) {
+        throw new Error(`NWS point request failed: ${pointResponse.status}`);
+      }
+
+      const pointData = await pointResponse.json();
+      const stationsUrl = pointData.properties?.observationStations;
+
+      if (!stationsUrl) {
+        throw new Error("NWS observation station URL missing.");
+      }
+
+      const stationsResponse = await fetch(stationsUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!stationsResponse.ok) {
+        throw new Error(`NWS stations request failed: ${stationsResponse.status}`);
+      }
+
+      const stationsData = await stationsResponse.json();
+      const station = stationsData.features?.[0];
+
+      if (!station) {
+        throw new Error("No nearby NWS station found.");
+      }
+
+      const stationId = station.properties?.stationIdentifier;
+      const stationName = station.properties?.name || stationId || "Nearby NWS station";
+
+      if (!stationId) {
+        throw new Error("NWS station identifier missing.");
+      }
+
+      const observationUrl =
+        `https://api.weather.gov/stations/${stationId}/observations/latest`;
+
+      const observationResponse = await fetch(observationUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!observationResponse.ok) {
+        throw new Error(`NWS observation request failed: ${observationResponse.status}`);
+      }
+
+      const observationData = await observationResponse.json();
+
+      renderHomeCurrentConditions(observationData, stationName, point);
+    } catch (error) {
+      console.error("Home current conditions failed:", error);
+      setHomeCurrentError(point);
+    }
+  }
+
+  function goToForecastTab() {
+    const forecastNav = document.querySelector('.nav-item[data-screen="forecast"]');
+
+    if (forecastNav) {
+      forecastNav.click();
+      return;
+    }
+
+    document.querySelectorAll(".screen").forEach((screen) => {
+      screen.classList.remove("active");
+    });
+
+    const forecastScreen = document.getElementById("forecast");
+
+    if (forecastScreen) {
+      forecastScreen.classList.add("active");
+    }
+  }
+
+  placeHomeCurrentCard();
+
+  const refreshBtn = document.getElementById("homeCurrentRefreshBtn");
+  const forecastBtn = document.getElementById("homeCurrentForecastBtn");
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", loadHomeCurrentConditions);
+  }
+
+  if (forecastBtn) {
+    forecastBtn.addEventListener("click", goToForecastTab);
+  }
+
+  loadHomeCurrentConditions();
+})();
+/* Version 2.3.1 - Remove duplicate hero forecast */
+
+(function mdwaRemoveDuplicateHeroForecast() {
+  function removeHeroForecastStrip() {
+    const heroForecastStrip = document.getElementById("heroLiveForecastStrip");
+
+    if (heroForecastStrip) {
+      heroForecastStrip.remove();
+    }
+
+    document.querySelectorAll(".hero-live-forecast-strip").forEach((strip) => {
+      strip.remove();
+    });
+  }
+
+  removeHeroForecastStrip();
+
+  setTimeout(removeHeroForecastStrip, 800);
+  setTimeout(removeHeroForecastStrip, 1800);
+  setTimeout(removeHeroForecastStrip, 3500);
+})();
+/* Version 2.3.2 - Home duplicate alert cleanup */
+
+(function mdwaHomeDuplicateAlertCleanup() {
+  const home = document.getElementById("home");
+
+  if (!home) return;
+
+  function hideOldHomeAlertPlaceholder() {
+    const cards = Array.from(home.querySelectorAll(".section-card"));
+
+    cards.forEach((card) => {
+      const text = card.textContent.toLowerCase();
+
+      const isOldAlertPlaceholder =
+        text.includes("active alerts") &&
+        text.includes("live maryland alert data will appear here") &&
+        text.includes("official weather sources");
+
+      const isLiveNwsHomeAlert =
+        card.id === "homeLiveAlertCard" ||
+        text.includes("official nws alerts") ||
+        text.includes("active nws alert") ||
+        text.includes("no active nws alerts");
+
+      if (isOldAlertPlaceholder && !isLiveNwsHomeAlert) {
+        card.classList.add("home-old-alert-placeholder");
+      }
+    });
+  }
+
+  function cleanHeroDemoBadge() {
+    const cards = Array.from(home.querySelectorAll(".section-card"));
+
+    const heroCard = cards.find((card) => {
+      const text = card.textContent.toLowerCase();
+
+      if (card.id === "homeLiveAlertCard") return false;
+      if (card.id === "homeLiveForecastCard") return false;
+      if (card.id === "homeCurrentConditionsCard") return false;
+      if (card.id === "homeWeatherPanel") return false;
+
+      return (
+        text.includes("good morning") ||
+        text.includes("good afternoon") ||
+        text.includes("good evening") ||
+        text.includes("forecasts, alerts, radar")
+      );
+    });
+
+    if (!heroCard) return;
+
+    const possibleDemoElements = Array.from(heroCard.querySelectorAll("*")).filter(
+      (element) => {
+        const text = element.textContent.trim().toLowerCase();
+
+        return (
+          text === "demo" ||
+          text.includes("79°") ||
+          text.includes("demo")
+        );
+      }
+    );
+
+    possibleDemoElements.forEach((element) => {
+      if (element.textContent.includes("79")) {
+        element.textContent = "Live";
+        element.classList.add("hero-demo-cleaned");
+        return;
+      }
+
+      if (element.textContent.trim().toLowerCase() === "demo") {
+        element.textContent = "MD";
+        element.classList.add("hero-demo-cleaned");
+      }
+    });
+  }
+
+  function runHomeCleanup() {
+    hideOldHomeAlertPlaceholder();
+    cleanHeroDemoBadge();
+  }
+
+  runHomeCleanup();
+
+  setTimeout(runHomeCleanup, 800);
+  setTimeout(runHomeCleanup, 1800);
+  setTimeout(runHomeCleanup, 3500);
+})();/* Version 2.3.3 - Clean hero demo weather and current conditions fallback */
+
+(function mdwaCleanHeroDemoWeatherAndCurrentFallback() {
+  const home = document.getElementById("home");
+
+  if (!home) return;
+
+  function findHeroCard() {
+    const cards = Array.from(home.querySelectorAll(".section-card"));
+
+    return (
+      cards.find((card) => {
+        const text = card.textContent.toLowerCase();
+
+        if (card.id === "homeLiveAlertCard") return false;
+        if (card.id === "homeLiveForecastCard") return false;
+        if (card.id === "homeCurrentConditionsCard") return false;
+        if (card.id === "homeWeatherPanel") return false;
+        if (card.id === "homeMultiDayForecastPanel") return false;
+
+        return (
+          text.includes("good morning") ||
+          text.includes("good afternoon") ||
+          text.includes("good evening") ||
+          text.includes("forecasts, alerts, radar")
+        );
+      }) || null
+    );
+  }
+
+  function cleanHeroDemoWeather() {
+    const heroCard = findHeroCard();
+
+    if (!heroCard) return;
+
+    const elements = Array.from(heroCard.querySelectorAll("*"));
+
+    elements.forEach((element) => {
+      const text = element.textContent.trim().toLowerCase();
+
+      const isFakeTemp =
+        text === "79°" ||
+        text === "demo" ||
+        text.includes("feels like 82") ||
+        text.includes("wind 6 mph");
+
+      if (isFakeTemp) {
+        element.classList.add("hero-demo-weather-hidden");
+      }
+    });
+
+    if (!heroCard.querySelector(".hero-live-badge-clean")) {
+      const fakeWeatherArea = elements.find((element) => {
+        const text = element.textContent.trim().toLowerCase();
+        return text.includes("79°") || text.includes("demo");
+      });
+
+      const liveBadge = document.createElement("div");
+      liveBadge.className = "hero-live-badge-clean";
+      liveBadge.innerHTML = `
+        <strong>Live</strong>
+        <small>MD</small>
+      `;
+
+      if (fakeWeatherArea && fakeWeatherArea.parentElement) {
+        fakeWeatherArea.parentElement.appendChild(liveBadge);
+      } else {
+        heroCard.appendChild(liveBadge);
+      }
+    }
+
+    if (!heroCard.querySelector(".hero-clean-note")) {
+      const note = document.createElement("span");
+      note.className = "hero-clean-note";
+      note.textContent = "Live weather data below";
+      heroCard.appendChild(note);
+    }
+  }
+
+  function cleanCurrentConditionsFallback() {
+    const card = document.getElementById("homeCurrentConditionsCard");
+
+    if (!card) return;
+
+    const temp = document.getElementById("homeCurrentTemp");
+    const wind = document.getElementById("homeCurrentWind");
+    const humidity = document.getElementById("homeCurrentHumidity");
+    const status = document.getElementById("homeCurrentStatus");
+
+    const tempText = temp ? temp.textContent.trim() : "";
+    const windText = wind ? wind.textContent.trim().toLowerCase() : "";
+    const humidityText = humidity ? humidity.textContent.trim().toLowerCase() : "";
+
+    const hasPartialData =
+      tempText === "--°" ||
+      tempText === "-°" ||
+      windText.includes("n/a") ||
+      humidityText.includes("n/a");
+
+    card.classList.toggle("current-partial-data", hasPartialData);
+
+    if (hasPartialData && temp && (tempText === "--°" || tempText === "-°")) {
+      temp.textContent = "N/A";
+    }
+
+    if (hasPartialData && status) {
+      status.textContent =
+        "The nearby NWS station reported conditions, but some observation values were unavailable. Forecast data is still available below.";
+    }
+  }
+
+  function runCleanup() {
+    cleanHeroDemoWeather();
+    cleanCurrentConditionsFallback();
+  }
+
+  runCleanup();
+
+  setTimeout(runCleanup, 800);
+  setTimeout(runCleanup, 1800);
+  setTimeout(runCleanup, 3500);
+  setTimeout(runCleanup, 6000);
+})();
+/* Version 2.3.4 - Force clean Home hero demo badge */
+
+(function mdwaForceCleanHomeHeroDemoBadge() {
+  const home = document.getElementById("home");
+
+  if (!home) return;
+
+  function findHomeHeroCard() {
+    const cards = Array.from(home.querySelectorAll(".section-card"));
+
+    return (
+      cards.find((card) => {
+        const text = card.textContent.toLowerCase();
+
+        if (card.id === "homeLiveAlertCard") return false;
+        if (card.id === "homeLiveForecastCard") return false;
+        if (card.id === "homeCurrentConditionsCard") return false;
+        if (card.id === "homeWeatherPanel") return false;
+        if (card.id === "homeMultiDayForecastPanel") return false;
+
+        return (
+          text.includes("good morning") ||
+          text.includes("good afternoon") ||
+          text.includes("good evening") ||
+          text.includes("forecasts, alerts, radar")
+        );
+      }) || null
+    );
+  }
+
+  function forceCleanHeroDemo() {
+    const heroCard = findHomeHeroCard();
+
+    if (!heroCard) return;
+
+    const elements = Array.from(heroCard.querySelectorAll("*"));
+
+    // Hide the fake Feels Like / Wind demo pills.
+    elements.forEach((element) => {
+      const text = element.textContent.trim().toLowerCase();
+
+      if (
+        text.includes("feels like 82") ||
+        text.includes("wind 6 mph")
+      ) {
+        element.classList.add("force-hide-hero-demo");
+      }
+    });
+
+    // Find the smallest element that contains both 79 and Demo.
+    const demoBadgeCandidates = elements
+      .filter((element) => {
+        const text = element.textContent.trim().toLowerCase();
+
+        return (
+          text.includes("79") &&
+          text.includes("demo") &&
+          text.length <= 40
+        );
+      })
+      .sort((a, b) => a.textContent.length - b.textContent.length);
+
+    const demoBadge = demoBadgeCandidates[0];
+
+    if (demoBadge) {
+      demoBadge.innerHTML = `
+        <div class="force-clean-hero-badge">
+          <strong>Live</strong>
+          <small>MD</small>
+        </div>
+      `;
+      return;
+    }
+
+    // Backup: hide any small fake demo pieces and add a clean badge.
+    elements.forEach((element) => {
+      const text = element.textContent.trim().toLowerCase();
+
+      if (
+        (text.includes("79") || text.includes("demo")) &&
+        text.length <= 20
+      ) {
+        element.classList.add("force-hide-hero-demo");
+      }
+    });
+
+    if (!heroCard.querySelector(".force-clean-hero-badge")) {
+      const badge = document.createElement("div");
+      badge.className = "force-clean-hero-badge";
+      badge.innerHTML = `
+        <strong>Live</strong>
+        <small>MD</small>
+      `;
+
+      heroCard.appendChild(badge);
+    }
+  }
+
+  function cleanCurrentConditionsNoTemp() {
+    const card = document.getElementById("homeCurrentConditionsCard");
+    const temp = document.getElementById("homeCurrentTemp");
+    const status = document.getElementById("homeCurrentStatus");
+
+    if (!card || !temp) return;
+
+    const tempText = temp.textContent.trim().toLowerCase();
+
+    if (tempText === "n/a" || tempText === "--°" || tempText === "-°") {
+      card.classList.add("current-no-temp");
+      temp.textContent = "Temp unavailable";
+
+      if (status) {
+        status.textContent =
+          "The nearby NWS station reported conditions, but temperature data is currently unavailable.";
+      }
+    }
+  }
+
+  function runHeroCleanup() {
+    forceCleanHeroDemo();
+    cleanCurrentConditionsNoTemp();
+  }
+
+  runHeroCleanup();
+
+  setTimeout(runHeroCleanup, 800);
+  setTimeout(runHeroCleanup, 1800);
+  setTimeout(runHeroCleanup, 3500);
+  setTimeout(runHeroCleanup, 6000);
+})();/* Version 2.3.5 - Force remove fake Home demo weather */
+
+(function mdwaForceRemoveFakeHomeDemoWeather() {
+  const home = document.getElementById("home");
+
+  if (!home) return;
+
+  function cleanText(text) {
+    return (text || "").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  function findBestDemoBadgeTarget() {
+    const elements = Array.from(home.querySelectorAll("*"));
+
+    const candidates = elements
+      .filter((element) => {
+        const text = cleanText(element.textContent);
+
+        if (!text.includes("79")) return false;
+        if (!text.includes("demo")) return false;
+
+        // Avoid grabbing the entire Home screen.
+        if (text.length > 90) return false;
+
+        return true;
+      })
+      .sort((a, b) => cleanText(a.textContent).length - cleanText(b.textContent).length);
+
+    return candidates[0] || null;
+  }
+
+  function hideFakeHeroPills() {
+    const elements = Array.from(home.querySelectorAll("*"));
+
+    elements.forEach((element) => {
+      const text = cleanText(element.textContent);
+
+      const isFakePill =
+        text.includes("feels like 82") ||
+        text.includes("wind 6 mph");
+
+      if (!isFakePill) return;
+
+      const pill =
+        element.closest(".pill") ||
+        element.closest("[class*='pill']") ||
+        element.closest("[class*='meta']") ||
+        element;
+
+      pill.classList.add("force-demo-hide-v235");
+    });
+  }
+
+  function replaceFakeDemoBadge() {
+    const existingBadge = home.querySelector(".hero-replacement-badge-v235");
+
+    if (existingBadge) return;
+
+    const target = findBestDemoBadgeTarget();
+
+    if (!target) return;
+
+    target.innerHTML = `
+      <div class="hero-replacement-badge-v235">
+        <strong>Live</strong>
+        <small>MD</small>
+      </div>
+    `;
+  }
+
+  function forceCleanDemoWeather() {
+    hideFakeHeroPills();
+    replaceFakeDemoBadge();
+  }
+
+  forceCleanDemoWeather();
+
+  setTimeout(forceCleanDemoWeather, 500);
+  setTimeout(forceCleanDemoWeather, 1200);
+  setTimeout(forceCleanDemoWeather, 2500);
+  setTimeout(forceCleanDemoWeather, 5000);
+
+  console.log("MDWA 2.3.5 fake demo weather cleanup ran");
+})();
+console.log("MD Weather Alerts Version 2.3.5 force remove fake home demo weather loaded successfully.");

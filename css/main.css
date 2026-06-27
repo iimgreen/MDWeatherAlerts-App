@@ -6397,3 +6397,406 @@ body.app-dark-mode .beta-launch-btn.danger {
     grid-column: auto;
   }
 }
+/* Version 2.3 - Home current conditions snapshot */
+
+.home-current-card {
+  display: grid;
+  gap: 13px;
+}
+
+.home-current-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.home-current-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.home-current-copy .eyebrow {
+  margin: 0;
+}
+
+.home-current-copy h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.home-current-copy p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.76);
+  line-height: 1.45;
+}
+
+.home-current-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.home-current-temp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.home-current-temp {
+  color: var(--blue-dark);
+  font-size: 42px;
+  font-weight: 1000;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.home-current-details {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+}
+
+.home-current-details strong {
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.home-current-details small {
+  color: rgba(45, 84, 103, 0.72);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.home-current-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.home-current-pill {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.54);
+  color: rgba(45, 84, 103, 0.8);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.home-current-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.home-current-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 13px;
+  font-size: 13px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.home-current-btn.primary {
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.home-current-btn.secondary {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--blue-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08);
+}
+
+.home-current-btn:active {
+  transform: scale(0.97);
+}
+
+.home-current-status {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode home current conditions */
+body.app-dark-mode .home-current-copy h3,
+body.app-dark-mode .home-current-temp,
+body.app-dark-mode .home-current-details strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .home-current-copy p,
+body.app-dark-mode .home-current-details small,
+body.app-dark-mode .home-current-pill,
+body.app-dark-mode .home-current-status {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .home-current-temp-row,
+body.app-dark-mode .home-current-pill,
+body.app-dark-mode .home-current-btn.secondary {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+@media (max-width: 365px) {
+  .home-current-main,
+  .home-current-temp-row {
+    align-items: flex-start;
+  }
+
+  .home-current-actions {
+    grid-template-columns: 1fr;
+  }
+}
+/* Version 2.3.1 - Remove duplicate hero forecast content */
+
+#heroLiveForecastStrip {
+  display: none !important;
+}
+
+#home .hero-live-forecast-strip {
+  display: none !important;
+}
+/* Version 2.3.2 - Home duplicate alert cleanup */
+
+/* Hide old placeholder Active Alerts card on Home */
+#home .section-card.home-old-alert-placeholder {
+  display: none !important;
+}
+
+/* Clean up old demo hero weather badge if detected */
+#home .hero-demo-cleaned {
+  font-size: 14px !important;
+  letter-spacing: 0 !important;
+}
+
+#home .hero-demo-cleaned small,
+#home .hero-demo-cleaned span {
+  font-size: 12px !important;
+}
+/* Version 2.3.3 - Clean hero demo weather and current conditions fallback */
+
+#home .hero-demo-weather-hidden {
+  display: none !important;
+}
+
+#home .hero-live-badge-clean {
+  display: grid;
+  place-items: center;
+  min-width: 82px;
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.42), transparent 44%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(231, 247, 255, 0.62));
+  border: 1px solid rgba(255, 213, 106, 0.54);
+  box-shadow:
+    0 16px 32px rgba(7, 51, 79, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  text-align: center;
+}
+
+#home .hero-live-badge-clean strong {
+  color: var(--blue-dark);
+  font-size: 22px;
+  font-weight: 1000;
+  letter-spacing: -0.04em;
+}
+
+#home .hero-live-badge-clean small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+#home .hero-clean-note {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.54);
+  color: rgba(45, 84, 103, 0.8);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+#home .home-current-card.current-partial-data .home-current-temp {
+  font-size: 34px;
+  letter-spacing: -0.04em;
+}
+
+#home .home-current-card.current-partial-data .home-current-status {
+  background: rgba(255, 255, 255, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 18px;
+  padding: 11px;
+}
+
+body.app-dark-mode #home .hero-live-badge-clean,
+body.app-dark-mode #home .hero-clean-note,
+body.app-dark-mode #home .home-current-card.current-partial-data .home-current-status {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode #home .hero-live-badge-clean strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode #home .hero-live-badge-clean small,
+body.app-dark-mode #home .hero-clean-note {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+/* Version 2.3.4 - Force clean Home hero demo badge */
+
+#home .force-hide-hero-demo {
+  display: none !important;
+}
+
+#home .force-clean-hero-badge {
+  display: grid !important;
+  place-items: center;
+  min-width: 82px;
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.42), transparent 44%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(231, 247, 255, 0.62));
+  border: 1px solid rgba(255, 213, 106, 0.54);
+  box-shadow:
+    0 16px 32px rgba(7, 51, 79, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  text-align: center;
+}
+
+#home .force-clean-hero-badge strong {
+  color: var(--blue-dark);
+  font-size: 22px;
+  font-weight: 1000;
+  letter-spacing: -0.04em;
+}
+
+#home .force-clean-hero-badge small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+#home .home-current-card.current-no-temp .home-current-temp {
+  font-size: 22px !important;
+  letter-spacing: -0.03em !important;
+}
+
+body.app-dark-mode #home .force-clean-hero-badge {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode #home .force-clean-hero-badge strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode #home .force-clean-hero-badge small {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+/* Version 2.3.5 - Force remove fake Home demo weather */
+
+#home .force-demo-hide-v235 {
+  display: none !important;
+}
+
+.hero-replacement-badge-v235 {
+  display: grid !important;
+  place-items: center;
+  min-width: 82px;
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.42), transparent 44%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(231, 247, 255, 0.62));
+  border: 1px solid rgba(255, 213, 106, 0.54);
+  box-shadow:
+    0 16px 32px rgba(7, 51, 79, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  text-align: center;
+}
+
+.hero-replacement-badge-v235 strong {
+  color: var(--blue-dark);
+  font-size: 22px;
+  font-weight: 1000;
+  letter-spacing: -0.04em;
+}
+
+.hero-replacement-badge-v235 small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+body.app-dark-mode .hero-replacement-badge-v235 {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode .hero-replacement-badge-v235 strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .hero-replacement-badge-v235 small {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
