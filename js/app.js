@@ -6787,4 +6787,180 @@ updateInstallAppCard();
 
   setTimeout(setupLogoHomeButton, 800);
 })();
+
 console.log("MD Weather Alerts Version 2.3.6 clickable logo home button loaded successfully.");
+
+/* =========================================================
+   MDWA 2.3.7 - Reports Page Order Fix
+   Moves "+ Report Weather" card above Community Reports
+   ========================================================= */
+
+(function mdwaReportsPageOrderFixV237() {
+  function findReportsScreen() {
+    return (
+      document.getElementById("reports") ||
+      document.getElementById("reportsScreen") ||
+      document.querySelector('[data-screen="reports"]') ||
+      document.querySelector(".reports-screen")
+    );
+  }
+
+  function getCards(screen) {
+    return Array.from(
+      screen.querySelectorAll(".section-card, .glass-card, .forecast-card, .report-card, article")
+    );
+  }
+
+  function findCard(screen, requiredText) {
+    const cards = getCards(screen);
+
+    return cards.find((card) => {
+      const text = (card.textContent || "").toLowerCase();
+      return requiredText.every((phrase) => text.includes(phrase.toLowerCase()));
+    });
+  }
+
+  function fixReportsOrder() {
+    const screen = findReportsScreen();
+    if (!screen) return;
+
+    const reportButtonCard = findCard(screen, [
+      "see something happening",
+      "report weather"
+    ]);
+
+    const communityReportsCard = findCard(screen, [
+      "community reports"
+    ]);
+
+    const nearbyMapCard =
+      findCard(screen, ["nearby reports map"]) ||
+      findCard(screen, ["report map"]);
+
+    if (reportButtonCard && communityReportsCard) {
+      communityReportsCard.parentNode.insertBefore(reportButtonCard, communityReportsCard);
+    }
+
+    if (
+      nearbyMapCard &&
+      communityReportsCard &&
+      nearbyMapCard !== communityReportsCard &&
+      communityReportsCard.nextElementSibling !== nearbyMapCard
+    ) {
+      communityReportsCard.insertAdjacentElement("afterend", nearbyMapCard);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fixReportsOrder);
+  } else {
+    fixReportsOrder();
+  }
+
+  window.addEventListener("load", fixReportsOrder);
+
+  document.addEventListener("click", function () {
+    setTimeout(fixReportsOrder, 150);
+  });
+
+  setTimeout(fixReportsOrder, 300);
+  setTimeout(fixReportsOrder, 1000);
+
+  console.log("MD Weather Alerts Version 2.3.7 reports page order fix loaded.");
+})();
+/* =========================================================
+   MDWA 2.3.8 - Force Report Weather CTA To Top
+   ========================================================= */
+
+(function mdwaForceReportWeatherTopV238() {
+  function findReportsScreen() {
+    return (
+      document.getElementById("reports") ||
+      document.getElementById("reportsScreen") ||
+      document.querySelector('[data-screen="reports"]') ||
+      Array.from(document.querySelectorAll("section, main, div")).find((el) => {
+        const text = el.textContent || "";
+        return text.includes("Reports") && text.includes("Community Reports");
+      })
+    );
+  }
+
+  function closestCard(el) {
+    if (!el) return null;
+
+    return (
+      el.closest(".section-card") ||
+      el.closest(".glass-card") ||
+      el.closest(".report-card") ||
+      el.closest(".forecast-card") ||
+      el.closest("article") ||
+      el.parentElement?.parentElement ||
+      null
+    );
+  }
+
+  function findCardByText(screen, phrases) {
+    const cards = Array.from(
+      screen.querySelectorAll(".section-card, .glass-card, .report-card, .forecast-card, article, div")
+    );
+
+    return cards.find((card) => {
+      const text = (card.textContent || "").toLowerCase();
+      return phrases.every((phrase) => text.includes(phrase.toLowerCase()));
+    });
+  }
+
+  function moveReportWeatherButtonToTop() {
+    const screen = findReportsScreen();
+    if (!screen) return;
+
+    const reportButton = Array.from(
+      screen.querySelectorAll("button, a")
+    ).find((btn) => {
+      const text = (btn.textContent || "").toLowerCase();
+      return text.includes("report weather");
+    });
+
+    const reportWeatherCard =
+      closestCard(reportButton) ||
+      findCardByText(screen, ["see something happening", "report weather"]);
+
+    const communityReportsCard = findCardByText(screen, ["community reports"]);
+
+    const reportMapCard =
+      findCardByText(screen, ["nearby reports map"]) ||
+      findCardByText(screen, ["view report map"]);
+
+    if (reportWeatherCard && communityReportsCard) {
+      communityReportsCard.parentNode.insertBefore(reportWeatherCard, communityReportsCard);
+    }
+
+    if (
+      communityReportsCard &&
+      reportMapCard &&
+      reportMapCard !== communityReportsCard &&
+      communityReportsCard.nextElementSibling !== reportMapCard
+    ) {
+      communityReportsCard.insertAdjacentElement("afterend", reportMapCard);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", moveReportWeatherButtonToTop);
+  } else {
+    moveReportWeatherButtonToTop();
+  }
+
+  window.addEventListener("load", moveReportWeatherButtonToTop);
+
+  document.addEventListener("click", function () {
+    setTimeout(moveReportWeatherButtonToTop, 100);
+    setTimeout(moveReportWeatherButtonToTop, 400);
+  });
+
+  setTimeout(moveReportWeatherButtonToTop, 300);
+  setTimeout(moveReportWeatherButtonToTop, 1000);
+  setTimeout(moveReportWeatherButtonToTop, 2000);
+
+  console.log("MD Weather Alerts Version 2.3.8 report weather top fix loaded.");
+})();

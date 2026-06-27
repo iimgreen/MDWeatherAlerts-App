@@ -6840,3 +6840,66 @@ body.app-dark-mode .mdwa-logo-home-button::after {
   background: rgba(8, 29, 43, 0.86);
   color: #f6fcff;
 }
+/* =========================================================
+   MDWA 2.3.7 - Card Layering Fix
+   Keeps background hills/clouds behind cards
+   ========================================================= */
+
+.app,
+.app-shell,
+.phone-shell,
+.screen,
+.page,
+main {
+  position: relative;
+}
+
+.section-card,
+.glass-card,
+.forecast-card,
+.alert-card,
+.report-card,
+.card,
+.tile,
+.quick-card {
+  position: relative;
+  z-index: 5;
+}
+
+.hero,
+.app-hero,
+.home-hero,
+.brand-hero {
+  position: relative;
+  z-index: 6;
+}
+
+.hill,
+.hills,
+.background-hill,
+.background-hills,
+.landscape,
+.grass,
+.bg-hill,
+.bg-hills,
+.decorative-hill,
+.decorative-hills,
+.weather-background,
+.screen-background,
+.app-background {
+  pointer-events: none;
+  z-index: 0 !important;
+}
+
+.screen::before,
+.screen::after,
+.page::before,
+.page::after,
+.app::before,
+.app::after,
+.app-shell::before,
+.app-shell::after,
+.phone-shell::before,
+.phone-shell::after {
+  pointer-events: none;
+}
