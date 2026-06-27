@@ -8,6 +8,7 @@ const reportMap = document.getElementById("reportMap");
 const countySelect = document.querySelector(".county-select");
 
 let savedLocation = null;
+let reportCount = 0;
 
 function showScreen(screenId) {
   screens.forEach((screen) => {
@@ -64,6 +65,56 @@ function loadDemoWeather() {
   if (miniStats[1]) miniStats[1].textContent = "Wind 6 mph";
 }
 
+function getPrivacyOffsetLocation(latitude, longitude, miles = 0.1) {
+  const earthRadiusMiles = 3958.8;
+  const randomBearing = Math.random() * 2 * Math.PI;
+  const distance = miles / earthRadiusMiles;
+
+  const lat1 = latitude * (Math.PI / 180);
+  const lon1 = longitude * (Math.PI / 180);
+
+  const lat2 = Math.asin(
+    Math.sin(lat1) * Math.cos(distance) +
+      Math.cos(lat1) * Math.sin(distance) * Math.cos(randomBearing)
+  );
+
+  const lon2 =
+    lon1 +
+    Math.atan2(
+      Math.sin(randomBearing) * Math.sin(distance) * Math.cos(lat1),
+      Math.cos(distance) - Math.sin(lat1) * Math.sin(lat2)
+    );
+
+  return {
+    latitude: lat2 * (180 / Math.PI),
+    longitude: lon2 * (180 / Math.PI),
+    privacyOffsetMiles: miles,
+  };
+}
+
+function createToast() {
+  let toast = document.querySelector(".toast");
+
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+
+  return toast;
+}
+
+function showToast(message) {
+  const toast = createToast();
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2600);
+}
+
 function getReportEmoji(reportTypes) {
   if (reportTypes.includes("Lightning")) return "⚡";
   if (reportTypes.includes("Hail")) return "🧊";
@@ -94,20 +145,101 @@ function addReportToMap(reportTypes) {
   pin.style.top = `${top}%`;
 
   reportMap.appendChild(pin);
+  reportMap.classList.add("has-reports");
 
   const mapText = reportMap.querySelector("p");
 
   if (mapText) {
-    mapText.textContent = "Report added to the demo map.";
+    mapText.textContent = "Live report added to the demo map.";
   }
 
   setTimeout(() => {
     pin.remove();
-
-    if (mapText) {
-      mapText.textContent = "Submitted reports will appear here.";
-    }
   }, 15000);
+}
+
+function createReportFeed() {
+  let feedSection = document.getElementById("reportFeedSection");
+
+  if (feedSection) return feedSection;
+
+  const reportsScreen = document.getElementById("reports");
+
+  if (!reportsScreen) return null;
+
+  feedSection = document.createElement("section");
+  feedSection.className = "section-card";
+  feedSection.id = "reportFeedSection";
+
+  feedSection.innerHTML = `
+    <div class="section-title-row">
+      <h3>Submitted Reports</h3>
+      <span class="pill live">Local</span>
+    </div>
+
+    <div class="report-feed" id="reportFeed">
+      <p class="empty-feed">No reports submitted yet. Your reports will show here during this session.</p>
+    </div>
+  `;
+
+  reportsScreen.appendChild(feedSection);
+
+  return feedSection;
+}
+
+function addReportToFeed(reportTypes, note) {
+  createReportFeed();
+
+  const feed = document.getElementById("reportFeed");
+
+  if (!feed) return;
+
+  const emptyFeed = feed.querySelector(".empty-feed");
+
+  if (emptyFeed) {
+    emptyFeed.remove();
+  }
+
+  reportCount += 1;
+
+  const now = new Date();
+
+  const timeString = now.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  const locationText = savedLocation
+    ? `Approximate location • offset ${savedLocation.privacyOffsetMiles} mi`
+    : "Location not shared";
+
+  const card = document.createElement("div");
+  card.className = "report-card";
+
+  const tags = reportTypes
+    .map((type) => `<span class="report-tag">${type}</span>`)
+    .join("");
+
+  card.innerHTML = `
+    <div class="report-card-top">
+      <strong>Report #${reportCount}</strong>
+      <small>${timeString}</small>
+    </div>
+
+    <small>📍 ${locationText}</small>
+
+    <div class="report-tags">
+      ${tags}
+    </div>
+
+    ${
+      note
+        ? `<p class="report-note">${note}</p>`
+        : `<p class="report-note">No extra details added.</p>`
+    }
+  `;
+
+  feed.prepend(card);
 }
 
 if (locationBtn) {
@@ -121,19 +253,23 @@ if (locationBtn) {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        savedLocation = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
+        savedLocation = getPrivacyOffsetLocation(
+          position.coords.latitude,
+          position.coords.longitude,
+          0.1
+        );
 
-        locationStatus.textContent = `Location added: ${savedLocation.latitude.toFixed(
-          3
-        )}, ${savedLocation.longitude.toFixed(3)}`;
+        locationStatus.textContent =
+          "Location added privately. Reports are shown about 0.1 miles from your exact location.";
+
+        showToast("Private report location added.");
       },
       () => {
         savedLocation = null;
         locationStatus.textContent =
-          "Location permission was denied or unavailable. Demo reports still work.";
+          "Location permission was denied or unavailable. Reports still work in demo mode.";
+
+        showToast("Location was not added.");
       }
     );
   });
@@ -145,20 +281,18 @@ if (submitReportBtn) {
       document.querySelectorAll('.checkbox-grid input[type="checkbox"]:checked')
     ).map((input) => input.value);
 
-    const note = document.getElementById("reportNote");
+    const noteBox = document.getElementById("reportNote");
+    const note = noteBox ? noteBox.value.trim() : "";
 
     if (checkedReports.length === 0) {
-      alert("Please select at least one weather condition.");
+      showToast("Please select at least one condition.");
       return;
     }
 
     addReportToMap(checkedReports);
+    addReportToFeed(checkedReports, note);
 
-    alert(
-      `Report submitted: ${checkedReports.join(
-        ", "
-      )}\n\nThis is currently a demo. Soon this will save to the live Maryland reports map.`
-    );
+    showToast("Weather report added to the map.");
 
     document
       .querySelectorAll('.checkbox-grid input[type="checkbox"]')
@@ -166,8 +300,8 @@ if (submitReportBtn) {
         input.checked = false;
       });
 
-    if (note) {
-      note.value = "";
+    if (noteBox) {
+      noteBox.value = "";
     }
   });
 }
@@ -180,16 +314,19 @@ if (countySelect) {
     forecastRows.forEach((row) => {
       row.textContent = `${selectedCounty} forecast data coming soon.`;
     });
+
+    showToast(`${selectedCounty} selected.`);
   });
 }
 
 document.querySelectorAll(".more-list button").forEach((button) => {
   button.addEventListener("click", () => {
-    alert("This section is coming soon to MD Weather Alerts.");
+    showToast("This section is coming soon.");
   });
 });
 
+createReportFeed();
 setGreeting();
 loadDemoWeather();
 
-console.log("MD Weather Alerts app loaded successfully.");
+console.log("MD Weather Alerts Version 0.2.2 loaded successfully.");
