@@ -1819,4 +1819,73 @@ updateInstallAppCard();
     });
   }
 })();
+/* Version 0.9.1 - Alerts default county and safety polish */
+
+(function mdwaAlertsPolish() {
+  const alertCountySelect = document.getElementById("alertCountySelect");
+  const defaultCountySelect = document.getElementById("defaultAlertCountySelect");
+  const defaultCountyNote = document.getElementById("defaultCountyNote");
+
+  if (!defaultCountySelect || !alertCountySelect) return;
+
+  function showDefaultCountySaved() {
+    if (!defaultCountyNote) return;
+
+    defaultCountyNote.textContent = "Default alert area saved ✓";
+
+    setTimeout(() => {
+      defaultCountyNote.textContent =
+        "Your default alert area saves automatically on this device.";
+    }, 1400);
+  }
+
+  function copyCountyOptionsToDefaultSelect() {
+    defaultCountySelect.innerHTML = "";
+
+    Array.from(alertCountySelect.options).forEach((option) => {
+      const newOption = document.createElement("option");
+      newOption.value = option.value;
+      newOption.textContent = option.textContent;
+      defaultCountySelect.appendChild(newOption);
+    });
+  }
+
+  function applySavedDefaultCounty() {
+    const savedDefaultCounty =
+      localStorage.getItem("mdwa_default_alert_county") || "all";
+
+    const optionExists = Array.from(defaultCountySelect.options).some(
+      (option) => option.value === savedDefaultCounty
+    );
+
+    if (!optionExists) return;
+
+    defaultCountySelect.value = savedDefaultCounty;
+    alertCountySelect.value = savedDefaultCounty;
+
+    alertCountySelect.dispatchEvent(new Event("change"));
+  }
+
+  copyCountyOptionsToDefaultSelect();
+  applySavedDefaultCounty();
+
+  defaultCountySelect.addEventListener("change", () => {
+    const selectedCounty = defaultCountySelect.value;
+
+    localStorage.setItem("mdwa_default_alert_county", selectedCounty);
+
+    alertCountySelect.value = selectedCounty;
+    alertCountySelect.dispatchEvent(new Event("change"));
+
+    showDefaultCountySaved();
+
+    if (typeof showToast === "function") {
+      showToast(
+        selectedCounty === "all"
+          ? "Default alert area set to all Maryland."
+          : `Default alert area set to ${selectedCounty}.`
+      );
+    }
+  });
+})();
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");

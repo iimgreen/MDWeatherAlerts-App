@@ -3782,3 +3782,172 @@ body.app-dark-mode .alert-action-btn {
   background: rgba(255, 255, 255, 0.1) !important;
   color: #f6fcff !important;
 }
+/* Version 0.9.1 - Alerts safety polish and default county */
+
+.default-alert-county-card {
+  display: grid;
+  gap: 12px;
+}
+
+.alert-safety-card,
+.alert-education-card {
+  display: grid;
+  gap: 14px;
+}
+
+.alert-safety-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.alert-safety-item {
+  position: relative;
+  overflow: hidden;
+  min-height: 128px;
+  padding: 14px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.alert-safety-item::after {
+  content: "";
+  position: absolute;
+  right: -34px;
+  top: -34px;
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  opacity: 0.22;
+}
+
+.alert-safety-item.danger::after {
+  background: #ef4444;
+}
+
+.alert-safety-item.warning::after {
+  background: #f97316;
+}
+
+.alert-safety-item.flood::after {
+  background: #38bdf8;
+}
+
+.alert-safety-item.winter::after {
+  background: #a5f3fc;
+}
+
+.alert-safety-item span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 25px;
+}
+
+.alert-safety-item strong {
+  display: block;
+  color: var(--blue-dark);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.alert-safety-item small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.alert-meaning-list {
+  display: grid;
+  gap: 10px;
+}
+
+.alert-meaning-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.alert-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.46);
+}
+
+.watch-dot {
+  background: #facc15;
+}
+
+.warning-dot {
+  background: #ef4444;
+}
+
+.advisory-dot {
+  background: #a855f7;
+}
+
+.statement-dot {
+  background: #38bdf8;
+}
+
+.alert-meaning-row strong {
+  display: block;
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.alert-meaning-row small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* Dark mode alerts polish */
+body.app-dark-mode .alert-safety-item,
+body.app-dark-mode .alert-meaning-row {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+}
+
+body.app-dark-mode .alert-safety-item strong,
+body.app-dark-mode .alert-meaning-row strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .alert-safety-item small,
+body.app-dark-mode .alert-meaning-row small {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .alert-dot {
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 365px) {
+  .alert-safety-grid {
+    grid-template-columns: 1fr;
+  }
+}
