@@ -3516,4 +3516,385 @@ updateInstallAppCard();
 
   loadHomeForecast();
 })();
-console.log("MD Weather Alerts Version 1.5 home live forecast preview loaded successfully.");
+/* Version 1.6 - Reports center polish and saved local feed */
+
+(function mdwaReportsCenterPolish() {
+  const reportsScreen = document.getElementById("reports");
+  const submittedReports = document.getElementById("submittedReports");
+
+  if (!reportsScreen || !submittedReports) return;
+
+  const SAVED_REPORTS_KEY = "mdwa_saved_reports_feed_html";
+  const SAVED_REPORTS_TIME_KEY = "mdwa_saved_reports_feed_time";
+
+  function createReportsStatusCard() {
+    let card = document.getElementById("mdwaReportsStatusCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card reports-status-card";
+    card.id = "mdwaReportsStatusCard";
+
+    card.innerHTML = `
+      <div class="reports-status-main">
+        <div class="reports-status-copy">
+          <p class="eyebrow">Community Reports</p>
+          <h3 id="reportsStatusTitle">No reports submitted yet</h3>
+          <p id="reportsStatusText">
+            Local reports will appear here when Marylanders submit weather conditions.
+          </p>
+        </div>
+
+        <div class="reports-status-icon" id="reportsStatusIcon">📍</div>
+      </div>
+
+      <div class="reports-status-meta">
+        <span class="reports-status-pill" id="reportsActiveCount">0 active</span>
+        <span class="reports-status-pill" id="reportsImpactCount">0 impact</span>
+        <span class="reports-status-pill" id="reportsSkyCount">0 sky</span>
+        <span class="reports-status-pill" id="reportsSavedTime">Not saved yet</span>
+      </div>
+
+      <div class="reports-status-actions">
+        <button class="reports-status-btn primary" id="reportsJumpToMapBtn" type="button">
+          View Report Map
+        </button>
+
+        <button class="reports-status-btn secondary" id="reportsCopySummaryBtn" type="button">
+          Copy Summary
+        </button>
+
+        <button class="reports-status-btn danger" id="reportsClearSavedBtn" type="button">
+          Clear Saved Feed
+        </button>
+      </div>
+
+      <p class="reports-saved-note" id="reportsSavedNote">
+        Reports shown here are saved locally on this device for quick refresh recovery.
+      </p>
+    `;
+
+    return card;
+  }
+
+  function createReportTipsCard() {
+    let card = document.getElementById("mdwaReportTipsCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card report-tips-card";
+    card.id = "mdwaReportTipsCard";
+
+    card.innerHTML = `
+      <div class="section-title-row">
+        <div>
+          <h3>Report Tips</h3>
+          <p>Help keep community reports useful, safe, and accurate.</p>
+        </div>
+        <span class="pill calm">Guide</span>
+      </div>
+
+      <div class="report-tips-list">
+        <div class="report-tip-row">
+          <span>📍</span>
+          <div>
+            <strong>Location is approximate</strong>
+            <small>Your public report location is offset for privacy and should not show your exact spot.</small>
+          </div>
+        </div>
+
+        <div class="report-tip-row">
+          <span>⏱️</span>
+          <div>
+            <strong>Reports are temporary</strong>
+            <small>Reports are meant for current conditions and should expire as weather changes.</small>
+          </div>
+        </div>
+
+        <div class="report-tip-row">
+          <span>⚠️</span>
+          <div>
+            <strong>Do not report from danger</strong>
+            <small>Never go outside or drive into hazardous weather just to submit a report.</small>
+          </div>
+        </div>
+
+        <div class="report-tip-row">
+          <span>✅</span>
+          <div>
+            <strong>Be clear and specific</strong>
+            <small>Short details like “pea-size hail” or “road flooding near town” are more helpful.</small>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function placeReportsCards() {
+    const statusCard = createReportsStatusCard();
+    const tipsCard = createReportTipsCard();
+
+    const cleanPanel = document.getElementById("cleanReportPanel");
+    const firstSectionCard = reportsScreen.querySelector(".section-card");
+
+    if (cleanPanel) {
+      reportsScreen.insertBefore(statusCard, cleanPanel);
+      reportsScreen.insertBefore(tipsCard, cleanPanel.nextSibling);
+      return;
+    }
+
+    if (firstSectionCard) {
+      reportsScreen.insertBefore(statusCard, firstSectionCard);
+      reportsScreen.insertBefore(tipsCard, firstSectionCard.nextSibling);
+      return;
+    }
+
+    reportsScreen.appendChild(statusCard);
+    reportsScreen.appendChild(tipsCard);
+  }
+
+  function getReportItems() {
+    return Array.from(submittedReports.children).filter((item) => {
+      const text = item.textContent.toLowerCase().trim();
+
+      if (!text) return false;
+      if (text.includes("no submitted reports yet")) return false;
+
+      return true;
+    });
+  }
+
+  function getReportStats() {
+    const items = getReportItems();
+
+    const impactWords = ["flood", "hail", "wind damage", "damage"];
+    const skyWords = ["beautiful sky", "sky", "sunset", "sunrise"];
+
+    let impactCount = 0;
+    let skyCount = 0;
+
+    items.forEach((item) => {
+      const text = item.textContent.toLowerCase();
+
+      if (impactWords.some((word) => text.includes(word))) {
+        impactCount += 1;
+      }
+
+      if (skyWords.some((word) => text.includes(word))) {
+        skyCount += 1;
+      }
+    });
+
+    return {
+      total: items.length,
+      impact: impactCount,
+      sky: skyCount,
+    };
+  }
+
+  function getSavedTimeLabel() {
+    const savedTime = localStorage.getItem(SAVED_REPORTS_TIME_KEY);
+
+    if (!savedTime) return "Not saved yet";
+
+    const date = new Date(savedTime);
+
+    if (Number.isNaN(date.getTime())) return "Saved locally";
+
+    return `Saved ${date.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    })}`;
+  }
+
+  function updateReportsStatus() {
+    const stats = getReportStats();
+
+    const title = document.getElementById("reportsStatusTitle");
+    const text = document.getElementById("reportsStatusText");
+    const icon = document.getElementById("reportsStatusIcon");
+    const activeCount = document.getElementById("reportsActiveCount");
+    const impactCount = document.getElementById("reportsImpactCount");
+    const skyCount = document.getElementById("reportsSkyCount");
+    const savedTime = document.getElementById("reportsSavedTime");
+
+    if (!title || !text || !icon) return;
+
+    if (stats.total === 0) {
+      title.textContent = "No reports submitted yet";
+      text.textContent =
+        "Local reports will appear here when Marylanders submit current weather conditions.";
+      icon.textContent = "📍";
+    } else {
+      title.textContent = `${stats.total} active local report${
+        stats.total === 1 ? "" : "s"
+      }`;
+      text.textContent =
+        "Community weather reports are currently showing in the local app feed.";
+      icon.textContent = stats.impact > 0 ? "⚠️" : "📍";
+    }
+
+    if (activeCount) {
+      activeCount.textContent = `${stats.total} active`;
+    }
+
+    if (impactCount) {
+      impactCount.textContent = `${stats.impact} impact`;
+    }
+
+    if (skyCount) {
+      skyCount.textContent = `${stats.sky} sky`;
+    }
+
+    if (savedTime) {
+      savedTime.textContent = getSavedTimeLabel();
+    }
+  }
+
+  function saveReportsFeedSnapshot() {
+    const stats = getReportStats();
+
+    if (stats.total === 0) return;
+
+    localStorage.setItem(SAVED_REPORTS_KEY, submittedReports.innerHTML);
+    localStorage.setItem(SAVED_REPORTS_TIME_KEY, new Date().toISOString());
+
+    updateReportsStatus();
+  }
+
+  function restoreReportsFeedSnapshot() {
+    const currentStats = getReportStats();
+    const savedHtml = localStorage.getItem(SAVED_REPORTS_KEY);
+
+    if (currentStats.total > 0) return;
+    if (!savedHtml) return;
+
+    submittedReports.innerHTML = savedHtml;
+
+    const note = document.getElementById("reportsSavedNote");
+
+    if (note) {
+      note.textContent =
+        "Saved local report feed restored on this device. Map pins may refresh separately.";
+    }
+  }
+
+  function clearSavedReportsFeed() {
+    localStorage.removeItem(SAVED_REPORTS_KEY);
+    localStorage.removeItem(SAVED_REPORTS_TIME_KEY);
+
+    submittedReports.innerHTML = `
+      <p class="empty-feed">No submitted reports yet.</p>
+    `;
+
+    const note = document.getElementById("reportsSavedNote");
+
+    if (note) {
+      note.textContent =
+        "Saved local report feed cleared. Refresh the page if old map pins are still visible.";
+    }
+
+    updateReportsStatus();
+
+    if (typeof showToast === "function") {
+      showToast("Saved report feed cleared.");
+    }
+  }
+
+  function copyReportSummary() {
+    const stats = getReportStats();
+
+    const summary = [
+      "MD Weather Alerts Community Report Summary",
+      `Active local reports: ${stats.total}`,
+      `Impact reports: ${stats.impact}`,
+      `Beautiful sky/sky reports: ${stats.sky}`,
+      `Saved status: ${getSavedTimeLabel()}`,
+    ].join("\n");
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(summary).then(() => {
+        if (typeof showToast === "function") {
+          showToast("Report summary copied.");
+        }
+      });
+
+      return;
+    }
+
+    alert(summary);
+  }
+
+  function jumpToReportMap() {
+    const mapCard =
+      document.querySelector(".clean-map-card") ||
+      document.querySelector(".map-card") ||
+      document.getElementById("reportMap");
+
+    if (mapCard) {
+      mapCard.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    if (typeof showToast === "function") {
+      showToast("Jumping to report map.");
+    }
+  }
+
+  function watchReportsFeed() {
+    let saveTimer = null;
+
+    const observer = new MutationObserver(() => {
+      updateReportsStatus();
+
+      clearTimeout(saveTimer);
+
+      saveTimer = setTimeout(() => {
+        saveReportsFeedSnapshot();
+      }, 350);
+    });
+
+    observer.observe(submittedReports, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  placeReportsCards();
+  restoreReportsFeedSnapshot();
+  updateReportsStatus();
+  watchReportsFeed();
+
+  const jumpBtn = document.getElementById("reportsJumpToMapBtn");
+  const copyBtn = document.getElementById("reportsCopySummaryBtn");
+  const clearBtn = document.getElementById("reportsClearSavedBtn");
+  const submitBtn = document.getElementById("cleanSubmitReport");
+
+  if (jumpBtn) {
+    jumpBtn.addEventListener("click", jumpToReportMap);
+  }
+
+  if (copyBtn) {
+    copyBtn.addEventListener("click", copyReportSummary);
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", clearSavedReportsFeed);
+  }
+
+  if (submitBtn) {
+    submitBtn.addEventListener("click", () => {
+      setTimeout(() => {
+        updateReportsStatus();
+        saveReportsFeedSnapshot();
+      }, 500);
+    });
+  }
+})();
+console.log("MD Weather Alerts Version 1.6 reports center polish loaded successfully.");

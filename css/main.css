@@ -5045,3 +5045,206 @@ body.app-dark-mode .home-forecast-select option {
     grid-template-columns: 1fr;
   }
 }
+/* Version 1.6 - Reports center polish and saved local feed */
+
+.reports-status-card,
+.report-tips-card {
+  display: grid;
+  gap: 14px;
+}
+
+.reports-status-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.reports-status-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.reports-status-copy .eyebrow {
+  margin: 0;
+}
+
+.reports-status-copy h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.reports-status-copy p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.76);
+  line-height: 1.45;
+}
+
+.reports-status-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(116, 215, 255, 0.42), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.reports-status-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reports-status-pill {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.54);
+  color: rgba(45, 84, 103, 0.8);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.reports-status-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.reports-status-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.reports-status-btn.primary {
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.reports-status-btn.secondary {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--blue-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08);
+}
+
+.reports-status-btn.danger {
+  grid-column: 1 / -1;
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+}
+
+.reports-status-btn:active {
+  transform: scale(0.97);
+}
+
+.report-tips-list {
+  display: grid;
+  gap: 10px;
+}
+
+.report-tip-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.report-tip-row span {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.report-tip-row div {
+  display: grid;
+  gap: 3px;
+}
+
+.report-tip-row strong {
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.report-tip-row small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.reports-saved-note {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode reports polish */
+body.app-dark-mode .reports-status-copy h3,
+body.app-dark-mode .report-tip-row strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .reports-status-copy p,
+body.app-dark-mode .reports-status-pill,
+body.app-dark-mode .report-tip-row small,
+body.app-dark-mode .reports-saved-note {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .reports-status-pill,
+body.app-dark-mode .reports-status-btn.secondary,
+body.app-dark-mode .report-tip-row {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .reports-status-btn.danger {
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #fecaca !important;
+  border-color: rgba(239, 68, 68, 0.22) !important;
+}
+
+@media (max-width: 365px) {
+  .reports-status-main {
+    align-items: flex-start;
+  }
+
+  .reports-status-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .reports-status-btn.danger {
+    grid-column: auto;
+  }
+}
