@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>MD Weather Alerts App</title>
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="css/main.css" />
 </head>
 
@@ -213,17 +213,15 @@
             <span class="pill live">Demo Map</span>
           </div>
 
-          <div class="map-toolbar">
-            <span>Satellite-style preview</span>
-            <span>Expires in a few hours</span>
-          </div>
-
-          <div class="map-placeholder report-map-large" id="reportMap">
-            <div class="map-pin pin-one">🌧️</div>
-            <div class="map-pin pin-two">⚡</div>
-            <div class="map-pin pin-three">🌅</div>
-            <p>Submitted reports will appear here.</p>
-          </div>
+         <div class="map-toolbar">
+  <button class="report-filter active" data-filter="all" type="button">All Active</button>
+  <button class="report-filter" data-filter="15min" type="button">15 Min</button>
+  <button class="report-filter" data-filter="1hr" type="button">1 Hour</button>
+  <button class="report-filter" data-filter="3hr" type="button">3 Hours</button>
+  <button class="report-filter impact-filter" data-filter="impact" type="button">Impact</button>
+  <button class="map-expand-btn" id="mapExpandBtn" type="button">⛶ Expand Map</button>
+</div>
+          <div class="real-report-map" id="reportMap"></div>
         </section>
       </section>
 
@@ -306,7 +304,7 @@
     </nav>
 
   </div>
-
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

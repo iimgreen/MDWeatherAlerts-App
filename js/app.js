@@ -4,11 +4,31 @@ const screenButtons = document.querySelectorAll("[data-screen]");
 const locationBtn = document.getElementById("locationBtn");
 const locationStatus = document.getElementById("locationStatus");
 const submitReportBtn = document.getElementById("submitReport");
-const reportMap = document.getElementById("reportMap");
+const reportMapElement = document.getElementById("reportMap");
 const countySelect = document.querySelector(".county-select");
 
 let savedLocation = null;
 let reportCount = 0;
+let reportMap = null;
+let reportLayer = null;
+let userReports = [];
+let activeReportFilter = "all";
+
+const marylandCenter = [39.0458, -76.6413];
+
+const reportExpirationHours = {
+  "Beautiful Sky": 2,
+  Rain: 3,
+  "Heavy Rain": 3,
+  Lightning: 3,
+  "Snow/Ice": 3,
+  Fog: 3,
+  Flooding: 6,
+  Hail: 6,
+  "Wind Damage": 6,
+};
+
+const impactReportTypes = ["Flooding", "Hail", "Wind Damage"];
 
 function showScreen(screenId) {
   screens.forEach((screen) => {
@@ -29,6 +49,14 @@ function showScreen(screenId) {
       item.classList.add("active");
     }
   });
+
+  if (screenId === "reports") {
+    setTimeout(() => {
+      if (reportMap) {
+        reportMap.invalidateSize();
+      }
+    }, 250);
+  }
 }
 
 screenButtons.forEach((button) => {
@@ -129,33 +157,134 @@ function getReportEmoji(reportTypes) {
   return "📍";
 }
 
-function addReportToMap(reportTypes) {
-  if (!reportMap) return;
+function getReportExpirationHours(reportTypes) {
+  let expiration = 3;
 
-  const emoji = getReportEmoji(reportTypes);
+  reportTypes.forEach((type) => {
+    const typeExpiration = reportExpirationHours[type] || 3;
 
-  const pin = document.createElement("div");
-  pin.className = "map-pin";
-  pin.textContent = emoji;
+    if (typeExpiration > expiration) {
+      expiration = typeExpiration;
+    }
+  });
 
-  const left = Math.floor(Math.random() * 70) + 10;
-  const top = Math.floor(Math.random() * 60) + 15;
+  return expiration;
+}
 
-  pin.style.left = `${left}%`;
-  pin.style.top = `${top}%`;
+function getReportAgeMinutes(report) {
+  return Math.floor((Date.now() - report.createdAt) / 60000);
+}
 
-  reportMap.appendChild(pin);
-  reportMap.classList.add("has-reports");
+function isImpactReport(report) {
+  return report.types.some((type) => impactReportTypes.includes(type));
+}
 
-  const mapText = reportMap.querySelector("p");
+function reportMatchesFilter(report) {
+  const ageMinutes = getReportAgeMinutes(report);
 
-  if (mapText) {
-    mapText.textContent = "Live report added to the demo map.";
+  if (Date.now() > report.expiresAt) return false;
+
+  if (activeReportFilter === "all") return true;
+  if (activeReportFilter === "15min") return ageMinutes <= 15;
+  if (activeReportFilter === "1hr") return ageMinutes <= 60;
+  if (activeReportFilter === "3hr") return ageMinutes <= 180;
+  if (activeReportFilter === "impact") return isImpactReport(report);
+
+  return true;
+}
+
+function createReportIcon(emoji, isUser = false) {
+  return L.divIcon({
+    className: "",
+    html: `<div class="weather-report-marker ${
+      isUser ? "user-marker" : ""
+    }">${emoji}</div>`,
+    iconSize: isUser ? [50, 50] : [42, 42],
+    iconAnchor: isUser ? [25, 25] : [21, 21],
+    popupAnchor: [0, -18],
+  });
+}
+
+function initReportMap() {
+  if (!reportMapElement) return;
+
+  if (typeof L === "undefined") {
+    reportMapElement.innerHTML =
+      "<p style='padding:16px;font-weight:800;'>Map library could not load.</p>";
+    return;
   }
 
+  reportMap = L.map("reportMap", {
+    center: marylandCenter,
+    zoom: 7,
+    zoomControl: true,
+    scrollWheelZoom: false,
+  });
+
+  L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      maxZoom: 19,
+      attribution:
+        "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+    }
+  ).addTo(reportMap);
+
+  reportLayer = L.layerGroup().addTo(reportMap);
+
+  addDemoMapReports();
+
   setTimeout(() => {
-    pin.remove();
-  }, 15000);
+    reportMap.invalidateSize();
+  }, 300);
+}
+
+function addDemoMapReports() {
+  if (!reportLayer) return;
+
+  const demoReports = [
+    {
+      id: "demo-1",
+      coords: [39.29, -76.61],
+      types: ["Rain"],
+      note: "Rain near Baltimore area",
+      createdAt: Date.now() - 12 * 60000,
+      expiresAt: Date.now() + 3 * 60 * 60 * 1000,
+      isDemo: true,
+    },
+    {
+      id: "demo-2",
+      coords: [38.98, -76.49],
+      types: ["Lightning"],
+      note: "Lightning near central Maryland",
+      createdAt: Date.now() - 35 * 60000,
+      expiresAt: Date.now() + 3 * 60 * 60 * 1000,
+      isDemo: true,
+    },
+    {
+      id: "demo-3",
+      coords: [39.64, -77.72],
+      types: ["Wind Damage"],
+      note: "Wind report near Western Maryland",
+      createdAt: Date.now() - 80 * 60000,
+      expiresAt: Date.now() + 6 * 60 * 60 * 1000,
+      isDemo: true,
+    },
+  ];
+
+  userReports.push(...demoReports);
+  renderReports();
+}
+
+function getFallbackMarylandLocation() {
+  const lat = 39.0458 + (Math.random() - 0.5) * 1.2;
+  const lng = -76.6413 + (Math.random() - 0.5) * 1.7;
+
+  return {
+    latitude: lat,
+    longitude: lng,
+    privacyOffsetMiles: 0.1,
+  };
 }
 
 function createReportFeed() {
@@ -186,60 +315,198 @@ function createReportFeed() {
 
   return feedSection;
 }
+function escapeHTML(text) {
+  return String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-function addReportToFeed(reportTypes, note) {
-  createReportFeed();
-
-  const feed = document.getElementById("reportFeed");
-
-  if (!feed) return;
-
-  const emptyFeed = feed.querySelector(".empty-feed");
-
-  if (emptyFeed) {
-    emptyFeed.remove();
-  }
-
-  reportCount += 1;
-
-  const now = new Date();
-
-  const timeString = now.toLocaleTimeString([], {
+function getReportPopupHtml(report) {
+  const submittedTime = new Date(report.createdAt).toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit",
   });
 
-  const locationText = savedLocation
-    ? `Approximate location • offset ${savedLocation.privacyOffsetMiles} mi`
-    : "Location not shared";
+  const ageMinutes = getReportAgeMinutes(report);
 
-  const card = document.createElement("div");
-  card.className = "report-card";
+  const ageText =
+    ageMinutes < 1
+      ? "Just now"
+      : ageMinutes === 1
+      ? "1 minute ago"
+      : ageMinutes < 60
+      ? `${ageMinutes} minutes ago`
+      : `${Math.floor(ageMinutes / 60)} hr ${ageMinutes % 60} min ago`;
 
-  const tags = reportTypes
-    .map((type) => `<span class="report-tag">${type}</span>`)
-    .join("");
+  const expiresInMinutes = Math.max(
+    0,
+    Math.round((report.expiresAt - Date.now()) / 60000)
+  );
 
-  card.innerHTML = `
-    <div class="report-card-top">
-      <strong>Report #${reportCount}</strong>
-      <small>${timeString}</small>
-    </div>
+  const expiresText =
+    expiresInMinutes >= 60
+      ? `${Math.round(expiresInMinutes / 60)} hr left`
+      : `${expiresInMinutes} min left`;
 
-    <small>📍 ${locationText}</small>
+  const title = report.isDemo ? "Demo report" : "Weather report";
+  const types = escapeHTML(report.types.join(", "));
+  const note = escapeHTML(report.note || "Approximate location shown");
 
-    <div class="report-tags">
-      ${tags}
-    </div>
-
-    ${
-      note
-        ? `<p class="report-note">${note}</p>`
-        : `<p class="report-note">No extra details added.</p>`
-    }
+  return `
+    <strong>${title}</strong><br>
+    <span>${types}</span><br>
+    <small>Submitted: ${submittedTime} • ${ageText}</small><br>
+    <small>Expires: ${expiresText}</small><br>
+    <small>${note}</small>
   `;
+}
+function renderReports() {
+  if (!reportLayer) return;
 
-  feed.prepend(card);
+  reportLayer.clearLayers();
+
+  const feed = document.getElementById("reportFeed");
+
+  if (feed) {
+    feed.innerHTML = "";
+  }
+
+  const visibleReports = userReports.filter(reportMatchesFilter);
+
+  visibleReports.forEach((report) => {
+    const emoji = getReportEmoji(report.types);
+
+    const marker = L.marker(report.coords, {
+      icon: createReportIcon(emoji, !report.isDemo),
+    })
+      .bindPopup(getReportPopupHtml(report))
+      .addTo(reportLayer);
+
+    report.marker = marker;
+  });
+
+  if (feed) {
+    const submittedReports = visibleReports.filter((report) => !report.isDemo);
+
+    if (submittedReports.length === 0) {
+      feed.innerHTML =
+        '<p class="empty-feed">No submitted reports match this filter yet.</p>';
+    }
+
+    submittedReports
+      .slice()
+      .reverse()
+      .forEach((report) => {
+        const card = document.createElement("div");
+        card.className = "report-card";
+
+        const timeString = new Date(report.createdAt).toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+        });
+
+        const tags = report.types
+          .map((type) => `<span class="report-tag">${type}</span>`)
+          .join("");
+
+        const expiresInMinutes = Math.max(
+          0,
+          Math.round((report.expiresAt - Date.now()) / 60000)
+        );
+
+        const expiresText =
+          expiresInMinutes >= 60
+            ? `${Math.round(expiresInMinutes / 60)} hr left`
+            : `${expiresInMinutes} min left`;
+
+        card.innerHTML = `
+          <div class="report-card-top">
+            <strong>Report #${report.number}</strong>
+            <small>${timeString}</small>
+          </div>
+
+          <small>📍 ${report.locationText}</small>
+
+          <div class="report-tags">
+            ${tags}
+          </div>
+
+          ${
+            report.note
+              ? `<p class="report-note">${report.note}</p>`
+              : `<p class="report-note">No extra details added.</p>`
+          }
+
+          <span class="report-expire-text">Expires automatically • ${expiresText}</span>
+        `;
+
+        feed.prepend(card);
+      });
+  }
+}
+
+function addUserReport(reportTypes, note) {
+  const reportLocation = savedLocation || getFallbackMarylandLocation();
+  const expirationHours = getReportExpirationHours(reportTypes);
+
+  reportCount += 1;
+
+  const report = {
+    id: `user-${Date.now()}`,
+    number: reportCount,
+    coords: [reportLocation.latitude, reportLocation.longitude],
+    types: reportTypes,
+    note,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + expirationHours * 60 * 60 * 1000,
+    expirationHours,
+    isDemo: false,
+    locationText: savedLocation
+      ? `Approximate location • offset ${savedLocation.privacyOffsetMiles} mi`
+      : "Location not shared",
+  };
+
+  userReports.push(report);
+  renderReports();
+
+  if (reportMap) {
+    reportMap.setView(report.coords, 11, {
+      animate: true,
+    });
+  }
+}
+
+function removeExpiredReports() {
+  const beforeCount = userReports.length;
+
+  userReports = userReports.filter((report) => Date.now() <= report.expiresAt);
+
+  if (userReports.length !== beforeCount) {
+    renderReports();
+  }
+}
+
+function setupReportFilters() {
+  const filterButtons = document.querySelectorAll(".report-filter");
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeReportFilter = button.dataset.filter;
+
+      filterButtons.forEach((btn) => {
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+
+      renderReports();
+
+      showToast(`Showing ${button.textContent.trim()} reports.`);
+    });
+  });
 }
 
 if (locationBtn) {
@@ -261,6 +528,12 @@ if (locationBtn) {
 
         locationStatus.textContent =
           "Location added privately. Reports are shown about 0.1 miles from your exact location.";
+
+        if (reportMap) {
+          reportMap.setView([savedLocation.latitude, savedLocation.longitude], 11, {
+            animate: true,
+          });
+        }
 
         showToast("Private report location added.");
       },
@@ -289,10 +562,11 @@ if (submitReportBtn) {
       return;
     }
 
-    addReportToMap(checkedReports);
-    addReportToFeed(checkedReports, note);
+    addUserReport(checkedReports, note);
 
-    showToast("Weather report added to the map.");
+    const expirationHours = getReportExpirationHours(checkedReports);
+
+    showToast(`Weather report added. It will expire in ${expirationHours} hours.`);
 
     document
       .querySelectorAll('.checkbox-grid input[type="checkbox"]')
@@ -325,8 +599,32 @@ document.querySelectorAll(".more-list button").forEach((button) => {
   });
 });
 
+const mapExpandBtn = document.getElementById("mapExpandBtn");
+const mapCard = document.querySelector(".map-card");
+
+if (mapExpandBtn && mapCard) {
+  mapExpandBtn.addEventListener("click", () => {
+    const isExpanded = mapCard.classList.toggle("map-expanded");
+
+    document.body.classList.toggle("map-is-expanded", isExpanded);
+
+    mapExpandBtn.textContent = isExpanded ? "✕ Close Map" : "⛶ Expand Map";
+
+    setTimeout(() => {
+      if (reportMap) {
+        reportMap.invalidateSize();
+      }
+    }, 250);
+  });
+}
+
 createReportFeed();
 setGreeting();
 loadDemoWeather();
+initReportMap();
+setupReportFilters();
 
-console.log("MD Weather Alerts Version 0.2.2 loaded successfully.");
+setInterval(removeExpiredReports, 60 * 1000);
+setInterval(renderReports, 60 * 1000);
+
+console.log("MD Weather Alerts Version 0.4.3 report filters loaded successfully.");
