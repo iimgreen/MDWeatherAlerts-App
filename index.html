@@ -149,10 +149,31 @@
 
       <!-- REPORTS -->
       <section class="screen" id="reports">
-        <div class="page-title">
-          <h2>Report Weather</h2>
-          <p>Share what’s happening at or near your location.</p>
+        <div class="page-title reports-title">
+          <h2>Reports</h2>
+          <p>Report what’s happening near you and view nearby Maryland weather reports.</p>
         </div>
+
+        <section class="section-card reports-hero">
+          <div>
+            <span class="reports-hero-icon">📍</span>
+            <h3>Live Community Reports</h3>
+            <p>
+              Submit rain, flooding, wind damage, lightning, hail, fog, snow, or sky reports.
+              Reports are designed to appear on the map for only a few hours.
+            </p>
+          </div>
+        </section>
+
+        <section class="section-card privacy-card">
+          <div class="privacy-icon">🔒</div>
+          <div>
+            <h3>Privacy First</h3>
+            <p>
+              Your exact location is not shown publicly. Reports are displayed about 0.1 miles away from your actual location.
+            </p>
+          </div>
+        </section>
 
         <section class="section-card report-action-card">
           <button class="location-btn" id="locationBtn">📍 Use My Current Location</button>
@@ -160,32 +181,44 @@
         </section>
 
         <section class="section-card">
-          <h3>What’s happening near you?</h3>
-
-          <div class="checkbox-grid">
-            <label><input type="checkbox" value="Rain"> 🌧️ Rain</label>
-            <label><input type="checkbox" value="Heavy Rain"> 🌧️ Heavy Rain</label>
-            <label><input type="checkbox" value="Lightning"> ⚡ Lightning</label>
-            <label><input type="checkbox" value="Hail"> 🧊 Hail</label>
-            <label><input type="checkbox" value="Flooding"> 🌊 Flooding</label>
-            <label><input type="checkbox" value="Wind Damage"> 💨 Wind Damage</label>
-            <label><input type="checkbox" value="Snow/Ice"> ❄️ Snow/Ice</label>
-            <label><input type="checkbox" value="Fog"> 🌫️ Fog</label>
-            <label><input type="checkbox" value="Beautiful Sky"> 🌅 Beautiful Sky</label>
+          <div class="section-title-row">
+            <h3>What’s happening?</h3>
+            <span class="pill calm">Choose all</span>
           </div>
 
-          <textarea id="reportNote" placeholder="Optional details..."></textarea>
+          <div class="checkbox-grid upgraded-report-grid">
+            <label><input type="checkbox" value="Rain"> <span>🌧️</span> Rain</label>
+            <label><input type="checkbox" value="Heavy Rain"> <span>🌧️</span> Heavy Rain</label>
+            <label><input type="checkbox" value="Lightning"> <span>⚡</span> Lightning</label>
+            <label><input type="checkbox" value="Hail"> <span>🧊</span> Hail</label>
+            <label><input type="checkbox" value="Flooding"> <span>🌊</span> Flooding</label>
+            <label><input type="checkbox" value="Wind Damage"> <span>💨</span> Wind Damage</label>
+            <label><input type="checkbox" value="Snow/Ice"> <span>❄️</span> Snow/Ice</label>
+            <label><input type="checkbox" value="Fog"> <span>🌫️</span> Fog</label>
+            <label><input type="checkbox" value="Beautiful Sky"> <span>🌅</span> Beautiful Sky</label>
+          </div>
 
-          <button class="submit-report" id="submitReport">Submit Report</button>
+          <textarea id="reportNote" placeholder="Optional details, like road name, nearby landmark, timing, or intensity..."></textarea>
+
+          <button class="submit-report" id="submitReport">Submit Weather Report</button>
+
+          <p class="report-helper-text">
+            Reports are currently in demo mode. Live reports will later save to the Maryland reports map.
+          </p>
         </section>
 
-        <section class="section-card">
+        <section class="section-card map-card">
           <div class="section-title-row">
             <h3>Nearby Reports</h3>
             <span class="pill live">Demo Map</span>
           </div>
 
-          <div class="map-placeholder taller" id="reportMap">
+          <div class="map-toolbar">
+            <span>Satellite-style preview</span>
+            <span>Expires in a few hours</span>
+          </div>
+
+          <div class="map-placeholder report-map-large" id="reportMap">
             <div class="map-pin pin-one">🌧️</div>
             <div class="map-pin pin-two">⚡</div>
             <div class="map-pin pin-three">🌅</div>
