@@ -1328,4 +1328,18 @@ applyAdvancedAppSettings();
     true
   );
 })();
+/* Version 0.8 - PWA install support */
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .then(() => {
+        console.log("MD Weather Alerts service worker registered.");
+      })
+      .catch((error) => {
+        console.error("Service worker registration failed:", error);
+      });
+  });
+}
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");
