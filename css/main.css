@@ -3342,3 +3342,106 @@ html body #reports .clean-report-panel:not([open]) #reportFormCard {
   visibility: visible !important;
   pointer-events: auto !important;
 }
+/* Version 0.8.1 - Install App card */
+
+.install-app-card {
+  display: grid;
+  gap: 14px;
+}
+
+.install-app-preview {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.install-icon {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.45), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(231, 247, 255, 0.78));
+  box-shadow:
+    0 12px 26px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 26px;
+}
+
+.install-app-preview strong {
+  display: block;
+  color: var(--blue-dark);
+  font-size: 15px;
+}
+
+.install-app-preview small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.install-app-btn {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  cursor: pointer;
+}
+
+.install-app-btn:active {
+  transform: scale(0.97);
+}
+
+.install-app-btn:disabled {
+  opacity: 0.68;
+  cursor: not-allowed;
+}
+
+.install-app-status {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode install card */
+body.app-dark-mode .install-app-preview {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(142, 218, 255, 0.15) !important;
+}
+
+body.app-dark-mode .install-app-preview strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .install-app-preview small,
+body.app-dark-mode .install-app-status {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .install-icon {
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.22), transparent 42%),
+    linear-gradient(145deg, rgba(23, 59, 82, 0.86), rgba(8, 29, 43, 0.7)) !important;
+}

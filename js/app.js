@@ -1342,4 +1342,157 @@ if ("serviceWorker" in navigator) {
       });
   });
 }
+/* Version 0.8.1 - Install App button */
+
+let mdwaDeferredInstallPrompt = null;
+
+const installAppBtn = document.getElementById("installAppBtn");
+const installAppStatus = document.getElementById("installAppStatus");
+
+function mdwaIsStandaloneApp() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
+}
+
+function updateInstallAppCard() {
+  if (!installAppBtn || !installAppStatus) return;
+
+  if (mdwaIsStandaloneApp()) {
+    installAppBtn.textContent = "Installed";
+    installAppBtn.disabled = true;
+    installAppStatus.textContent =
+      "MD Weather Alerts is already running like an installed app on this device.";
+    return;
+  }
+
+  if (mdwaDeferredInstallPrompt) {
+    installAppBtn.textContent = "Install App";
+    installAppBtn.disabled = false;
+    installAppStatus.textContent =
+      "Tap Install App to add MD Weather Alerts to your home screen.";
+    return;
+  }
+
+  installAppBtn.textContent = "How to Install";
+  installAppBtn.disabled = false;
+  installAppStatus.textContent =
+    "iPhone: tap Share, then Add to Home Screen. Android/Chrome may show an install prompt when available.";
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  mdwaDeferredInstallPrompt = event;
+  updateInstallAppCard();
+});
+
+window.addEventListener("appinstalled", () => {
+  mdwaDeferredInstallPrompt = null;
+  updateInstallAppCard();
+
+  if (typeof showToast === "function") {
+    showToast("MD Weather Alerts installed.");
+  }
+});
+
+if (installAppBtn) {
+  installAppBtn.addEventListener("click", async () => {
+    if (mdwaDeferredInstallPrompt) {
+      mdwaDeferredInstallPrompt.prompt();
+
+      const result = await mdwaDeferredInstallPrompt.userChoice;
+
+      if (result.outcome === "accepted") {
+        installAppStatus.textContent = "Installing MD Weather Alerts...";
+      } else {
+        installAppStatus.textContent =
+          "Install canceled. You can try again anytime.";
+      }
+
+      mdwaDeferredInstallPrompt = null;
+      updateInstallAppCard();
+      return;
+    }
+
+    installAppStatus.textContent =
+      "iPhone: tap the Share button in Safari, then choose Add to Home Screen. Android: open browser menu and choose Install app or Add to Home screen.";
+  });
+}
+
+updateInstallAppCard();
+/* Version 0.8.1.1 - Force Install App card into More tab */
+
+(function fixInstallCardPlacement() {
+  const moreScreen = document.getElementById("more");
+
+  if (!moreScreen) return;
+
+  let installCards = Array.from(document.querySelectorAll("#installAppCard"));
+
+  // If somehow the card is missing, create it
+  if (installCards.length === 0) {
+    const newInstallCard = document.createElement("section");
+    newInstallCard.className = "section-card install-app-card";
+    newInstallCard.id = "installAppCard";
+
+    newInstallCard.innerHTML = `
+      <div class="section-title-row">
+        <div>
+          <h3>Install MD Weather Alerts</h3>
+          <p>Add the app to your home screen for faster access.</p>
+        </div>
+        <span class="pill live">App</span>
+      </div>
+
+      <div class="install-app-preview">
+        <div class="install-icon">🌦️</div>
+        <div>
+          <strong>MD Weather Alerts</strong>
+          <small>Forecasts, alerts, radar, and reports in one tap.</small>
+        </div>
+      </div>
+
+      <button class="install-app-btn" id="installAppBtn" type="button">
+        Install App
+      </button>
+
+      <p class="install-app-status" id="installAppStatus">
+        Android/Chrome can show an install prompt. iPhone users can use Share → Add to Home Screen.
+      </p>
+    `;
+
+    installCards = [newInstallCard];
+  }
+
+  // Keep only one install card
+  const installCard = installCards[0];
+
+  installCards.slice(1).forEach((card) => {
+    card.remove();
+  });
+
+  // Find the Forecast Blog card inside the More tab
+  const moreBlogList = document.getElementById("moreBlogPosts");
+  const forecastBlogCard = moreBlogList
+    ? moreBlogList.closest(".section-card")
+    : null;
+
+  // Move install card into More, directly above Forecast Blog
+  if (forecastBlogCard) {
+    moreScreen.insertBefore(installCard, forecastBlogCard);
+  } else {
+    moreScreen.appendChild(installCard);
+  }
+
+  // Make sure the card is not hidden
+  installCard.style.display = "";
+  installCard.style.visibility = "";
+  installCard.style.pointerEvents = "";
+
+  // Reconnect install button text/status if the function exists
+  if (typeof updateInstallAppCard === "function") {
+    updateInstallAppCard();
+  }
+})();
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");
