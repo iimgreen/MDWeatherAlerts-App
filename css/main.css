@@ -4847,3 +4847,201 @@ body.app-dark-mode .live-forecast-select option {
     grid-template-columns: 1fr;
   }
 }
+/* Version 1.5 - Home live forecast preview */
+
+.home-forecast-card {
+  display: grid;
+  gap: 14px;
+}
+
+.home-forecast-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.home-forecast-copy {
+  display: grid;
+  gap: 5px;
+}
+
+.home-forecast-copy .eyebrow {
+  margin: 0;
+}
+
+.home-forecast-copy h3 {
+  margin: 0;
+  color: var(--blue-dark);
+  font-size: 22px;
+  letter-spacing: -0.04em;
+}
+
+.home-forecast-copy p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.76);
+  line-height: 1.45;
+}
+
+.home-forecast-icon {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.home-forecast-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.home-forecast-select {
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  padding: 13px 14px;
+  color: var(--blue-dark);
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.home-forecast-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.home-forecast-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.home-forecast-btn.primary {
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.home-forecast-btn.secondary {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--blue-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08);
+}
+
+.home-forecast-btn:active {
+  transform: scale(0.97);
+}
+
+.home-forecast-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.home-forecast-pill {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.54);
+  color: rgba(45, 84, 103, 0.8);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.home-forecast-next {
+  display: grid;
+  gap: 9px;
+}
+
+.home-forecast-mini {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.home-forecast-mini strong {
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.home-forecast-mini small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.home-forecast-status {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode home forecast */
+body.app-dark-mode .home-forecast-copy h3,
+body.app-dark-mode .home-forecast-mini strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .home-forecast-copy p,
+body.app-dark-mode .home-forecast-status,
+body.app-dark-mode .home-forecast-pill,
+body.app-dark-mode .home-forecast-mini small {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .home-forecast-select,
+body.app-dark-mode .home-forecast-btn.secondary,
+body.app-dark-mode .home-forecast-pill,
+body.app-dark-mode .home-forecast-mini {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .home-forecast-select option {
+  background: #ffffff;
+  color: #082436;
+}
+
+@media (max-width: 365px) {
+  .home-forecast-main {
+    align-items: flex-start;
+  }
+
+  .home-forecast-actions {
+    grid-template-columns: 1fr;
+  }
+}

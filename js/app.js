@@ -3171,4 +3171,349 @@ updateInstallAppCard();
 
   loadSelectedCountyForecast();
 })();
-console.log("MD Weather Alerts Version 1.4 live NWS forecast data loaded successfully.");
+/* Version 1.5 - Home live forecast preview */
+
+(function mdwaHomeLiveForecastPreview() {
+  const homeScreen = document.getElementById("home");
+
+  if (!homeScreen) return;
+
+  const forecastPoints = [
+    { name: "Allegany", place: "Cumberland", lat: 39.6529, lon: -78.7625 },
+    { name: "Anne Arundel", place: "Annapolis", lat: 38.9784, lon: -76.4922 },
+    { name: "Baltimore City", place: "Baltimore", lat: 39.2904, lon: -76.6122 },
+    { name: "Baltimore County", place: "Towson", lat: 39.4015, lon: -76.6019 },
+    { name: "Calvert", place: "Prince Frederick", lat: 38.5404, lon: -76.5844 },
+    { name: "Caroline", place: "Denton", lat: 38.8846, lon: -75.8272 },
+    { name: "Carroll", place: "Westminster", lat: 39.5754, lon: -76.9958 },
+    { name: "Cecil", place: "Elkton", lat: 39.6068, lon: -75.8333 },
+    { name: "Charles", place: "La Plata", lat: 38.5293, lon: -76.9753 },
+    { name: "Dorchester", place: "Cambridge", lat: 38.5632, lon: -76.0788 },
+    { name: "Frederick", place: "Frederick", lat: 39.4143, lon: -77.4105 },
+    { name: "Garrett", place: "Oakland", lat: 39.4079, lon: -79.4067 },
+    { name: "Harford", place: "Bel Air", lat: 39.5359, lon: -76.3483 },
+    { name: "Howard", place: "Columbia", lat: 39.2037, lon: -76.861 },
+    { name: "Kent", place: "Chestertown", lat: 39.2189, lon: -76.069 },
+    { name: "Montgomery", place: "Rockville", lat: 39.084, lon: -77.1528 },
+    { name: "Prince George’s", place: "Upper Marlboro", lat: 38.8159, lon: -76.7497 },
+    { name: "Queen Anne’s", place: "Centreville", lat: 39.0418, lon: -76.0663 },
+    { name: "Somerset", place: "Princess Anne", lat: 38.2029, lon: -75.6924 },
+    { name: "St. Mary’s", place: "Leonardtown", lat: 38.2912, lon: -76.6358 },
+    { name: "Talbot", place: "Easton", lat: 38.7743, lon: -76.0763 },
+    { name: "Washington", place: "Hagerstown", lat: 39.6418, lon: -77.72 },
+    { name: "Wicomico", place: "Salisbury", lat: 38.3607, lon: -75.5994 },
+    { name: "Worcester", place: "Ocean City", lat: 38.3365, lon: -75.0849 },
+  ];
+
+  function safeHomeForecastText(text) {
+    const div = document.createElement("div");
+    div.textContent = text || "";
+    return div.innerHTML;
+  }
+
+  function getForecastIcon(shortForecast) {
+    const text = (shortForecast || "").toLowerCase();
+
+    if (text.includes("thunder")) return "⛈️";
+    if (text.includes("rain") || text.includes("showers")) return "🌧️";
+    if (text.includes("snow") || text.includes("ice") || text.includes("sleet")) return "❄️";
+    if (text.includes("fog")) return "🌫️";
+    if (text.includes("cloud")) return "☁️";
+    if (text.includes("sun") || text.includes("clear")) return "☀️";
+
+    return "🌤️";
+  }
+
+  function createHomeForecastCard() {
+    let card = document.getElementById("homeLiveForecastCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card home-forecast-card";
+    card.id = "homeLiveForecastCard";
+
+    card.innerHTML = `
+      <div class="home-forecast-main">
+        <div class="home-forecast-copy">
+          <p class="eyebrow">Official NWS Forecast</p>
+          <h3 id="homeForecastTitle">Checking forecast...</h3>
+          <p id="homeForecastText">Loading your Maryland forecast preview.</p>
+        </div>
+
+        <div class="home-forecast-icon" id="homeForecastIcon">⏳</div>
+      </div>
+
+      <div class="home-forecast-controls">
+        <select class="home-forecast-select" id="homeForecastCountySelect"></select>
+
+        <div class="home-forecast-actions">
+          <button class="home-forecast-btn primary" id="homeViewForecastBtn" type="button">
+            View Forecast
+          </button>
+
+          <button class="home-forecast-btn secondary" id="homeRefreshForecastBtn" type="button">
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <div class="home-forecast-meta">
+        <span class="home-forecast-pill" id="homeForecastTemp">Loading...</span>
+        <span class="home-forecast-pill" id="homeForecastWind">Wind loading</span>
+        <span class="home-forecast-pill" id="homeForecastChecked">Just opened</span>
+      </div>
+
+      <div class="home-forecast-next" id="homeForecastNext"></div>
+
+      <p class="home-forecast-status" id="homeForecastStatus">
+        Forecasts are point-based from the National Weather Service.
+      </p>
+    `;
+
+    const homeAlertCard = document.getElementById("homeLiveAlertCard");
+
+    if (homeAlertCard && homeAlertCard.parentElement === homeScreen) {
+      homeAlertCard.insertAdjacentElement("afterend", card);
+      return card;
+    }
+
+    const firstSectionCard = homeScreen.querySelector(".section-card");
+
+    if (firstSectionCard) {
+      firstSectionCard.insertAdjacentElement("afterend", card);
+    } else {
+      homeScreen.prepend(card);
+    }
+
+    return card;
+  }
+
+  function populateHomeForecastSelect() {
+    const select = document.getElementById("homeForecastCountySelect");
+
+    if (!select) return;
+
+    select.innerHTML = "";
+
+    forecastPoints.forEach((point) => {
+      const option = document.createElement("option");
+      option.value = point.name;
+      option.textContent = `${point.name} — ${point.place}`;
+      select.appendChild(option);
+    });
+
+    const savedCounty =
+      localStorage.getItem("mdwa_live_forecast_county") || "Harford";
+
+    const savedExists = forecastPoints.some((point) => point.name === savedCounty);
+
+    select.value = savedExists ? savedCounty : "Harford";
+  }
+
+  function getSelectedHomeForecastPoint() {
+    const select = document.getElementById("homeForecastCountySelect");
+    const selectedCounty = select ? select.value : "Harford";
+
+    return (
+      forecastPoints.find((point) => point.name === selectedCounty) ||
+      forecastPoints.find((point) => point.name === "Harford") ||
+      forecastPoints[0]
+    );
+  }
+
+  function setHomeForecastLoading(point) {
+    document.getElementById("homeForecastTitle").textContent =
+      `Checking ${point.name} forecast...`;
+
+    document.getElementById("homeForecastText").textContent =
+      `Loading the official point forecast near ${point.place}.`;
+
+    document.getElementById("homeForecastIcon").textContent = "⏳";
+    document.getElementById("homeForecastTemp").textContent = "Loading...";
+    document.getElementById("homeForecastWind").textContent = "Wind loading";
+    document.getElementById("homeForecastChecked").textContent = "Updating";
+    document.getElementById("homeForecastNext").innerHTML = "";
+
+    document.getElementById("homeForecastStatus").textContent =
+      "Loading official NWS forecast data...";
+  }
+
+  function setHomeForecastError(point) {
+    document.getElementById("homeForecastTitle").textContent =
+      "Forecast unavailable";
+
+    document.getElementById("homeForecastText").textContent =
+      `The app could not load the official forecast near ${point.place}.`;
+
+    document.getElementById("homeForecastIcon").textContent = "⚠️";
+    document.getElementById("homeForecastTemp").textContent = "Unable to load";
+    document.getElementById("homeForecastWind").textContent = "Try refresh";
+    document.getElementById("homeForecastChecked").textContent = "NWS error";
+    document.getElementById("homeForecastNext").innerHTML = "";
+
+    document.getElementById("homeForecastStatus").textContent =
+      "Live forecast could not load. Try refreshing again.";
+  }
+
+  function renderHomeForecast(periods, point, sourceOffice) {
+    if (!periods || periods.length === 0) {
+      setHomeForecastError(point);
+      return;
+    }
+
+    const first = periods[0];
+    const nextList = document.getElementById("homeForecastNext");
+
+    const checkedTime = new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+    document.getElementById("homeForecastTitle").textContent =
+      `${point.name}: ${first.shortForecast || "Forecast"}`;
+
+    document.getElementById("homeForecastText").textContent =
+      first.detailedForecast || "Detailed forecast not listed.";
+
+    document.getElementById("homeForecastIcon").textContent =
+      getForecastIcon(first.shortForecast);
+
+    document.getElementById("homeForecastTemp").textContent =
+      `🌡️ ${first.temperature}°${first.temperatureUnit || "F"}`;
+
+    document.getElementById("homeForecastWind").textContent =
+      `💨 ${first.windSpeed || "Wind N/A"}`;
+
+    document.getElementById("homeForecastChecked").textContent =
+      `Checked ${checkedTime}`;
+
+    if (nextList) {
+      nextList.innerHTML = "";
+
+      periods.slice(1, 3).forEach((period) => {
+        const mini = document.createElement("div");
+        mini.className = "home-forecast-mini";
+
+        mini.innerHTML = `
+          <strong>${safeHomeForecastText(period.name)} — ${safeHomeForecastText(period.shortForecast)}</strong>
+          <small>🌡️ ${safeHomeForecastText(String(period.temperature))}°${safeHomeForecastText(period.temperatureUnit || "F")} · 💨 ${safeHomeForecastText(period.windSpeed || "Wind not listed")}</small>
+        `;
+
+        nextList.appendChild(mini);
+      });
+    }
+
+    document.getElementById("homeForecastStatus").textContent =
+      `Official NWS point forecast near ${point.place}. ${sourceOffice ? `Office: ${sourceOffice}.` : ""}`;
+  }
+
+  async function loadHomeForecast() {
+    const point = getSelectedHomeForecastPoint();
+
+    localStorage.setItem("mdwa_live_forecast_county", point.name);
+
+    setHomeForecastLoading(point);
+
+    try {
+      const pointsUrl = `https://api.weather.gov/points/${point.lat.toFixed(4)},${point.lon.toFixed(4)}`;
+
+      const pointResponse = await fetch(pointsUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!pointResponse.ok) {
+        throw new Error(`NWS point request failed: ${pointResponse.status}`);
+      }
+
+      const pointData = await pointResponse.json();
+      const forecastUrl = pointData.properties?.forecast;
+      const sourceOffice = pointData.properties?.cwa || "";
+
+      if (!forecastUrl) {
+        throw new Error("NWS forecast URL missing.");
+      }
+
+      const forecastResponse = await fetch(forecastUrl, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!forecastResponse.ok) {
+        throw new Error(`NWS forecast request failed: ${forecastResponse.status}`);
+      }
+
+      const forecastData = await forecastResponse.json();
+      const periods = forecastData.properties?.periods || [];
+
+      renderHomeForecast(periods, point, sourceOffice);
+    } catch (error) {
+      console.error("Home forecast preview failed:", error);
+      setHomeForecastError(point);
+    }
+  }
+
+  function goToForecastTab() {
+    const forecastNavButton =
+      document.querySelector('.nav-item[data-screen="forecast"]') ||
+      document.querySelector('[data-target="forecast"]');
+
+    if (forecastNavButton) {
+      forecastNavButton.click();
+      return;
+    }
+
+    document.querySelectorAll(".screen").forEach((screen) => {
+      screen.classList.remove("active");
+    });
+
+    const forecastScreen = document.getElementById("forecast");
+
+    if (forecastScreen) {
+      forecastScreen.classList.add("active");
+    }
+  }
+
+  createHomeForecastCard();
+  populateHomeForecastSelect();
+
+  const select = document.getElementById("homeForecastCountySelect");
+  const viewForecastBtn = document.getElementById("homeViewForecastBtn");
+  const refreshForecastBtn = document.getElementById("homeRefreshForecastBtn");
+
+  if (select) {
+    select.addEventListener("change", () => {
+      loadHomeForecast();
+
+      const forecastSelect = document.getElementById("liveForecastCountySelect");
+
+      if (forecastSelect) {
+        forecastSelect.value = select.value;
+      }
+
+      if (typeof showToast === "function") {
+        showToast(`Home forecast set to ${select.value}.`);
+      }
+    });
+  }
+
+  if (viewForecastBtn) {
+    viewForecastBtn.addEventListener("click", goToForecastTab);
+  }
+
+  if (refreshForecastBtn) {
+    refreshForecastBtn.addEventListener("click", () => {
+      loadHomeForecast();
+
+      if (typeof showToast === "function") {
+        showToast("Refreshing home forecast.");
+      }
+    });
+  }
+
+  loadHomeForecast();
+})();
+console.log("MD Weather Alerts Version 1.5 home live forecast preview loaded successfully.");
