@@ -4623,3 +4623,227 @@ body.app-dark-mode .launch-check-row small,
 body.app-dark-mode .app-disclaimer {
   color: rgba(222, 244, 255, 0.72) !important;
 }
+/* Version 1.4 - Live NWS forecast data */
+
+.live-forecast-card {
+  display: grid;
+  gap: 14px;
+}
+
+.live-forecast-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+
+.live-forecast-top h3 {
+  margin: 4px 0 6px;
+  color: var(--blue-dark);
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+
+.live-forecast-top p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.live-forecast-icon {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 70% 25%, rgba(255, 213, 106, 0.5), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(231, 247, 255, 0.64));
+  box-shadow:
+    0 14px 30px rgba(21, 91, 123, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  font-size: 30px;
+}
+
+.live-forecast-controls {
+  display: grid;
+  gap: 10px;
+}
+
+.live-forecast-select {
+  width: 100%;
+  border: none;
+  border-radius: 20px;
+  padding: 13px 14px;
+  color: var(--blue-dark);
+  font-weight: 900;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.live-forecast-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.live-forecast-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 13px 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.live-forecast-btn.primary {
+  background: linear-gradient(135deg, #1398d1, #07334f);
+  color: #ffffff;
+  box-shadow:
+    0 14px 30px rgba(7, 51, 79, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.live-forecast-btn.secondary {
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--blue-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 8px 18px rgba(18, 78, 112, 0.08);
+}
+
+.live-forecast-btn:active {
+  transform: scale(0.97);
+}
+
+.live-forecast-status {
+  margin: 0 !important;
+  color: rgba(45, 84, 103, 0.76);
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.live-forecast-current {
+  padding: 16px;
+  border-radius: 26px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.36));
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 12px 28px rgba(18, 78, 112, 0.1);
+}
+
+.live-forecast-current h4 {
+  margin: 0 0 7px;
+  color: var(--blue-dark);
+  font-size: 20px;
+  letter-spacing: -0.03em;
+}
+
+.live-forecast-current p {
+  margin: 0;
+  color: rgba(45, 84, 103, 0.78);
+  line-height: 1.45;
+}
+
+.live-forecast-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.live-forecast-pill {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.54);
+  color: rgba(45, 84, 103, 0.8);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.live-forecast-periods {
+  display: grid;
+  gap: 10px;
+}
+
+.live-period-card {
+  display: grid;
+  gap: 5px;
+  padding: 13px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 22px rgba(18, 78, 112, 0.08);
+}
+
+.live-period-card strong {
+  color: var(--blue-dark);
+  font-size: 14px;
+}
+
+.live-period-card small {
+  color: rgba(45, 84, 103, 0.74);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.live-forecast-disclaimer {
+  margin: 0 !important;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  color: rgba(45, 84, 103, 0.76) !important;
+  font-size: 12px !important;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+/* Dark mode live forecast */
+body.app-dark-mode .live-forecast-top h3,
+body.app-dark-mode .live-forecast-current h4,
+body.app-dark-mode .live-period-card strong {
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .live-forecast-select,
+body.app-dark-mode .live-forecast-btn.secondary,
+body.app-dark-mode .live-forecast-current,
+body.app-dark-mode .live-period-card,
+body.app-dark-mode .live-forecast-pill,
+body.app-dark-mode .live-forecast-disclaimer {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(23, 59, 82, 0.74),
+      rgba(8, 29, 43, 0.58)
+    ) !important;
+  border-color: rgba(142, 218, 255, 0.16) !important;
+  color: #f6fcff !important;
+}
+
+body.app-dark-mode .live-forecast-status,
+body.app-dark-mode .live-forecast-current p,
+body.app-dark-mode .live-period-card small,
+body.app-dark-mode .live-forecast-pill,
+body.app-dark-mode .live-forecast-disclaimer {
+  color: rgba(222, 244, 255, 0.72) !important;
+}
+
+body.app-dark-mode .live-forecast-select option {
+  background: #ffffff;
+  color: #082436;
+}
+
+@media (max-width: 365px) {
+  .live-forecast-actions {
+    grid-template-columns: 1fr;
+  }
+}
