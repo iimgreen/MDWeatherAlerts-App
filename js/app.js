@@ -3897,4 +3897,228 @@ updateInstallAppCard();
     });
   }
 })();
-console.log("MD Weather Alerts Version 1.6 reports center polish loaded successfully.");
+/* Version 1.7 - Share app and feedback center */
+
+(function mdwaShareAppCenter() {
+  const moreScreen = document.getElementById("more");
+
+  if (!moreScreen) return;
+
+  const MDWA_WEBSITE_URL = "https://mdweatheralerts.com";
+
+  function getAppShareUrl() {
+    return window.location.href.split("#")[0];
+  }
+
+  function showShareMessage(message) {
+    if (typeof showToast === "function") {
+      showToast(message);
+      return;
+    }
+
+    console.log(message);
+  }
+
+  function createShareAppCard() {
+    let card = document.getElementById("mdwaShareAppCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card share-app-card";
+    card.id = "mdwaShareAppCard";
+
+    card.innerHTML = `
+      <div class="share-app-hero">
+        <div class="share-app-copy">
+          <p class="eyebrow">Share MD Weather Alerts</p>
+          <h3>Help grow the app</h3>
+          <p>Share the app, copy the link, visit the website, or send feedback.</p>
+        </div>
+
+        <div class="share-app-icon">📲</div>
+      </div>
+
+      <div class="share-action-grid">
+        <button class="share-action-btn primary" id="mdwaNativeShareBtn" type="button">
+          Share App
+        </button>
+
+        <button class="share-action-btn secondary" id="mdwaCopyAppLinkBtn" type="button">
+          Copy Link
+        </button>
+
+        <button class="share-action-btn secondary" id="mdwaOpenWebsiteBtn" type="button">
+          Open Website
+        </button>
+
+        <button class="share-action-btn secondary" id="mdwaCopyFeedbackBtn" type="button">
+          Copy Feedback
+        </button>
+      </div>
+
+      <div class="share-support-list">
+        <div class="share-support-row">
+          <span>🌦️</span>
+          <div>
+            <strong>Built for Maryland</strong>
+            <small>Forecasts, alerts, radar tools, and reports focused on Maryland communities.</small>
+          </div>
+        </div>
+
+        <div class="share-support-row">
+          <span>🧪</span>
+          <div>
+            <strong>Feedback helps</strong>
+            <small>Early testing helps improve layout, speed, reliability, and app features.</small>
+          </div>
+        </div>
+
+        <div class="share-support-row">
+          <span>🔗</span>
+          <div>
+            <strong>One link is enough</strong>
+            <small>Sharing the app link helps more Marylanders find the project.</small>
+          </div>
+        </div>
+      </div>
+
+      <p class="share-app-note" id="mdwaShareAppNote">
+        Share features use your browser’s built-in share or clipboard tools when available.
+      </p>
+    `;
+
+    return card;
+  }
+
+  async function copyTextToClipboard(text, successMessage) {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        showShareMessage(successMessage);
+        return;
+      }
+
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = text;
+      tempTextArea.style.position = "fixed";
+      tempTextArea.style.opacity = "0";
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand("copy");
+      tempTextArea.remove();
+
+      showShareMessage(successMessage);
+    } catch (error) {
+      console.error("Clipboard failed:", error);
+      alert(text);
+    }
+  }
+
+  async function shareApp() {
+    const shareData = {
+      title: "MD Weather Alerts",
+      text: "Check out the MD Weather Alerts app for Maryland forecasts, alerts, radar, and local reports.",
+      url: getAppShareUrl(),
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        showShareMessage("Thanks for sharing MD Weather Alerts.");
+        return;
+      }
+
+      await copyTextToClipboard(
+        `${shareData.text}\n${shareData.url}`,
+        "App link copied for sharing."
+      );
+    } catch (error) {
+      console.log("Share cancelled or unavailable:", error);
+    }
+  }
+
+  function copyAppLink() {
+    copyTextToClipboard(getAppShareUrl(), "App link copied.");
+  }
+
+  function openWebsite() {
+    window.open(MDWA_WEBSITE_URL, "_blank", "noopener,noreferrer");
+  }
+
+  function copyFeedbackTemplate() {
+    const feedbackText = [
+      "MD Weather Alerts App Feedback",
+      "",
+      "Device/browser:",
+      "",
+      "What worked well:",
+      "",
+      "What was confusing or broken:",
+      "",
+      "Feature idea:",
+      "",
+      `App link: ${getAppShareUrl()}`,
+    ].join("\n");
+
+    copyTextToClipboard(feedbackText, "Feedback template copied.");
+  }
+
+  function placeShareCard() {
+    const shareCard = createShareAppCard();
+
+    const appInfoCard = document.getElementById("mdwaAppInfoCard");
+    const launchChecklistCard = document.getElementById("mdwaLaunchChecklistCard");
+    const installCard = document.getElementById("installAppCard");
+    const forecastBlog = document.getElementById("moreBlogPosts");
+    const forecastBlogCard = forecastBlog
+      ? forecastBlog.closest(".section-card")
+      : null;
+
+    if (launchChecklistCard && launchChecklistCard.parentElement === moreScreen) {
+      launchChecklistCard.insertAdjacentElement("afterend", shareCard);
+      return;
+    }
+
+    if (appInfoCard && appInfoCard.parentElement === moreScreen) {
+      appInfoCard.insertAdjacentElement("afterend", shareCard);
+      return;
+    }
+
+    if (installCard && installCard.parentElement === moreScreen) {
+      moreScreen.insertBefore(shareCard, installCard);
+      return;
+    }
+
+    if (forecastBlogCard) {
+      moreScreen.insertBefore(shareCard, forecastBlogCard);
+      return;
+    }
+
+    moreScreen.appendChild(shareCard);
+  }
+
+  placeShareCard();
+
+  const nativeShareBtn = document.getElementById("mdwaNativeShareBtn");
+  const copyAppLinkBtn = document.getElementById("mdwaCopyAppLinkBtn");
+  const openWebsiteBtn = document.getElementById("mdwaOpenWebsiteBtn");
+  const copyFeedbackBtn = document.getElementById("mdwaCopyFeedbackBtn");
+
+  if (nativeShareBtn) {
+    nativeShareBtn.addEventListener("click", shareApp);
+  }
+
+  if (copyAppLinkBtn) {
+    copyAppLinkBtn.addEventListener("click", copyAppLink);
+  }
+
+  if (openWebsiteBtn) {
+    openWebsiteBtn.addEventListener("click", openWebsite);
+  }
+
+  if (copyFeedbackBtn) {
+    copyFeedbackBtn.addEventListener("click", copyFeedbackTemplate);
+  }
+})();
+console.log("MD Weather Alerts Version 1.7 share app center loaded successfully.");
