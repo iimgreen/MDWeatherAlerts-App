@@ -3951,3 +3951,73 @@ body.app-dark-mode .alert-dot {
     grid-template-columns: 1fr;
   }
 }
+/* Version 1.0 - Live NWS alerts connection */
+
+.live-alert-source {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.54);
+  color: rgba(45, 84, 103, 0.78);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.alert-card.live-nws-alert {
+  animation: liveAlertIn 0.22s ease;
+}
+
+@keyframes liveAlertIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-live-details {
+  display: none;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+}
+
+.alert-card.details-open .alert-live-details {
+  display: block;
+}
+
+.alert-live-details strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--blue-dark);
+  font-size: 13px;
+}
+
+.alert-live-details p {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.alert-loading-card {
+  padding: 16px;
+  border-radius: 28px;
+}
+
+body.app-dark-mode .live-alert-source,
+body.app-dark-mode .alert-live-details {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(142, 218, 255, 0.15) !important;
+  color: rgba(222, 244, 255, 0.74) !important;
+}
+
+body.app-dark-mode .alert-live-details strong {
+  color: #f6fcff !important;
+}

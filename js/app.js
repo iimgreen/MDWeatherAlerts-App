@@ -1888,4 +1888,361 @@ updateInstallAppCard();
     }
   });
 })();
+/* Version 1.0 - Live NWS Alerts Connection */
+
+(function mdwaLiveNwsAlerts() {
+  const NWS_ALERTS_URL = "https://api.weather.gov/alerts/active?area=MD";
+
+  const alertCountySelect = document.getElementById("alertCountySelect");
+  const alertList = document.getElementById("alertList");
+  const refreshBtn = document.getElementById("alertRefreshBtn");
+  const statusTitle = document.getElementById("alertStatusTitle");
+  const statusText = document.getElementById("alertStatusText");
+  const statusIcon = document.getElementById("alertStatusIcon");
+
+  let liveAlerts = [];
+  let liveAlertsLoaded = false;
+  let liveAlertsFailed = false;
+  let lastLiveAlertUpdate = null;
+
+  function safeHTML(text) {
+    const div = document.createElement("div");
+    div.textContent = text || "";
+    return div.innerHTML;
+  }
+
+  function formatNwsTime(timeString) {
+    if (!timeString) return "Time not listed";
+
+    const date = new Date(timeString);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Time not listed";
+    }
+
+    return date.toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  }
+
+  function getAlertType(eventName) {
+    const event = (eventName || "").toLowerCase();
+
+    if (event.includes("warning")) return "warning";
+    if (event.includes("watch")) return "watch";
+    if (event.includes("advisory")) return "advisory";
+    if (event.includes("statement")) return "statement";
+
+    return "statement";
+  }
+
+  function getAlertLabel(eventName) {
+    const event = eventName || "";
+
+    if (event.toLowerCase().includes("warning")) return "Warning";
+    if (event.toLowerCase().includes("watch")) return "Watch";
+    if (event.toLowerCase().includes("advisory")) return "Advisory";
+    if (event.toLowerCase().includes("statement")) return "Statement";
+
+    return "Alert";
+  }
+
+  function countyMatchesAlert(alert, county) {
+    if (!county || county === "all") return true;
+
+    const areaDesc = (alert.properties?.areaDesc || "").toLowerCase();
+    const countyName = county.toLowerCase();
+
+    if (areaDesc.includes(countyName)) return true;
+
+    // Common county name variations
+    if (county === "Prince George’s") {
+      return (
+        areaDesc.includes("prince george") ||
+        areaDesc.includes("prince george's")
+      );
+    }
+
+    if (county === "St. Mary’s") {
+      return (
+        areaDesc.includes("st. mary") ||
+        areaDesc.includes("saint mary") ||
+        areaDesc.includes("st mary")
+      );
+    }
+
+    if (county === "Queen Anne’s") {
+      return (
+        areaDesc.includes("queen anne") ||
+        areaDesc.includes("queen anne's")
+      );
+    }
+
+    if (county === "Baltimore City") {
+      return areaDesc.includes("baltimore city");
+    }
+
+    return false;
+  }
+
+  function getSelectedCounty() {
+    if (!alertCountySelect) return "all";
+    return alertCountySelect.value || "all";
+  }
+
+  function getFilteredLiveAlerts() {
+    const selectedCounty = getSelectedCounty();
+
+    return liveAlerts.filter((alert) => {
+      return countyMatchesAlert(alert, selectedCounty);
+    });
+  }
+
+  function updateLiveStatus(filteredAlerts) {
+    if (!statusTitle || !statusText || !statusIcon) return;
+
+    const selectedCounty = getSelectedCounty();
+    const locationLabel =
+      selectedCounty === "all" ? "Maryland" : `${selectedCounty} County`;
+
+    if (liveAlertsFailed) {
+      statusTitle.textContent = "Live alerts unavailable";
+      statusText.textContent =
+        "The app could not reach the National Weather Service alert feed. Demo alerts may still appear.";
+      statusIcon.textContent = "⚠️";
+      return;
+    }
+
+    if (!liveAlertsLoaded) {
+      statusTitle.textContent = "Checking official alerts";
+      statusText.textContent =
+        "Loading active National Weather Service alerts for Maryland...";
+      statusIcon.textContent = "⏳";
+      return;
+    }
+
+    if (filteredAlerts.length === 0) {
+      statusTitle.textContent = `No active NWS alerts for ${locationLabel}`;
+      statusText.textContent =
+        "No active official watches, warnings, or advisories are currently showing for this selection.";
+      statusIcon.textContent = "✅";
+      return;
+    }
+
+    statusTitle.textContent = `${filteredAlerts.length} active NWS alert${
+      filteredAlerts.length === 1 ? "" : "s"
+    } for ${locationLabel}`;
+
+    statusText.textContent = lastLiveAlertUpdate
+      ? `Official NWS alert feed updated in-app at ${lastLiveAlertUpdate}.`
+      : "Official National Weather Service alerts are loaded.";
+    statusIcon.textContent = "⚠️";
+  }
+
+  function createLiveAlertCard(alert) {
+    const props = alert.properties || {};
+    const eventName = props.event || "Weather Alert";
+    const alertType = getAlertType(eventName);
+    const label = getAlertLabel(eventName);
+
+    const headline = props.headline || eventName;
+    const description = props.description || "No detailed description provided.";
+    const instruction =
+      props.instruction || "Follow official guidance and stay weather aware.";
+    const areaDesc = props.areaDesc || "Maryland";
+    const sender = props.senderName || "National Weather Service";
+    const effective = formatNwsTime(props.effective);
+    const expires = formatNwsTime(props.expires || props.ends);
+
+    const card = document.createElement("article");
+    card.className = `alert-card ${alertType} live-nws-alert`;
+
+    card.innerHTML = `
+      <div class="alert-card-header">
+        <span class="alert-type-badge ${alertType}">
+          ${safeHTML(label)}
+        </span>
+        <small>Live NWS</small>
+      </div>
+
+      <h3>${safeHTML(eventName)}</h3>
+      <p>${safeHTML(headline)}</p>
+
+      <div class="alert-card-meta">
+        <span>📍 ${safeHTML(areaDesc)}</span>
+        <span>⏱️ Effective: ${safeHTML(effective)}</span>
+        <span>⌛ Expires: ${safeHTML(expires)}</span>
+        <span>🏢 ${safeHTML(sender)}</span>
+      </div>
+
+      <div class="alert-actions">
+        <button class="alert-action-btn" type="button" data-live-alert-toggle>
+          View Details
+        </button>
+      </div>
+
+      <div class="alert-live-details">
+        <strong>Description</strong>
+        <p>${safeHTML(description)}</p>
+
+        <strong>Recommended Action</strong>
+        <p>${safeHTML(instruction)}</p>
+
+        <span class="live-alert-source">Source: National Weather Service</span>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function createNoLiveAlertCard() {
+    const selectedCounty = getSelectedCounty();
+    const locationLabel =
+      selectedCounty === "all" ? "Maryland" : `${selectedCounty} County`;
+
+    const card = document.createElement("article");
+    card.className = "alert-card none live-nws-alert";
+
+    card.innerHTML = `
+      <div class="alert-card-header">
+        <span class="alert-type-badge none">No Active NWS Alerts</span>
+        <small>Live NWS</small>
+      </div>
+
+      <h3>No active NWS alerts for ${safeHTML(locationLabel)}</h3>
+      <p>
+        No active official watches, warnings, or advisories are currently listed
+        for this selection.
+      </p>
+
+      <div class="alert-card-meta">
+        <span>✅ Calm alert status for this selection</span>
+        <span>🏢 Source: National Weather Service</span>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function renderLiveAlerts() {
+    if (!alertList) return;
+
+    const filteredAlerts = getFilteredLiveAlerts();
+
+    alertList.innerHTML = "";
+
+    if (filteredAlerts.length === 0) {
+      alertList.appendChild(createNoLiveAlertCard());
+    } else {
+      filteredAlerts.forEach((alert) => {
+        alertList.appendChild(createLiveAlertCard(alert));
+      });
+    }
+
+    updateLiveStatus(filteredAlerts);
+  }
+
+  function showLiveAlertsLoading() {
+    if (!alertList) return;
+
+    alertList.innerHTML = `
+      <article class="alert-card statement alert-loading-card">
+        <div class="alert-card-header">
+          <span class="alert-type-badge statement">Loading</span>
+          <small>Live NWS</small>
+        </div>
+        <h3>Checking official Maryland alerts...</h3>
+        <p>Loading active National Weather Service alerts for Maryland.</p>
+      </article>
+    `;
+
+    updateLiveStatus([]);
+  }
+
+  async function loadLiveNwsAlerts() {
+    if (!alertList) return;
+
+    showLiveAlertsLoading();
+
+    try {
+      const response = await fetch(NWS_ALERTS_URL, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`NWS alerts request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      liveAlerts = Array.isArray(data.features) ? data.features : [];
+      liveAlertsLoaded = true;
+      liveAlertsFailed = false;
+      lastLiveAlertUpdate = new Date().toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+      });
+
+      renderLiveAlerts();
+
+      if (typeof showToast === "function") {
+        showToast("Official NWS alerts loaded.");
+      }
+    } catch (error) {
+      console.error("Live NWS alerts failed:", error);
+
+      liveAlerts = [];
+      liveAlertsLoaded = false;
+      liveAlertsFailed = true;
+
+      if (statusTitle && statusText && statusIcon) {
+        statusTitle.textContent = "Live alerts unavailable";
+        statusText.textContent =
+          "The app could not reach the official NWS alert feed. Demo alerts may still appear.";
+        statusIcon.textContent = "⚠️";
+      }
+
+      if (typeof showToast === "function") {
+        showToast("Live NWS alerts could not load.");
+      }
+    }
+  }
+
+  if (alertCountySelect) {
+    alertCountySelect.addEventListener("change", () => {
+      if (liveAlertsLoaded) {
+        renderLiveAlerts();
+      }
+    });
+  }
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      loadLiveNwsAlerts();
+    });
+  }
+
+  if (alertList) {
+    alertList.addEventListener("click", (event) => {
+      const detailsButton = event.target.closest("[data-live-alert-toggle]");
+
+      if (!detailsButton) return;
+
+      const card = detailsButton.closest(".alert-card");
+      if (!card) return;
+
+      card.classList.toggle("details-open");
+      detailsButton.textContent = card.classList.contains("details-open")
+        ? "Hide Details"
+        : "View Details";
+    });
+  }
+
+  loadLiveNwsAlerts();
+})();
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");
