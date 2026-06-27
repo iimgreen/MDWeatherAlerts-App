@@ -742,4 +742,109 @@ document.querySelectorAll(".region-card").forEach((button) => {
     showToast(`${regionName} regional forecast coming soon.`);
   });
 });
-console.log("MD Weather Alerts Version 0.4.3 report filters loaded successfully.");
+/* Version 0.6 - WordPress blog feed */
+
+const WORDPRESS_POSTS_URL =
+  "https://mdweatheralerts.com/wp-json/wp/v2/posts?_embed&per_page=5";
+
+function stripHTML(html) {
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html || "";
+  return tempDiv.textContent || tempDiv.innerText || "";
+}
+
+function formatPostDate(dateString) {
+  const date = new Date(dateString);
+
+  return date.toLocaleDateString([], {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function createBlogPostCard(post, compact = false) {
+  const card = document.createElement("a");
+  card.className = "blog-post-card";
+  card.href = post.link;
+  card.target = "_blank";
+  card.rel = "noopener noreferrer";
+
+  const title = stripHTML(post.title?.rendered || "Untitled Post");
+  const excerpt = stripHTML(post.excerpt?.rendered || "").trim();
+  const date = formatPostDate(post.date);
+
+  card.innerHTML = `
+    <strong>${title}</strong>
+
+    ${
+      compact
+        ? ""
+        : `<p>${excerpt.substring(0, 95)}${excerpt.length > 95 ? "..." : ""}</p>`
+    }
+
+    <div class="blog-post-footer">
+      <small>${date}</small>
+      <span class="read-post-pill">Read</span>
+    </div>
+  `;
+
+  return card;
+}
+
+function renderBlogPosts(posts) {
+  const homeBlogPosts = document.getElementById("homeBlogPosts");
+  const moreBlogPosts = document.getElementById("moreBlogPosts");
+
+  if (homeBlogPosts) {
+    homeBlogPosts.innerHTML = "";
+
+    posts.slice(0, 1).forEach((post) => {
+      homeBlogPosts.appendChild(createBlogPostCard(post, true));
+    });
+  }
+
+  if (moreBlogPosts) {
+    moreBlogPosts.innerHTML = "";
+
+    posts.slice(0, 5).forEach((post) => {
+      moreBlogPosts.appendChild(createBlogPostCard(post, false));
+    });
+  }
+}
+
+function renderBlogError() {
+  const homeBlogPosts = document.getElementById("homeBlogPosts");
+  const moreBlogPosts = document.getElementById("moreBlogPosts");
+
+  const message =
+    '<p class="empty-feed">Latest posts could not load right now. Visit MDWeatherAlerts.com for the newest forecast updates.</p>';
+
+  if (homeBlogPosts) homeBlogPosts.innerHTML = message;
+  if (moreBlogPosts) moreBlogPosts.innerHTML = message;
+}
+
+async function loadWordPressPosts() {
+  try {
+    const response = await fetch(WORDPRESS_POSTS_URL);
+
+    if (!response.ok) {
+      throw new Error("WordPress posts failed to load.");
+    }
+
+    const posts = await response.json();
+
+    if (!Array.isArray(posts) || posts.length === 0) {
+      renderBlogError();
+      return;
+    }
+
+    renderBlogPosts(posts);
+  } catch (error) {
+    console.error("Blog feed error:", error);
+    renderBlogError();
+  }
+}
+
+loadWordPressPosts();
+console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");
