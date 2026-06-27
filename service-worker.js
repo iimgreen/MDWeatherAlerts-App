@@ -1,4 +1,4 @@
-const MDWA_CACHE_NAME = "md-weather-alerts-v0-8";
+const MDWA_CACHE_NAME = "md-weather-alerts-v2_4_5";
 
 const MDWA_FILES_TO_CACHE = [
   "./",
