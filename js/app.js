@@ -2245,4 +2245,232 @@ updateInstallAppCard();
 
   loadLiveNwsAlerts();
 })();
+/* Version 1.1 - Home live alert status */
+
+(function mdwaHomeLiveAlertStatus() {
+  const NWS_ALERTS_URL = "https://api.weather.gov/alerts/active?area=MD";
+  const homeScreen = document.getElementById("home");
+
+  if (!homeScreen) return;
+
+  function createHomeAlertCard() {
+    let card = document.getElementById("homeLiveAlertCard");
+
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "section-card home-live-alert-card";
+    card.id = "homeLiveAlertCard";
+
+    card.innerHTML = `
+      <div class="home-alert-main">
+        <div class="home-alert-copy">
+          <p class="eyebrow">Official NWS Alerts</p>
+          <h3 id="homeAlertTitle">Checking Maryland alerts...</h3>
+          <p id="homeAlertText">Loading active National Weather Service alerts for Maryland.</p>
+        </div>
+
+        <div class="home-alert-icon" id="homeAlertIcon">⏳</div>
+      </div>
+
+      <div class="home-alert-meta">
+        <span class="home-alert-pill" id="homeAlertCount">Checking...</span>
+        <span class="home-alert-pill" id="homeAlertLevel">Live NWS</span>
+        <span class="home-alert-pill" id="homeAlertChecked">Just opened</span>
+      </div>
+
+      <div class="home-alert-actions">
+        <button class="home-alert-btn primary" id="homeViewAlertsBtn" type="button">
+          View Alerts
+        </button>
+
+        <button class="home-alert-btn secondary" id="homeRefreshAlertsBtn" type="button">
+          Refresh
+        </button>
+      </div>
+    `;
+
+    const firstSectionCard = homeScreen.querySelector(".section-card");
+
+    if (firstSectionCard) {
+      firstSectionCard.insertAdjacentElement("afterend", card);
+    } else {
+      homeScreen.prepend(card);
+    }
+
+    return card;
+  }
+
+  function getHighestAlertLevel(alerts) {
+    const events = alerts.map((alert) =>
+      (alert.properties?.event || "").toLowerCase()
+    );
+
+    if (events.some((event) => event.includes("warning"))) {
+      return {
+        label: "Warning",
+        icon: "🚨",
+        className: "alert-warning",
+      };
+    }
+
+    if (events.some((event) => event.includes("watch"))) {
+      return {
+        label: "Watch",
+        icon: "⚠️",
+        className: "alert-active",
+      };
+    }
+
+    if (events.some((event) => event.includes("advisory"))) {
+      return {
+        label: "Advisory",
+        icon: "⚠️",
+        className: "alert-active",
+      };
+    }
+
+    if (alerts.length > 0) {
+      return {
+        label: "Statement",
+        icon: "ℹ️",
+        className: "alert-active",
+      };
+    }
+
+    return {
+      label: "Clear",
+      icon: "✅",
+      className: "alert-clear",
+    };
+  }
+
+  function setHomeAlertLoading() {
+    const card = createHomeAlertCard();
+
+    card.classList.remove("alert-clear", "alert-active", "alert-warning");
+
+    document.getElementById("homeAlertTitle").textContent =
+      "Checking Maryland alerts...";
+    document.getElementById("homeAlertText").textContent =
+      "Loading active National Weather Service alerts for Maryland.";
+    document.getElementById("homeAlertIcon").textContent = "⏳";
+    document.getElementById("homeAlertCount").textContent = "Checking...";
+    document.getElementById("homeAlertLevel").textContent = "Live NWS";
+    document.getElementById("homeAlertChecked").textContent = "Updating";
+  }
+
+  function setHomeAlertError() {
+    const card = createHomeAlertCard();
+
+    card.classList.remove("alert-clear", "alert-active", "alert-warning");
+    card.classList.add("alert-active");
+
+    document.getElementById("homeAlertTitle").textContent =
+      "Live alerts unavailable";
+    document.getElementById("homeAlertText").textContent =
+      "The app could not reach the National Weather Service alert feed.";
+    document.getElementById("homeAlertIcon").textContent = "⚠️";
+    document.getElementById("homeAlertCount").textContent = "Unable to load";
+    document.getElementById("homeAlertLevel").textContent = "Check Alerts tab";
+    document.getElementById("homeAlertChecked").textContent = "Try refresh";
+  }
+
+  function setHomeAlertData(alerts) {
+    const card = createHomeAlertCard();
+    const level = getHighestAlertLevel(alerts);
+
+    card.classList.remove("alert-clear", "alert-active", "alert-warning");
+    card.classList.add(level.className);
+
+    const checkedTime = new Date().toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+    const title =
+      alerts.length === 0
+        ? "No active NWS alerts for Maryland"
+        : `${alerts.length} active NWS alert${alerts.length === 1 ? "" : "s"}`;
+
+    const text =
+      alerts.length === 0
+        ? "No active official watches, warnings, or advisories are currently listed for Maryland."
+        : "Active official National Weather Service alerts are currently listed for Maryland.";
+
+    document.getElementById("homeAlertTitle").textContent = title;
+    document.getElementById("homeAlertText").textContent = text;
+    document.getElementById("homeAlertIcon").textContent = level.icon;
+    document.getElementById("homeAlertCount").textContent =
+      alerts.length === 0 ? "0 active alerts" : `${alerts.length} active`;
+    document.getElementById("homeAlertLevel").textContent = level.label;
+    document.getElementById("homeAlertChecked").textContent =
+      `Checked ${checkedTime}`;
+  }
+
+  async function loadHomeLiveAlerts() {
+    setHomeAlertLoading();
+
+    try {
+      const response = await fetch(NWS_ALERTS_URL, {
+        headers: {
+          Accept: "application/geo+json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`NWS home alert request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const alerts = Array.isArray(data.features) ? data.features : [];
+
+      setHomeAlertData(alerts);
+    } catch (error) {
+      console.error("Home live alerts failed:", error);
+      setHomeAlertError();
+    }
+  }
+
+  function goToAlertsTab() {
+    const alertsNavButton =
+      document.querySelector('.nav-item[data-screen="alerts"]') ||
+      document.querySelector('[data-target="alerts"]');
+
+    if (alertsNavButton) {
+      alertsNavButton.click();
+      return;
+    }
+
+    document.querySelectorAll(".screen").forEach((screen) => {
+      screen.classList.remove("active");
+    });
+
+    const alertsScreen = document.getElementById("alerts");
+    if (alertsScreen) {
+      alertsScreen.classList.add("active");
+    }
+  }
+
+  createHomeAlertCard();
+
+  const viewAlertsBtn = document.getElementById("homeViewAlertsBtn");
+  const refreshAlertsBtn = document.getElementById("homeRefreshAlertsBtn");
+
+  if (viewAlertsBtn) {
+    viewAlertsBtn.addEventListener("click", goToAlertsTab);
+  }
+
+  if (refreshAlertsBtn) {
+    refreshAlertsBtn.addEventListener("click", () => {
+      loadHomeLiveAlerts();
+
+      if (typeof showToast === "function") {
+        showToast("Refreshing home alert status.");
+      }
+    });
+  }
+
+  loadHomeLiveAlerts();
+})();
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");
