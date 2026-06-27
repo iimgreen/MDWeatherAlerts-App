@@ -428,20 +428,155 @@
 </section>
 
       <!-- RADAR -->
-      <section class="screen" id="radar">
-        <div class="page-title">
-          <h2>Radar</h2>
-          <p>Track storms across Maryland.</p>
-        </div>
+     <!-- RADAR -->
+<section class="screen" id="radar">
+  <div class="page-title">
+    <h2>Radar</h2>
+    <p>Track Maryland rain, storms, and radar tools.</p>
+  </div>
 
-        <section class="section-card">
-          <div class="radar-box">
-            <span>🛰️</span>
-            <h3>Interactive Radar Coming Soon</h3>
-            <p>We’ll connect radar and satellite views here.</p>
-          </div>
-        </section>
-      </section>
+  <section class="section-card radar-hero-card">
+    <div class="radar-hero-top">
+      <div>
+        <p class="eyebrow">Maryland Radar Center</p>
+        <h3>Live radar tools</h3>
+        <p>
+          Quick access to official radar resources, regional views, and future
+          in-app radar layers.
+        </p>
+      </div>
+
+      <div class="radar-hero-icon">📡</div>
+    </div>
+
+    <div class="radar-action-grid">
+      <button class="radar-primary-btn" id="openNwsRadarBtn" type="button">
+        Open Official NWS Radar
+      </button>
+
+      <button class="radar-secondary-btn" id="radarRefreshBtn" type="button">
+        Refresh Radar View
+      </button>
+    </div>
+  </section>
+
+  <section class="section-card radar-preview-card">
+    <div class="section-title-row">
+      <div>
+        <h3>Maryland Radar Preview</h3>
+        <p id="radarRegionText">Viewing statewide Maryland radar focus.</p>
+      </div>
+      <span class="pill live">Preview</span>
+    </div>
+
+    <div class="radar-preview-window" id="radarPreviewWindow">
+      <div class="radar-sweep"></div>
+      <div class="radar-ring ring-one"></div>
+      <div class="radar-ring ring-two"></div>
+      <div class="radar-ring ring-three"></div>
+
+      <div class="radar-md-shape">
+        <span>MD</span>
+      </div>
+
+      <div class="radar-cell radar-cell-one"></div>
+      <div class="radar-cell radar-cell-two"></div>
+      <div class="radar-cell radar-cell-three"></div>
+    </div>
+
+    <p class="radar-preview-note">
+      Preview graphic only. Official radar opens through the National Weather Service.
+    </p>
+  </section>
+
+  <section class="section-card radar-region-card">
+    <div class="section-title-row">
+      <div>
+        <h3>Quick Regions</h3>
+        <p>Jump between common Maryland radar focus areas.</p>
+      </div>
+      <span class="pill calm">MD</span>
+    </div>
+
+    <div class="radar-region-grid">
+      <button class="radar-region-btn active" data-radar-region="Maryland">
+        Statewide
+      </button>
+      <button class="radar-region-btn" data-radar-region="Western Maryland">
+        Western MD
+      </button>
+      <button class="radar-region-btn" data-radar-region="Baltimore Metro">
+        Baltimore
+      </button>
+      <button class="radar-region-btn" data-radar-region="DC Suburbs">
+        DC Suburbs
+      </button>
+      <button class="radar-region-btn" data-radar-region="Southern Maryland">
+        Southern MD
+      </button>
+      <button class="radar-region-btn" data-radar-region="Eastern Shore">
+        Eastern Shore
+      </button>
+      <button class="radar-region-btn" data-radar-region="Maryland Beaches">
+        Beaches
+      </button>
+    </div>
+  </section>
+
+  <section class="section-card radar-layers-card">
+    <div class="section-title-row">
+      <div>
+        <h3>Radar Layers</h3>
+        <p>Choose what you want this radar tab to focus on.</p>
+      </div>
+      <span class="pill live">Saved</span>
+    </div>
+
+    <div class="radar-layer-list">
+      <label>
+        <input class="radar-layer-toggle" type="checkbox" data-layer="rain" checked />
+        <span>🌧️ Rain</span>
+      </label>
+
+      <label>
+        <input class="radar-layer-toggle" type="checkbox" data-layer="storms" checked />
+        <span>⛈️ Storms</span>
+      </label>
+
+      <label>
+        <input class="radar-layer-toggle" type="checkbox" data-layer="lightning" />
+        <span>⚡ Lightning</span>
+      </label>
+
+      <label>
+        <input class="radar-layer-toggle" type="checkbox" data-layer="snow" />
+        <span>❄️ Snow/Ice</span>
+      </label>
+
+      <label>
+        <input class="radar-layer-toggle" type="checkbox" data-layer="reports" checked />
+        <span>📍 Community Reports</span>
+      </label>
+    </div>
+
+    <p class="radar-layer-note" id="radarLayerNote">
+      Radar preferences save automatically on this device.
+    </p>
+  </section>
+
+  <section class="section-card radar-coming-card">
+    <div class="section-title-row">
+      <div>
+        <h3>In-App Radar Coming Soon</h3>
+        <p>
+          This tab is ready for a future live radar map with Maryland-focused
+          layers and community report overlays.
+        </p>
+      </div>
+      <span class="pill calm">Planned</span>
+    </div>
+  </section>
+</section>
 
       <!-- ALERTS -->
       <!-- ALERTS -->

@@ -2473,4 +2473,95 @@ updateInstallAppCard();
 
   loadHomeLiveAlerts();
 })();
+/* Version 1.2 - Radar tab upgrade */
+
+(function mdwaRadarTabUpgrade() {
+  const openNwsRadarBtn = document.getElementById("openNwsRadarBtn");
+  const radarRefreshBtn = document.getElementById("radarRefreshBtn");
+  const radarRegionText = document.getElementById("radarRegionText");
+  const radarRegionButtons = document.querySelectorAll(".radar-region-btn");
+  const radarLayerToggles = document.querySelectorAll(".radar-layer-toggle");
+  const radarLayerNote = document.getElementById("radarLayerNote");
+
+  const nwsRadarUrl = "https://radar.weather.gov/";
+
+  function showRadarToast(message) {
+    if (typeof showToast === "function") {
+      showToast(message);
+    }
+  }
+
+  function saveRadarLayers() {
+    radarLayerToggles.forEach((toggle) => {
+      localStorage.setItem(
+        `mdwa_radar_layer_${toggle.dataset.layer}`,
+        toggle.checked ? "on" : "off"
+      );
+    });
+
+    if (radarLayerNote) {
+      radarLayerNote.textContent = "Radar layer preferences saved ✓";
+
+      setTimeout(() => {
+        radarLayerNote.textContent =
+          "Radar preferences save automatically on this device.";
+      }, 1400);
+    }
+  }
+
+  function loadRadarLayers() {
+    radarLayerToggles.forEach((toggle) => {
+      const savedValue = localStorage.getItem(
+        `mdwa_radar_layer_${toggle.dataset.layer}`
+      );
+
+      if (savedValue !== null) {
+        toggle.checked = savedValue === "on";
+      }
+
+      toggle.addEventListener("change", saveRadarLayers);
+    });
+  }
+
+  function setRadarRegion(regionName) {
+    radarRegionButtons.forEach((button) => {
+      button.classList.toggle(
+        "active",
+        button.dataset.radarRegion === regionName
+      );
+    });
+
+    if (radarRegionText) {
+      radarRegionText.textContent =
+        regionName === "Maryland"
+          ? "Viewing statewide Maryland radar focus."
+          : `Viewing ${regionName} radar focus.`;
+    }
+
+    localStorage.setItem("mdwa_radar_region", regionName);
+    showRadarToast(`Radar focus set to ${regionName}.`);
+  }
+
+  const savedRegion = localStorage.getItem("mdwa_radar_region") || "Maryland";
+  setRadarRegion(savedRegion);
+  loadRadarLayers();
+
+  radarRegionButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setRadarRegion(button.dataset.radarRegion);
+    });
+  });
+
+  if (openNwsRadarBtn) {
+    openNwsRadarBtn.addEventListener("click", () => {
+      window.open(nwsRadarUrl, "_blank", "noopener,noreferrer");
+    });
+  }
+
+  if (radarRefreshBtn) {
+    radarRefreshBtn.addEventListener("click", () => {
+      showRadarToast("Radar preview refreshed.");
+    });
+  }
+})();
 console.log("MD Weather Alerts Version 0.6 WordPress blog feed loaded successfully.");
