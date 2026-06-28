@@ -7,8 +7,14 @@
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#bfeeff",
-  "theme_color": "#1398d1",
-  "categories": [
+"themeColor": "#0B2F45",
+"navigationColor": "#0B2F45",
+"navigationColorDark": "#0B2F45",
+"navigationDividerColor": "#0B2F45",
+"navigationDividerColorDark": "#0B2F45",
+"backgroundColor": "#0B2F45",
+
+"categories": [
     "weather",
     "news",
     "utilities"
