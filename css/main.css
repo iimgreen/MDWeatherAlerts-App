@@ -6903,3 +6903,39 @@ main {
 .phone-shell::after {
   pointer-events: none;
 } 
+/* =========================================================
+   MDWA Mobile App Bottom Navigation Fix
+   Keeps in-app nav pinned to bottom of phone screen
+   ========================================================= */
+
+.mdwa-bottom-nav,
+.bottom-nav,
+.mobile-nav,
+.app-nav,
+.tab-bar,
+.nav-tabs,
+.footer-nav,
+nav[aria-label="Primary"],
+nav[aria-label="Main"] {
+  position: fixed !important;
+  left: 50% !important;
+  bottom: env(safe-area-inset-bottom, 0px) !important;
+  transform: translateX(-50%) !important;
+  width: min(100%, 430px) !important;
+  z-index: 9999 !important;
+  margin: 0 !important;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+.app,
+.app-shell,
+.phone-shell,
+.screen,
+.page,
+main {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+}
