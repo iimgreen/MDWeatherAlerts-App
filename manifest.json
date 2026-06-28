@@ -2,8 +2,8 @@
   "name": "MD Weather Alerts",
   "short_name": "MD Alerts",
   "description": "Maryland weather alerts, forecasts, radar, and community reports.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#bfeeff",
@@ -11,7 +11,7 @@
   "categories": ["weather", "news", "utilities"],
   "icons": [
     {
-      "src": "assets/app-icon.svg",
+      "src": "/assets/app-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
