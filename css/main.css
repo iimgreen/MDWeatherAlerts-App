@@ -6939,3 +6939,69 @@ body {
 main {
   padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
 }
+/* =========================================================
+   MDWA Mobile App Fixed Bottom Navigation
+   Keeps bottom nav pinned inside installed app/TWA
+   ========================================================= */
+
+#mdwaBottomNav {
+  position: fixed !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: 0 !important;
+  transform: translateX(-50%) !important;
+
+  width: min(100%, 430px) !important;
+  max-width: 430px !important;
+
+  z-index: 999999 !important;
+
+  margin: 0 !important;
+  padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px !important;
+
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+
+  border-top: 1px solid rgba(20, 120, 170, 0.18) !important;
+  box-shadow: 0 -10px 30px rgba(12, 56, 82, 0.18) !important;
+}
+
+/* Make sure content does not hide behind the fixed nav */
+body {
+  padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+.app,
+.app-shell,
+.phone-shell,
+.screen,
+.page,
+main {
+  padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+/* Keep nav clickable above app content */
+#mdwaBottomNav,
+#mdwaBottomNav * {
+  pointer-events: auto !important;
+}
+/* Smooth background behind Android transparent system bars */
+html,
+body {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 70% 8%, rgba(255, 230, 120, 0.32), transparent 28%),
+    linear-gradient(180deg, #0b2f45 0%, #0a2638 45%, #bfeeff 100%) !important;
+}
+
+body {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.app,
+.app-shell,
+.phone-shell {
+  min-height: 100dvh;
+}
