@@ -1,4 +1,4 @@
-const MDWA_CACHE_NAME = "md-weather-alerts-v2_4_5";
+const MDWA_CACHE_NAME = "md-weather-alerts-v2_4_6";
 
 const MDWA_FILES_TO_CACHE = [
   "./",
@@ -7,6 +7,9 @@ const MDWA_FILES_TO_CACHE = [
   "./css/main.css",
   "./js/app.js",
   "./assets/app-icon.svg",
+  "./assets/icon-192.png",
+  "./assets/icon-512.png",
+  "./assets/maskable-icon-512.png",
 ];
 
 self.addEventListener("install", (event) => {
