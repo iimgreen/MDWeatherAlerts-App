@@ -7504,5 +7504,37 @@ console.log("MD Weather Alerts Version 2.3.6 clickable logo home button loaded s
   setTimeout(run, 300);
   setTimeout(run, 1000);
 
+  // Sources & Disclaimer modal
+document.addEventListener("DOMContentLoaded", () => {
+  const openButton = document.getElementById("openSourcesDisclaimer");
+  const closeButton = document.getElementById("closeSourcesDisclaimer");
+  const modal = document.getElementById("sourcesDisclaimerModal");
+
+  if (!openButton || !closeButton || !modal) return;
+
+  openButton.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  });
+
+  closeButton.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    document.body.style.overflow = "";
+  });
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  });
+});
   console.log("MD Weather Alerts Version 2.4.4 live radar preview loaded.");
 })();

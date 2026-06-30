@@ -941,5 +941,320 @@
   </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/app.js"></script>
+ 
+
+<!-- Sources & Disclaimer Modal -->
+<div id="sourcesDisclaimerModal" class="mdwa-modal hidden" role="dialog" aria-modal="true">
+  <div class="mdwa-modal-content">
+    <button id="closeSourcesDisclaimer" class="mdwa-modal-close" aria-label="Close">
+      ×
+    </button>
+
+    <h2>Sources & Disclaimer</h2>
+
+    <p>
+      MDWeatherAlerts is an independent weather app and does not represent any government agency.
+    </p>
+
+    <p>
+      MDWeatherAlerts is not affiliated with, endorsed by, sponsored by, or officially connected to
+      the National Weather Service, NOAA, the State of Maryland, any Maryland county, or any other
+      government entity.
+    </p>
+
+    <p>
+      Weather alerts, watches, warnings, advisories, forecasts, radar, and related weather information
+      may come from official sources including the National Weather Service and NOAA.
+    </p>
+
+    <h3>Official Sources</h3>
+
+    <ul class="mdwa-source-list">
+      <li>
+        <a href="https://www.weather.gov/" target="_blank" rel="noopener noreferrer">
+          National Weather Service
+        </a>
+      </li>
+      <li>
+        <a href="https://www.noaa.gov/" target="_blank" rel="noopener noreferrer">
+          NOAA
+        </a>
+      </li>
+      <li>
+        <a href="https://api.weather.gov/" target="_blank" rel="noopener noreferrer">
+          NWS API
+        </a>
+      </li>
+      <li>
+        <a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener noreferrer">
+          NWS API Documentation
+        </a>
+      </li>
+    </ul>
+
+    <p>
+      During severe or dangerous weather, always follow official guidance from the National Weather
+      Service, NOAA, local emergency management, and public safety officials.
+    </p>
+  </div>
+</div>
+<!-- MDWeatherAlerts Sources & Disclaimer - Google Play Compliance -->
+<style>
+  .mdwa-compliance-wrapper {
+    width: 100%;
+    padding: 20px 16px 140px;
+    box-sizing: border-box;
+  }
+
+  .mdwa-compliance-bar {
+    position: relative;
+    width: 100%;
+    max-width: 390px;
+    margin: 0 auto;
+    padding: 10px 40px 10px 12px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 28px rgba(12, 73, 105, 0.18);
+    text-align: center;
+    backdrop-filter: blur(12px);
+  }
+
+  .mdwa-compliance-bar.is-hidden {
+    display: none;
+  }
+
+  .mdwa-compliance-bar p {
+    margin: 0 0 8px;
+    font-size: 11px;
+    line-height: 1.35;
+    font-weight: 700;
+    color: #345263;
+  }
+
+  .mdwa-compliance-bar button,
+  .mdwa-small-sources-pill {
+    border: none;
+    border-radius: 999px;
+    padding: 7px 13px;
+    background: #0d7fc2;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(13, 127, 194, 0.22);
+  }
+
+  .mdwa-compliance-dismiss {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 26px;
+    height: 26px;
+    padding: 0 !important;
+    background: rgba(13, 61, 102, 0.08) !important;
+    color: #0b3d66 !important;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+  }
+
+  .mdwa-small-sources-pill {
+    display: none;
+    margin: 0 auto;
+  }
+
+  .mdwa-small-sources-pill.is-visible {
+    display: block;
+  }
+
+  .mdwa-compliance-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    padding: 18px;
+    background: rgba(0, 0, 0, 0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mdwa-compliance-modal.is-open {
+    display: flex;
+  }
+
+  .mdwa-compliance-content {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    max-height: 84vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 24px;
+    color: #1f2937;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+  }
+
+  .mdwa-compliance-content h2 {
+    margin: 0 0 14px;
+    font-size: 24px;
+    color: #0b3d66;
+  }
+
+  .mdwa-compliance-content h3 {
+    margin: 18px 0 10px;
+    color: #0b3d66;
+  }
+
+  .mdwa-compliance-content p {
+    margin: 0 0 14px;
+    line-height: 1.5;
+    color: #374151;
+  }
+
+  .mdwa-compliance-content ul {
+    margin: 0 0 16px;
+    padding-left: 22px;
+  }
+
+  .mdwa-compliance-content li {
+    margin-bottom: 8px;
+  }
+
+  .mdwa-compliance-content a {
+    color: #0b5cab;
+    font-weight: 800;
+    text-decoration: underline;
+  }
+
+  .mdwa-compliance-close {
+    position: sticky;
+    top: 0;
+    float: right;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 999px;
+    background: #eef6ff;
+    color: #0b3d66;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+  }
+</style>
+
+<div class="mdwa-compliance-wrapper">
+  <div id="mdwaComplianceBar" class="mdwa-compliance-bar">
+    <button type="button" id="mdwaDismissCompliance" class="mdwa-compliance-dismiss" aria-label="Dismiss">
+      ×
+    </button>
+
+    <p>
+      Source: National Weather Service / NOAA. MDWeatherAlerts is independent and does not represent a government agency.
+    </p>
+
+    <button type="button" id="mdwaOpenCompliance">
+      Sources & Disclaimer
+    </button>
+  </div>
+
+  <button type="button" id="mdwaSmallSourcesPill" class="mdwa-small-sources-pill">
+    Sources & Disclaimer
+  </button>
+</div>
+
+<div id="mdwaComplianceModal" class="mdwa-compliance-modal" role="dialog" aria-modal="true">
+  <div class="mdwa-compliance-content">
+    <button type="button" id="mdwaCloseCompliance" class="mdwa-compliance-close" aria-label="Close">
+      ×
+    </button>
+
+    <h2>Sources & Disclaimer</h2>
+
+    <p>
+      MDWeatherAlerts is an independent weather app and does not represent any government agency.
+    </p>
+
+    <p>
+      MDWeatherAlerts is not affiliated with, endorsed by, sponsored by, or officially connected to
+      the National Weather Service, NOAA, the State of Maryland, any Maryland county, or any other
+      government entity.
+    </p>
+
+    <p>
+      Weather alerts, watches, warnings, advisories, forecasts, radar, and related weather information
+      may come from official sources including the National Weather Service and NOAA.
+    </p>
+
+    <h3>Official Sources</h3>
+
+    <ul>
+      <li><a href="https://www.weather.gov/" target="_blank" rel="noopener noreferrer">National Weather Service</a></li>
+      <li><a href="https://www.noaa.gov/" target="_blank" rel="noopener noreferrer">NOAA</a></li>
+      <li><a href="https://api.weather.gov/" target="_blank" rel="noopener noreferrer">NWS API</a></li>
+      <li><a href="https://www.weather.gov/documentation/services-web-api" target="_blank" rel="noopener noreferrer">NWS API Documentation</a></li>
+    </ul>
+
+    <p>
+      During severe or dangerous weather, always follow official guidance from the National Weather
+      Service, NOAA, local emergency management, and public safety officials.
+    </p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const bar = document.getElementById("mdwaComplianceBar");
+    const dismissButton = document.getElementById("mdwaDismissCompliance");
+    const openButton = document.getElementById("mdwaOpenCompliance");
+    const smallPill = document.getElementById("mdwaSmallSourcesPill");
+    const closeButton = document.getElementById("mdwaCloseCompliance");
+    const modal = document.getElementById("mdwaComplianceModal");
+
+    if (!bar || !dismissButton || !openButton || !smallPill || !closeButton || !modal) return;
+
+    const dismissed = sessionStorage.getItem("mdwaComplianceDismissed");
+
+    if (dismissed === "true") {
+      bar.classList.add("is-hidden");
+      smallPill.classList.add("is-visible");
+    }
+
+    function openModal() {
+      modal.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      document.body.style.overflow = "";
+    }
+
+    function dismissBar() {
+      sessionStorage.setItem("mdwaComplianceDismissed", "true");
+      bar.classList.add("is-hidden");
+      smallPill.classList.add("is-visible");
+    }
+
+    openButton.addEventListener("click", openModal);
+    smallPill.addEventListener("click", openModal);
+    dismissButton.addEventListener("click", dismissBar);
+    closeButton.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+  });
+</script>
 </body>
 </html>
