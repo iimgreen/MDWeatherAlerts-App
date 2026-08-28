@@ -7118,3 +7118,253 @@ body {
   line-height: 1.4;
   text-align: center;
 }
+/* ==========================================================================
+   Version 0.8 - Phase 3: app-wide icon system
+
+   One place that defines how every icon in the app is sized, boxed and
+   masked. Emoji glyphs paint outside their em box, so any icon with
+   line-height: 1, a shrinkable flex box, or an overflow: hidden ancestor
+   ends up visibly cropped. These rules give every icon a safe square box
+   and stop the surfaces around them from masking their edges.
+   ========================================================================== */
+
+:root {
+  /* Glyph icon sizes */
+  --icon-xs: 14px;
+  --icon-sm: 18px;
+  --icon-md: 20px;
+  --icon-lg: 23px;
+  --icon-xl: 30px;
+
+  /* Emoji ink runs past the em box, so every glyph gets a 1.25em square box
+     and a line box tall enough that no ascender or descender is cut. */
+  --icon-box: 1.25em;
+  --icon-line: 1.25;
+
+  /* Rounded icon tiles */
+  --icon-tile-sm: 52px;
+  --icon-tile-md: 62px;
+  --icon-tile-lg: 64px;
+  --icon-tile-radius-sm: 18px;
+  --icon-tile-radius-md: 24px;
+  --icon-tile-glyph-sm: 26px;
+  --icon-tile-glyph-md: 30px;
+
+  --icon-font:
+    "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+    "Android Emoji", "EmojiOne Color", sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   1. Inline glyph icons - icon sits in a row beside text
+   -------------------------------------------------------------------------- */
+
+.app-icon,
+.app-info-row > span,
+.launch-check-row > span,
+.report-tip-row > span,
+.share-support-row > span,
+.more-info-row > span,
+.clean-report-info-card > span,
+.hourly-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--icon-box);
+  height: var(--icon-box);
+  line-height: 1;
+  overflow: visible;
+  font-family: var(--icon-font);
+  font-style: normal;
+  text-align: center;
+}
+
+/* Rows where a glyph leads a line of text: keep the text flowing, just give
+   the line enough room that the glyph is never trimmed. */
+.alert-card-meta span,
+.location-btn,
+.map-expand-btn,
+.map-toolbar span,
+.upgraded-report-grid label,
+.clean-report-grid label,
+.radar-layer-list label span {
+  line-height: var(--icon-line);
+}
+
+/* --------------------------------------------------------------------------
+   2. Stacked glyph icons - icon sits above its label
+   -------------------------------------------------------------------------- */
+
+.quick-card > span,
+.nav-item > span {
+  display: block;
+  min-height: var(--icon-box);
+  line-height: var(--icon-line);
+  overflow: visible;
+  font-family: var(--icon-font);
+}
+
+.nav-item > span {
+  font-size: var(--icon-lg);
+}
+
+.quick-card > span {
+  font-size: var(--icon-xl);
+}
+
+/* --------------------------------------------------------------------------
+   3. Rounded icon tiles - one shared shape language app-wide
+   -------------------------------------------------------------------------- */
+
+.forecast-icon,
+.install-icon,
+.radar-hero-icon,
+.alert-status-icon,
+.reports-status-icon,
+.live-forecast-icon,
+.home-forecast-icon,
+.home-alert-icon,
+.home-current-icon,
+.hourly-forecast-icon,
+.current-conditions-icon,
+.share-app-icon,
+.feedback-contact-icon,
+.beta-launch-icon,
+.map-pin,
+.weather-report-marker {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  line-height: 1;
+  overflow: visible;
+  font-family: var(--icon-font);
+  text-align: center;
+}
+
+.forecast-icon,
+.radar-hero-icon,
+.alert-status-icon,
+.reports-status-icon,
+.live-forecast-icon,
+.home-forecast-icon,
+.home-alert-icon,
+.home-current-icon,
+.hourly-forecast-icon,
+.current-conditions-icon,
+.share-app-icon,
+.feedback-contact-icon,
+.beta-launch-icon {
+  width: var(--icon-tile-md);
+  height: var(--icon-tile-md);
+  min-width: var(--icon-tile-md);
+  border-radius: var(--icon-tile-radius-md);
+  font-size: var(--icon-tile-glyph-md);
+}
+
+.forecast-icon {
+  margin-bottom: 12px;
+}
+
+.install-icon {
+  width: var(--icon-tile-sm);
+  height: var(--icon-tile-sm);
+  min-width: var(--icon-tile-sm);
+  border-radius: var(--icon-tile-radius-sm);
+  font-size: var(--icon-tile-glyph-sm);
+}
+
+/* --------------------------------------------------------------------------
+   4. Status dots - fixed round shapes that flex must never squash
+   -------------------------------------------------------------------------- */
+
+.status-dot,
+.alert-dot,
+.warning-dot,
+.watch-dot,
+.advisory-dot,
+.statement-dot {
+  flex: 0 0 auto;
+  align-self: center;
+  border-radius: 999px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  min-width: 8px;
+  min-height: 8px;
+}
+
+.alert-dot {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  margin: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Surfaces that were masking their own icons
+
+   These panels only need their border-radius to shape the background, which
+   backgrounds already respect. The overflow: hidden they inherited from the
+   glass-surface rules was cropping icon glyphs and ring shadows instead.
+   -------------------------------------------------------------------------- */
+
+.brand-mark,
+.header-status-pill,
+.bottom-nav {
+  overflow: visible;
+}
+
+/* Safety net so this cannot regress screen by screen: anything named like an
+   icon keeps its own glyph visible. */
+[class*="-icon"],
+[class*="icon-"],
+[class*="-pin"],
+[class*="-dot"] {
+  overflow: visible;
+}
+
+/* --------------------------------------------------------------------------
+   6. Brand mark
+
+   .brand-mark > * (liquid glass layering) was overriding the absolute
+   positioning on the sun and cloud, so they stacked vertically and the cloud
+   was cut off by the tile. Pin them back into the tile's safe area.
+   -------------------------------------------------------------------------- */
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+}
+
+.brand-mark .brand-sun,
+.brand-mark .brand-cloud {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: var(--icon-box);
+  height: var(--icon-box);
+  z-index: 1;
+  line-height: var(--icon-line);
+  overflow: visible;
+  font-family: var(--icon-font);
+}
+
+.brand-mark .brand-sun {
+  top: 7px;
+  right: 8px;
+  bottom: auto;
+  left: auto;
+  font-size: 21px;
+}
+
+.brand-mark .brand-cloud {
+  left: 7px;
+  bottom: 8px;
+  top: auto;
+  right: auto;
+  font-size: 25px;
+}
