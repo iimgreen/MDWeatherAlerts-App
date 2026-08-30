@@ -1,0 +1,63 @@
+# PROGRESS
+
+**Current phase:** 0 — Discovery & design lock
+**Gate status:** OPEN — blocked on Vince (direction + Section 10 answers)
+**Next action:** Vince picks a direction and answers the 13 questions in `PHASE0_QUESTIONS.md`.
+
+---
+
+## Phase 0 — Discovery & design lock
+
+| # | Step (spec §6) | State |
+|---|---|---|
+| 1 | Re-read this spec | done |
+| 2 | Verify platform facts — WFF versions, data sources, complication types | done → `PLATFORM_FACTS.md` |
+| 3 | Three design directions as rendered PNGs, interactive + ambient, two accents each | done → `mockups/` (12 renders + contact sheet) |
+| 4 | Send Vince the batched Phase 0 questions with recommendations | done → `PHASE0_QUESTIONS.md` |
+| 5 | **Gate:** Vince picks a direction and answers; write Design Lock v1 | **open** |
+
+### Evidence
+
+- `mockups/contact_sheet.png` — all twelve renders on one sheet.
+- `mockups/option{A,B,C}_{interactive,ambient}_{amber,ice}.png` — 498 × 498, true device scale.
+- `mockups/src/` — the generator, so any render is reproducible and reviewable.
+- `PLATFORM_FACTS.md` — verified against Google's XSD schemas and validator source at
+  `google/watchface@44b1855`, not from memory.
+
+### What verification changed
+
+- **Day of year is native** (`DAY_OF_YEAR`, v1). The spec's fallback plan for computing it is not
+  needed. ISO week (`WEEK_IN_YEAR`) is available too.
+- **There is no second-time-zone data source.** Zulu is still buildable — `UTC_TIMESTAMP` is
+  epoch-based, so UTC and any fixed offset come out of expression arithmetic. Its units are
+  unconfirmed; that is a Phase 3 check before the readout is wired.
+- **No sunrise/sunset, calories, distance, or floors data sources.** Sunrise/sunset exists only as
+  a system *complication* provider, so it can fill a slot but cannot mark the outer track. The
+  bottom-row picker list in §5.8 has to shrink to what the platform actually exposes.
+- **Google's validator still caps at WFF v4** even though the v5 schemas have shipped. Targeting v5
+  today would mean building without the automated gate §7.1 requires. This turns Question 10 from
+  a preference into a recommendation with a reason.
+- Panel resolution is **unconfirmed**: 498 × 498 is a spec-sheet figure, and §2 requires reading it
+  off the hardware. First ADB command in Phase 1.
+
+### Blockers
+
+- Vince's answers (the gate itself).
+- No Android SDK, emulator, or watch in this environment — Phase 1 tooling is Mac-side work.
+
+---
+
+## Re-read log (spec §0.2)
+
+- `2026-08-30` — [re-read spec — session start, full document] before beginning Phase 0.
+- `2026-08-30` — [re-read spec — §5 Design Brief + §7 Quality Bars] before drawing Option A.
+- `2026-08-30` — [re-read spec — §5.2 Forbidden + §5.7 Layout rules] during the mockup review pass;
+  caught the Option C perimeter arcs reading as decoration (D-007) and the ambient heart-rate value
+  reading as fake data (D-008).
+- `2026-08-30` — [re-read spec — §6 Phase 0 + §10] before writing the question batch.
+
+---
+
+## Phases 1–7
+
+Not started. Gates as written in spec §6.
