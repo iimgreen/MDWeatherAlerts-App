@@ -181,48 +181,6 @@ function optionB(acc, amb) {
 // =========================================================================
 // OPTION C — GRID   modular, data-dense
 // =========================================================================
-function optionC(acc, amb) {
-  const pri = amb ? AMB.primary : T.primary;
-  const sec = amb ? AMB.secondary : T.secondary;
-  const ter = amb ? AMB.tertiary : T.tertiary;
-  let g = '';
-
-  g += tick(0, 232, 220, 2.5, acc);                                  // the only perimeter element
-
-  g += text(104, 100, `${D.dow} ${D.day} ${D.mon}`, { fam: 'mono', size: 17, fill: sec, track: 1.6 });
-  g += text(394, 100, `DOY ${D.doy}`, { fam: 'mono', size: 17, fill: ter, track: 1.6, anchor: 'end' });
-  g += text(100, 188, `${D.hh}:${D.mm}`, { size: 92, weight: 600, fill: pri });   // 214.9px -> 100..315
-  if (!amb) {                                                        // seconds, as the time's underline
-    g += `<rect x="100" y="202" width="215" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
-    g += `<rect x="100" y="202" width="${f(215 * D.ss / 60)}" height="3" rx="1.5" fill="${acc}"/>`;
-  }
-
-  const cells = [
-    { x: 96, y: 220, t: 'WEATHER', v: D.temp, wx: true },
-    { x: 254, y: 220, t: 'HEART RATE', v: D.hr },
-    { x: 96, y: 310, t: 'STEPS', v: D.steps, bar: D.stepPct },
-    { x: 254, y: 310, t: 'BATTERY', v: `${D.batt}%`, bar: D.batt / 100 },
-  ];
-  for (const c of cells) {
-    if (amb && !['WEATHER', 'BATTERY'].includes(c.t)) continue;      // only sources that update in AOD
-    if (!amb) g += `<rect x="${c.x}" y="${c.y}" width="148" height="80" rx="10" fill="${T.surface}"/>`;
-    const low = D.batt <= 15 && c.t === 'BATTERY';
-    g += text(c.x + 15, c.y + 26, c.t, { fam: 'mono', size: 12, fill: amb ? AMB.faint : T.tertiary, track: 1.6 });
-    if (c.wx && !amb) g += wxIcon(c.x + 28, c.y + 60, 0.85, T.secondary);
-    g += text(c.wx && !amb ? c.x + 46 : c.x + 15, c.y + 66, c.v,
-      { size: 33, weight: 600, fill: low ? T.alert : (amb ? AMB.value : T.primary) });
-    if (c.bar != null && !amb) {                                     // in-cell gauge, tied to its own value
-      g += `<rect x="${c.x + 15}" y="${c.y + 72}" width="118" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
-      g += `<rect x="${c.x + 15}" y="${c.y + 72}" width="${f(118 * c.bar)}" height="3" rx="1.5" fill="${low ? T.alert : (c.t === 'STEPS' ? acc : T.tickMajor)}"/>`;
-    }
-  }
-
-  g += zulu(249, 424, { size: 24, fill: amb ? AMB.secondary : sec, zFill: amb ? AMB.faint : ter, anchor: 'middle' });
-  return g;
-}
-
-
-// =========================================================================
 // OPTION A2 — SECTOR, CENTRED   time on the true vertical axis
 // Centring the time costs one row: the separate weather line is gone, and the
 // bottom row's centre position becomes the complication slot instead.
@@ -274,58 +232,6 @@ function optionA2(acc, amb) {
 // OPTION C2 — GRID, ROUND   panels sized to the disc, not to a rectangle
 // The panels overhang the case; WatchFace clipShape="CIRCLE" cuts their outer
 // corners to the bezel arc, so the layout fills the round space natively.
-// =========================================================================
-function optionC2(acc, amb) {
-  const pri = amb ? AMB.primary : T.primary;
-  const sec = amb ? AMB.secondary : T.secondary;
-  const ter = amb ? AMB.tertiary : T.tertiary;
-  const R = 238;                                     // panel clip — an 11px rim inside the bezel
-  let g = `<defs><clipPath id="disc"><circle cx="${C}" cy="${C}" r="${R}"/></clipPath></defs>`;
-  g += tick(0, 232, 220, 2.5, acc);                  // orientation index, and the accent
-                                                     // anchor that keeps ambient identifiable
-
-
-  const cells = [
-    { x: 4, y: 40, al: 'l', t: 'WEATHER', v: D.temp, wx: true },
-    { x: 253, y: 40, al: 'r', t: 'HEART RATE', v: D.hr },
-    { x: 4, y: 320, al: 'l', t: 'STEPS', v: D.steps, bar: D.stepPct },
-    { x: 253, y: 320, al: 'r', t: 'BATTERY', v: `${D.batt}%`, bar: D.batt / 100 },
-  ];
-
-  if (!amb) {                                        // panel grounds, clipped to the disc
-    g += `<g clip-path="url(#disc)">` +
-      cells.map(c => `<rect x="${c.x}" y="${c.y}" width="241" height="138" rx="20" fill="${T.surface}"/>`).join('') +
-      `</g>`;
-  }
-
-  for (const c of cells) {
-    if (amb && !['WEATHER', 'BATTERY'].includes(c.t)) continue;
-    const low = D.batt <= 15 && c.t === 'BATTERY';
-    const left = c.al === 'l';
-    const tx = left ? 74 : 424, anchor = left ? 'start' : 'end';
-    g += text(tx, c.y + (left === (c.y < 200) ? 0 : 0) + (c.y < 200 ? 78 : 28), c.t, { fam: 'mono', size: 12, fill: amb ? AMB.faint : T.tertiary, track: 1.6, anchor });
-    if (c.wx && !amb) g += wxIcon(87, c.y + 112, 0.85, T.secondary);
-    g += text(c.wx && !amb ? 105 : tx, c.y + (c.y < 200 ? 118 : 68), c.v,
-      { size: 34, weight: 600, fill: low ? T.alert : (amb ? AMB.value : T.primary), anchor: c.wx && !amb ? 'start' : anchor });
-    if (c.bar != null && !amb) {
-      const bx = left ? 74 : 304;
-      g += `<rect x="${bx}" y="${c.y + 76}" width="120" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
-      g += `<rect x="${bx}" y="${c.y + 76}" width="${f(120 * c.bar)}" height="3" rx="1.5" fill="${low ? T.alert : (c.t === 'STEPS' ? acc : T.tickMajor)}"/>`;
-    }
-  }
-
-  // centre band — date, time on the vertical axis, Zulu on the same baseline
-  g += text(74, 216, `${D.dow} ${D.day} ${D.mon}   ·   ${D.doy}`, { fam: 'mono', size: 16, fill: sec, track: 1.6 });
-  g += zulu(424, 216, { size: 26, fill: sec, zFill: ter, anchor: 'end' });
-  g += text(72, 298, `${D.hh}:${D.mm}`, { size: 96, weight: 600, fill: pri });
-  if (!amb) {
-    g += `<rect x="72" y="308" width="352" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
-    g += `<rect x="72" y="308" width="${f(352 * D.ss / 60)}" height="3" rx="1.5" fill="${acc}"/>`;
-  }
-  return g;
-}
-
-
 // =========================================================================
 // OPTION B2 — MERIDIAN, revised   recessed sub-dials and a date aperture
 // The hands still cross the slots several hours a day; that is unavoidable on
@@ -456,7 +362,8 @@ function optionA3(acc, amb) {
   return g;
 }
 
-const OPTIONS = { A: optionA, B: optionB, C: optionC, A2: optionA2, C2: optionC2, B2: optionB2, A3: optionA3 };
+// Option C (GRID) was dropped on 2026-08-31 and is not carried forward; see DECISIONS.md.
+const OPTIONS = { A: optionA, B: optionB, A2: optionA2, B2: optionB2, A3: optionA3 };
 
 function svg(option, accentKey, ambient) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">

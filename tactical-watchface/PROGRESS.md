@@ -1,8 +1,10 @@
 # PROGRESS
 
 **Current phase:** 0 — Discovery & design lock
-**Gate status:** OPEN — all three directions revised; questions still unanswered
-**Next action:** Vince picks a direction and answers the 13 questions in `PHASE0_QUESTIONS.md`.
+**Gate status:** OPEN — direction settled (two faces, GRID dropped); §10 questions still unanswered
+**Scope:** Two faces — **MERIDIAN first, SECTOR second**. Two packages, two Play listings (D-015).
+**Next action:** Vince answers the remaining questions in `PHASE0_QUESTIONS.md`, then Phase 1 starts
+on MERIDIAN.
 
 ---
 
@@ -91,6 +93,20 @@ Vince: *"now do A"* — the same craft pass B and C got.
 - The three directions have converged on one idea without that being planned: data is seated in the
   dial and shaped by the case, not laid on top of it as a rectangle.
 
+### Round 5 — scope settled (2026-08-31)
+
+Vince: *"shipping two faces. ditch C. don't use anymore in plans or anything."*
+
+- **MERIDIAN and SECTOR both ship; MERIDIAN first.** GRID is dropped everywhere forward-looking:
+  renders deleted, removed from the generator, removed from the review page and the artifact.
+  D-007 and D-012 stay in DECISIONS as history — D-012 in particular, since the circular-clip
+  technique it found is what both surviving faces now use.
+- **Verified before replanning: WFF allows one face per app** (D-015). Two faces therefore means
+  two package names, two Play listings, two store asset sets and two review cycles — sharing one
+  keystore, one repo, one design system and one QA matrix. This changes Phases 1–7 from a single
+  track into a first pass and a much shorter second pass, and it is the reason questions 2, 8 and
+  11 now need per-face answers.
+
 ### Blockers
 
 - Vince's answers (the gate itself).
@@ -116,6 +132,9 @@ Vince: *"now do A"* — the same craft pass B and C got.
 - `2026-08-31` — [re-read spec — §5.4 Option A brief + §5.7 Layout rules] before reworking Option
   A; §5.7's consistent-gap rule is what sent the band's clip radius to a circle concentric with
   the tick track instead of a hand-picked inset.
+- `2026-08-31` — [re-read spec — §6 Phases, §8 Publishing, §9 Repo hygiene] after the two-face
+  decision; all three assume a single face, which is what prompted verifying D-015 rather than
+  replanning on an assumption.
 
 ---
 

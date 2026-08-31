@@ -7,8 +7,23 @@ rewritten — a change becomes a new version.
 
 ## Design Lock
 
-**Not yet locked.** Phase 0 gate is open: Vince has not yet picked a direction or answered the
-Section 10 questions. Design Lock v1 gets written here the moment he does.
+**Partially locked — direction settled 2026-08-31, the rest of §10 still open.**
+
+Vince: *"shipping two faces. ditch C. don't use anymore in plans or anything."*
+
+- **Two faces ship: MERIDIAN (Option B) first, then SECTOR (Option A).** Build order from his
+  earlier instruction, *"let's do B and A later once b is done"*.
+- **GRID (Option C) is dropped** and is not carried forward in any plan, render, or the generator.
+  Its renders are deleted (git history retains them) and `optionC`/`optionC2` are removed from
+  `mockups/src/faces.js`.
+- Design Lock v1 is written here in full once the remaining §10 questions are answered. The
+  layouts as rendered in `mockups/optionB2_*` and `mockups/optionA3_*` are the candidates it will
+  lock.
+
+**Retained as history, not as plan:** D-007 and D-012 concern Option C. They stay because
+DECISIONS is a record and because D-012's finding is load-bearing elsewhere — the circular-clip
+technique it established is what MERIDIAN's sub-dials and SECTOR's data band (D-014) both rely on.
+That knowledge outlived the direction that discovered it.
 
 ---
 
@@ -207,3 +222,24 @@ the gap is uniform at every angle rather than eyeballed. Value size dropped 34 �
 Net effect across the three directions: each now seats its data in the dial and lets the case
 shape it — sub-dials and an aperture in B, clipped panels in C, a clipped band in A. That
 consistency was not planned; it fell out of fixing each one honestly.
+
+### D-015 · Two faces means two apps, not one bundle with two faces
+**2026-08-31.** Checked before replanning rather than assumed, because the answer decides the
+shape of Phases 1–7. WFF puts the face at a fixed resource path — `res/raw/watchface.xml`, with one
+`res/xml/watch_face_info.xml` — and the manifest declares no per-face service, only
+`hasCode="false"` and the version property. Google's own sample has exactly one of each, and Play
+Console guidance states each APK contains a single WFF watch face. **There is no way to ship two
+faces in one bundle.**
+
+So: two package names (permanent after first publish), two Play listings, two icon and screenshot
+sets, two review cycles. Shared: one keystore, one repo, one `scripts/check.sh`, one set of fonts
+and licences, one colour system and type scale, one QA matrix.
+
+Repo structure follows from that — a Gradle project with two application modules and a shared
+resource module, rather than one app module. Laid out in Phase 1; recorded here so the shape is
+not re-litigated then.
+
+Sequencing consequence worth stating: MERIDIAN goes through Phases 1–7 first and SECTOR follows.
+The second face skips most of Phase 1 (tooling, emulator, ADB, pipeline proof) and inherits the
+design system from the first, so it is substantially less work — but it does need its own Phase 7
+in full, because a listing and a review cycle are not shareable.

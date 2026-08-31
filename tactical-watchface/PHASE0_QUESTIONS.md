@@ -4,7 +4,12 @@ Spec §0.3 says to batch these and give a recommendation for each, so you can re
 **"go with your recommendations"** and I will proceed. Answer any subset; anything you skip, I take
 the recommendation.
 
-Look at `mockups/contact_sheet.png` first — twelve renders at true watch size, three directions ×
+**Settled 2026-08-31:** two faces ship — **MERIDIAN first, then SECTOR**. GRID is dropped. Question 1
+is answered; questions 2, 8 and 11 now need one answer per face because
+**WFF allows only one watch face per app** (see `PLATFORM_FACTS.md` §3a), so this is two packages
+and two Play listings.
+
+Look at `mockups/contact_sheet.png` — eight renders at true watch size, two faces ×
 interactive/ambient × two accent colours.
 
 ---
@@ -16,39 +21,39 @@ assumes a dedicated repo and wants `CLAUDE.md` at the root; putting a watch-face
 root of the weather repo would misdirect every future session there. For now everything sits in
 `tactical-watchface/`.
 
-> **Recommendation: a new dedicated repo** (e.g. `iimgreen/tactical-watchface`). The folder moves
-> across wholesale and nothing else changes. Say the word and I will lay it out; you would create
-> the empty repo on GitHub. Keeping it here also works — it is just untidy.
+This matters a bit more now that there are two faces. WFF allows one face per app, so this is two
+Gradle application modules plus a shared module for the fonts, colours and type scale — one repo,
+two bundles, two Play listings.
+
+> **Recommendation: a new dedicated repo** (e.g. `iimgreen/tactical-watchface`) holding both faces.
+> The folder moves across wholesale and nothing else changes. Say the word and I will lay it out;
+> you would create the empty repo on GitHub. Keeping it here also works — it is just untidy, and
+> more so with two products in it.
 
 ---
 
-### 1. Which design direction?
+### 1. Which design direction? — **ANSWERED**
 
-- **A — SECTOR.** Digital instrument. Big 24-hour time, Zulu line under it, date + day-of-year
-  across the top, three values on a shared baseline, two arc gauges hugging the tick track, one
-  complication at the bottom, seconds sweeping the outer track.
-- **B — MERIDIAN.** Analog field watch. Full 60-tick minute track, hour numerals, hands with a
-  lumed accent tip, round complication slots at 3 and 9, date + DOY at 6, Zulu digital above centre.
-- **C — GRID.** Modular. Time top-left with the seconds bar as its underline, four data cells in a
-  2 × 2 block with in-cell progress bars, Zulu at the foot.
+Both **MERIDIAN** (analog field watch) and **SECTOR** (digital instrument) ship, MERIDIAN first.
+**GRID is dropped** and is not carried forward in any plan, render, or the generator.
 
-> **Recommendation: A.** It carries the most real data per glance without crowding, its ambient
-> version is the strongest of the three, and the "one accent, one job" discipline holds cleanly.
->
-> **One honest flaw in B you should see before deciding:** with slots at 3 and 9, the hands sit on
-> top of the slot labels several hours a day — visible in the mockup, where the hour hand crosses
-> "STEPS". Every analog face with sub-dials has this; it is not a bug I can fix, it is the cost of
-> the layout. C is the most legible at a glance but the least distinctive.
->
-> Mixing is fine — e.g. A's layout with C's in-cell progress bars.
+> Nothing needed here. GRID's reasoning stays in `DECISIONS.md` as history, including the
+> circular-clip technique it discovered — which is what both surviving faces now use for their
+> seated elements.
 
-### 2. What is it called?
+---
 
-Store name and on-watch name. Spec guidance: one or two syllables, no "Pro", no "Tactical" in the
-name itself.
+### 2. What are they called?
 
-> **Recommendation:** **SECTOR**, **MERIDIAN**, or **VECTOR**. I would ship *SECTOR*. Check the
-> Play Store for collisions before we commit — I will do that once you shortlist.
+Two faces means two store names and two on-watch names. They will sit beside each other in your Play
+account, so they should read as a pair without being cute about it. One or two syllables, no "Pro",
+no "Tactical" in either name.
+
+> **Recommendation: keep MERIDIAN and SECTOR.** The working names already do the job — both single
+> words, both instrument vocabulary, neither over-claims. VECTOR is the spare if one collides. I
+> will check the Play Store for collisions on whichever two you settle on.
+
+---
 
 ### 3. Default accent colour?
 
@@ -76,29 +81,41 @@ built-in source.
 > watch in Phase 3 before wiring it. If it turns out unworkable, the fallback is a `WORLD_CLOCK`
 > complication, which is real but less elegant.
 
-### 6. Which three data fields in the bottom row, and in what order?
+### 6. Which values sit where, on each face?
 
 **Verified finding:** the spec's picker list has to shrink. WFF exposes **steps, step goal, step
 percent, heart rate, battery, weather, moon phase, notification count** — and that is all. There is
-**no calories, distance, floors, or active-minutes source**. Those can only come through a
+**no calories, distance, floors, or active-minutes source**. Anything else has to arrive through a
 complication slot.
 
-> **Recommendation: STEPS · HR · BATT.** Note the order is not the spec's — the spec lists HR
-> first, but that puts the steps *value* in the centre while the step *gauge* is on the left edge.
-> Reordering pairs each gauge with the number directly inboard of it, so an unlabelled arc is
-> unambiguous. Same three fields; only the order changed.
+> **Recommendation — SECTOR:** the band reads `STEPS · [weather] · BATT`, with the centre
+> compartment as the complication slot. Note the order is not the spec's, which lists HR first;
+> putting steps and battery on the flanks pairs each with its own progress bar, and heart rate can
+> take any of the three positions if you would rather see it than weather.
+>
+> **Recommendation — MERIDIAN:** `HR` at 9, `STEPS` at 3. Both are slots, so either can become
+> anything a complication provides.
 
-### 7. Left / right gauge defaults?
+### 7. Gauges — where does progress show?
 
-> **Recommendation: left = step goal (accent), right = battery (neutral white, turning red when
-> low).** `STEP_PERCENT` and `BATTERY_PERCENT` drive these natively — no complication needed.
+This changed when the time was centred. On SECTOR the step-goal and battery arcs used to hug the
+tick track at 9 and 3; with the values now in the band at the bottom, those arcs were measuring
+numbers nowhere near them, so the progress moved into the band as bars directly under each value.
+MERIDIAN keeps true arc gauges, flanking 12, where nothing competes with them.
+
+> **Recommendation: as rendered — SECTOR's bars in the band, MERIDIAN's arcs flanking 12.** Both
+> run off `STEP_PERCENT` and `BATTERY_PERCENT` natively, no complication needed. If you want
+> SECTOR's perimeter arcs back, say so — but the bar-under-the-number pairing goes with them.
 
 ### 8. How many complication slots, and where?
 
-> **Recommendation for A: one, bottom centre, defaulting to weather.** The spec suggests up to
-> three. I would rather ship one excellent slot than three that crowd the face, and add side slots
-> in Phase 4 if it feels sparse on your wrist. For B it is the two round slots at 3 and 9; for C all
-> four cells are slots.
+The two faces answer this differently because their layouts do.
+
+> **Recommendation: MERIDIAN — two, the recessed sub-dials at 3 and 9. SECTOR — one, the centre
+> compartment of the data band.** Both are what each layout supports without crowding. If either
+> feels thin on your wrist, we add slots in Phase 4 rather than guessing now.
+
+---
 
 ### 9. Which nice-to-haves do you want?
 
@@ -124,16 +141,19 @@ the validator to pass with zero errors on every build. Targeting v5 today means 
 that gate.
 
 > **Recommendation: v4.** It also reaches far more devices (Wear OS 6+, so Pixel Watch and Galaxy
-> Watch 4 onward). None of the v5-only features are needed for any of the three directions. We can
+> Watch 4 onward). None of the v5-only features are needed by either face. We can
 > raise it later; that is a one-line manifest change plus a re-test.
 
-### 11. Package name?
+### 11. Package names?
 
-> **Recommendation: `com.mdweatheralerts.watchface.sector`** — reusing the domain you already own
-> (`mdweatheralerts.com`), which keeps it verifiable and consistent with your existing Play
-> Console app. If you would rather this not sit under the weather brand, give me a domain you own
-> and I will use that instead. **This can never be changed after first publish**, so it is worth a
-> moment's thought.
+One per face — and **neither can ever be changed after first publish**, so it is worth a moment.
+
+> **Recommendation:** `com.mdweatheralerts.watchface.meridian` and
+> `com.mdweatheralerts.watchface.sector` — reusing the domain you already own, which keeps them
+> verifiable and consistent with your existing Play Console app. If you would rather these not sit
+> under the weather brand, give me a domain you own and I will use it for both.
+
+---
 
 ### 12. Broader device QA, or Ultra 2 only for v1?
 
@@ -145,9 +165,13 @@ that gate.
 
 ## What happens when you answer
 
-I write **Design Lock v1** into `DECISIONS.md`, then start Phase 1: tooling on your Mac, the
-emulator, building Google's official sample end-to-end to prove the pipeline, then the project
-skeleton and a minimal version of the locked design on your actual watch.
+I write **Design Lock v1** into `DECISIONS.md`, then start Phase 1 on **MERIDIAN**: tooling on your
+Mac, the emulator, building Google's official sample end-to-end to prove the pipeline, then the
+project skeleton and a minimal version of the locked design on your actual watch.
 
 You will have two jobs in Phase 1, and I will write both out step by step: approving a couple of
 installs on the Mac, and turning on wireless debugging on the watch.
+
+**SECTOR follows once MERIDIAN is published.** It reuses the same repo, keystore, fonts, colour
+system and check script, so it skips most of Phase 1 and inherits the design system — but it needs
+its own Phase 7 in full, because a Play listing and a review cycle cannot be shared.

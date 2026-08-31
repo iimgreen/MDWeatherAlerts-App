@@ -5,21 +5,7 @@ const d = f => 'data:image/png;base64,' + fs.readFileSync(path.join(M, f)).toStr
 
 const OPTS = [
   {
-    k: 'A3', name: 'SECTOR', kind: 'Digital instrument', revised: true,
-    before: 'optionA_interactive_amber.png',
-    beforeNote: 'Two passes. First the time came down to the true centre, which cost a row — Zulu moved above it and the weather line folded into the data row. That left the two arc gauges at 9 and 3 measuring values that had moved to the bottom of the face, so the progress moved into the row, under the number it belongs to, and the row gained a recessed ground that overhangs the case.',
-    lede: 'Date and day-of-year across the top, Zulu beneath them, the time centred on the vertical axis, and a seated three-compartment band below carrying the values with their own gauges.',
-    reads: [
-      ['Time', 'Optical centre on the screen centre — its cap is centred on 249 of 498'],
-      ['Band', 'Overhangs the case; clipped concentric with the tick track, 6px inside it'],
-      ['Gauges', 'Under the number each one measures, inside its own compartment'],
-      ['Ambient', 'Twelve majors, the band ground drops away, accent kept on the 12 index'],
-    ],
-    note: 'The trade for centring the time: three values instead of three plus a separate weather line. The centre compartment is the complication slot; heart rate can take any of the three.',
-    tone: 'good',
-  },
-  {
-    k: 'B2', name: 'MERIDIAN', kind: 'Analog field watch', revised: true,
+    k: 'B2', name: 'MERIDIAN', kind: 'Analog field watch', revised: true, ships: 'Ships first',
     before: 'optionB_interactive_amber.png',
     beforeNote: 'The hands crossing the slot labels looked broken because the labels were bare text floating on the dial, with nothing for a hand to pass over. Recessing the slots into sub-dials and framing the date in an aperture seats both in the dial, so a hand crossing them now reads the way it does on a real watch.',
     lede: 'Full 60-tick minute track, hour numerals, hands with a lumed accent tip, two recessed sub-dials at 3 and 9, a framed date aperture at 6, and Zulu above the pivot.',
@@ -33,22 +19,23 @@ const OPTS = [
     tone: 'good',
   },
   {
-    k: 'C2', name: 'GRID', kind: 'Modular', revised: true,
-    before: 'optionC_interactive_amber.png',
-    beforeNote: 'The 2×2 block was a rectangle sitting inside a circle, so it threw away all four corners. The panels now overhang the case and the bezel cuts their outer corners into arcs — they reach the top and bottom of the disc.',
-    lede: 'Four panels sized to the disc rather than to a rectangle, a full-width time band through the middle carrying date, time and Zulu, and the seconds bar spanning the whole band.',
+    k: 'A3', name: 'SECTOR', kind: 'Digital instrument', revised: true, ships: 'Ships second',
+    before: 'optionA_interactive_amber.png',
+    beforeNote: 'Two passes. First the time came down to the true centre, which cost a row — Zulu moved above it and the weather line folded into the data row. That left the two arc gauges at 9 and 3 measuring values that had moved to the bottom of the face, so the progress moved into the row, under the number it belongs to, and the row gained a recessed ground that overhangs the case.',
+    lede: 'Date and day-of-year across the top, Zulu beneath them, the time centred on the vertical axis, and a seated three-compartment band below carrying the values with their own gauges.',
     reads: [
-      ['Panels', 'All four are complication slots — swap any of them for anything'],
-      ['Shape', 'Panels overhang the case; the circular clip cuts the outer corners'],
-      ['Gauges', 'Inside the panels they measure, as bars under the value'],
-      ['Ambient', 'Weather and battery only — heart rate is not sampled in AOD'],
+      ['Time', 'Optical centre on the screen centre — its cap is centred on 249 of 498'],
+      ['Band', 'Overhangs the case; clipped concentric with the tick track, 6px inside it'],
+      ['Gauges', 'Under the number each one measures, inside its own compartment'],
+      ['Ambient', 'Twelve majors, the band ground drops away, accent kept on the 12 index'],
     ],
-    note: 'This is native, not a trick: the whole face is already clipped to a circle, so a panel drawn past the edge gets its corners cut by the system for free.',
-    tone: 'neutral',
+    note: 'The trade for centring the time: three values instead of three plus a separate weather line. The centre compartment is the complication slot; heart rate can take any of the three.',
+    tone: 'good',
   },
 ];
 
 const FINDINGS = [
+  ['warn', 'One watch face per app — so two faces means two listings', 'Verified in Google\'s own sample: the face lives at a fixed path, <code>res/raw/watchface.xml</code>, one per package, and the manifest declares no per-face service. Two faces cannot share a bundle. That means two package names, two Play listings, two sets of store assets and two review cycles — but one keystore, one shared design system, and one repo.'],
   ['ok', 'Day of year is native', '<code>DAY_OF_YEAR</code> is a v1 data source, and so is ISO week. The spec\'s fallback plan for computing DOY from month and day is not needed.'],
   ['ok', 'Step goal needs no complication', '<code>STEP_PERCENT</code> and <code>BATTERY_PERCENT</code> drive both arc gauges directly. <code>BATTERY_IS_LOW</code> gives the red state a real system flag instead of a hardcoded 15%.'],
   ['ok', 'Weather has a real unavailable state', '<code>WEATHER.IS_AVAILABLE</code> and <code>WEATHER.IS_ERROR</code> exist, so the phone-disconnected case can be built properly rather than guessed at.'],
@@ -61,17 +48,17 @@ const FINDINGS = [
 
 const QS = [
   { n: 0, t: 'Where should this project live?', flag: 'Not in the spec', body: `<p>This branch is on the <strong>MD Weather Alerts</strong> repo, which already holds a different product. A watch-face <code>CLAUDE.md</code> at that root would misdirect every future session there, so for now everything sits in a <code>tactical-watchface/</code> folder.</p>`, rec: `<strong>A new dedicated repo</strong> — the folder moves across wholesale and nothing else changes. You would create the empty repo; I do the rest. Keeping it where it is also works, it is just untidy.` },
-  { n: 1, t: 'Which design direction?', body: `<p>A, B, C, or a combination — mixing is fine. A's layout with C's in-cell progress bars would work, for instance.</p>`, rec: `<strong>A — SECTOR,</strong> as revised twice. It was your pick, the centring fixed what bothered you, and seating the data row fixed a second problem the centring created. All three have had a pass now and the gap has closed — C changed most, and B's sub-dials retired the flaw I flagged first time round — so it is worth re-comparing before you commit.` },
-  { n: 2, t: 'What is it called?', body: `<p>Store name and on-watch name. One or two syllables, no "Pro", and no "Tactical" in the name itself.</p>`, rec: `<strong>SECTOR</strong>, MERIDIAN, or VECTOR — I would ship <em>SECTOR</em>. I will check the Play Store for collisions once you shortlist.` },
+  { n: 1, t: 'Which design direction?', answered: true, body: `<p><strong>Both MERIDIAN and SECTOR ship, MERIDIAN first. GRID is dropped</strong> and is not carried forward anywhere.</p>`, rec: `Settled. GRID's renders are removed and it is out of the generator; the reasoning behind it stays in <code>DECISIONS.md</code> as history, including the circular-clip technique it discovered — which is what SECTOR's data band and MERIDIAN's sub-dials now both use.` },
+  { n: 2, t: 'What are they called?', flag: 'Now two answers', body: `<p>Two faces means two store names, two on-watch names. They will sit next to each other in your Play account, so they should read as a pair without being cute about it.</p>`, rec: `<strong>MERIDIAN and SECTOR</strong> — the working names already do the job: both single words, both instrument vocabulary, neither says "tactical". VECTOR is the spare if one collides. I will check the Play Store for collisions on whichever two you settle on.` },
   { n: 3, t: 'Default accent colour?', body: `<p>Eight ship regardless — Phosphor Amber, Signal Orange, Safety Yellow, NVG Green, Ice, Cobalt, Coral, Bone — plus a Mono theme. This is just what it looks like out of the box.</p>`, rec: `<strong>Phosphor Amber</strong> if you want this to feel like a family with your Garmin TELEMETRY face; otherwise Signal Orange. Both accents are rendered above — use the toggle.` },
   { n: 4, t: '24-hour default? Seconds shown by default?', rec: `<strong>24-hour, seconds as the sweeping arc.</strong> Both stay configurable — 12/24h, leading zero, and Arc / Digits / Off.` },
   { n: 5, t: 'Secondary time zone — UTC fixed, or selectable offset?', flag: 'Changed by verification', body: `<p>WFF has no second-time-zone data source, so this is expression arithmetic on the epoch timestamp rather than a built-in field. Buildable either way.</p>`, rec: `<strong>Ship UTC/Zulu first, add a selectable offset in Phase 4.</strong> One caveat: I could not confirm whether the timestamp is in milliseconds or seconds, so I verify that on your watch first. Fallback if it turns out unworkable is a World Clock complication — real, but less elegant.` },
   { n: 6, t: 'Which three data fields, and in what order?', flag: 'Changed by verification', body: `<p>The picker list has to shrink to what exists: steps, step goal, heart rate, battery, weather, moon phase, notification count. No calories, distance or floors — those can only arrive through a complication slot.</p>`, rec: `<strong>STEPS · HR · BATT.</strong> Note the order is not the spec's. Listing HR first puts the steps <em>value</em> in the centre while the step <em>gauge</em> sits on the left edge; reordering pairs each gauge with the number directly inboard of it, so an unlabelled arc is unambiguous.` },
   { n: 7, t: 'Left and right gauge defaults?', rec: `<strong>Left = step goal in the accent, right = battery in neutral white,</strong> turning red when low. Both drive natively; no complication needed.` },
-  { n: 8, t: 'How many complication slots, and where?', rec: `<strong>For A: one, bottom centre, weather by default.</strong> The spec suggests up to three. I would rather ship one excellent slot and add side slots in Phase 4 if it feels sparse on your wrist. B has the two round slots at 3 and 9; in C all four cells are slots.` },
+  { n: 8, t: 'How many complication slots, and where?', body: `<p>The two faces answer this differently because their layouts do.</p>`, rec: `<strong>MERIDIAN: two, the sub-dials at 3 and 9.</strong> <strong>SECTOR: one, the centre compartment of the data band.</strong> Both are what the layout already supports without crowding. If either feels thin on your wrist we add slots in Phase 4 rather than guessing now.` },
   { n: 9, t: 'Which nice-to-haves do you want?', body: `<p>Night Ops (everything dimmed ~35%, accent shifts to deep red) · Flavors (one-tap presets in the Galaxy Wearable app) · Notification count · Moon phase · Sunrise/sunset · Alarm indicator.</p><p class="q-caveat">Sunrise/sunset is complication-only. I found no alarm data source at all — treat it as unavailable unless it turns up.</p>`, rec: `<strong>Yes to Flavors and Night Ops, yes to notification count; skip moon phase and sunrise/sunset for v1.</strong> They earn their place on a hiking face, less so on this one, and all are easy to add later.` },
   { n: 10, t: 'WFF v4 or v5?', flag: 'Changed by verification', body: `<p>Not really a preference any more — see the validator finding above.</p>`, rec: `<strong>v4.</strong> It also reaches far more devices (Wear OS 6+, so Pixel Watch and Galaxy Watch 4 onward), and none of the v5-only features are needed by any of the three directions. Raising it later is a one-line manifest change plus a re-test.` },
-  { n: 11, t: 'Package name?', body: `<p>This can <strong>never</strong> be changed after first publish, so it is worth a moment.</p>`, rec: `<code>com.mdweatheralerts.watchface.sector</code> — reusing the domain you already own, which keeps it verifiable and consistent with your existing Play Console app. If you would rather this not sit under the weather brand, give me another domain you own.` },
+  { n: 11, t: 'Package names?', flag: 'Now two answers', body: `<p>One per face, and <strong>neither can ever be changed after first publish</strong>. Worth a moment.</p>`, rec: `<code>com.mdweatheralerts.watchface.meridian</code> and <code>com.mdweatheralerts.watchface.sector</code> — reusing the domain you already own, which keeps them verifiable and consistent with your existing Play Console app. If you would rather these not sit under the weather brand, give me a domain you own and I will use that for both.` },
   { n: 12, t: 'Broader device QA, or Ultra 2 only for v1?', rec: `<strong>Ultra 2 primary, plus one round Wear OS 6 emulator check before publishing.</strong> The face gets listed for other round devices so it should not look broken on them, but they are not worth a full test matrix for v1.` },
 ];
 
@@ -85,7 +72,7 @@ const faceCard = o => `
       <h3>${o.name}</h3>
       <p class="kind">${o.kind}</p>
     </div>
-    ${o.revised ? '<span class="revised">Revised</span>' : ''}
+    ${o.ships ? `<span class="ships">${o.ships}</span>` : ''}
   </header>
   <div class="stage">
     ${['interactive', 'ambient'].map(m => ['amber', 'ice'].map(a => `<img class="face" src="${d(`option${o.k}_${m}_${a}.png`)}" alt="${o.name}, ${m} mode, ${a} accent" data-mode="${m}" data-accent="${a}"${m === 'interactive' && a === 'amber' ? '' : ' hidden'}>`).join('')).join('')}
@@ -184,7 +171,7 @@ section{margin-top:72px}
 .swatch{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:-1px}
 
 /* direction cards ------------------------------------------------------- */
-.dirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+.dirs{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:22px;max-width:820px}
 .dir{background:var(--plate);border:1px solid var(--rule-soft);border-radius:12px;padding:22px;box-shadow:var(--shadow);
   display:flex;flex-direction:column;gap:18px}
 .dir-head{display:flex;align-items:center;gap:13px}
@@ -204,8 +191,9 @@ section{margin-top:72px}
 .note-good{border-color:var(--ok);color:var(--ink-2)}
 .note-warn{border-color:var(--warn);color:var(--ink-2)}
 .note-neutral{border-color:var(--rule);color:var(--ink-2)}
-.revised{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
-  text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--ok-bg);color:var(--ok)}
+.ships{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--accent-mark);color:var(--ground);
+  font-weight:500;white-space:nowrap}
 .before{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:start;
   padding-top:16px;border-top:1px solid var(--rule-soft)}
 .before img{width:72px;height:72px;border-radius:50%;display:block;opacity:.6}
@@ -233,6 +221,7 @@ section{margin-top:72px}
 .q-flag{display:inline-block;margin-left:9px;vertical-align:2px;font-family:"IBM Plex Mono",monospace;
   font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;padding:3px 7px;border-radius:3px;
   background:var(--warn-bg);color:var(--warn)}
+.q-flag.q-done{background:var(--ok-bg);color:var(--ok)}
 .q p{margin:0 0 10px;font-size:15px;color:var(--ink-2);max-width:72ch}
 .q-caveat{font-size:14px !important;color:var(--ink-3) !important}
 .rec{margin-top:12px;padding:13px 16px;background:var(--sunk);border-left:2px solid var(--accent-mark);border-radius:0 8px 8px 0}
@@ -258,22 +247,22 @@ section{margin-top:72px}
 <header class="top">
   <div class="ticks">${Array.from({ length: 41 }, () => '<i></i>').join('')}</div>
   <p class="eyebrow">Phase 0 · Discovery &amp; design lock</p>
-  <h1>Pick a direction.</h1>
-  <p class="sub">Three ways to build a tactical face for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. <strong>All three are revised</strong> — the time sits on the centre, the modular panels fill the round case, and the analog dial's slots are recessed so the hands cross them properly. They now share one idea: every element that holds data is seated in the dial and shaped by the case rather than sitting on top of it as a rectangle. Everything on every face is a real data source verified against Google's own schemas.</p>
+  <h1>Two faces.</h1>
+  <p class="sub">Two tactical faces for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. <strong>MERIDIAN ships first, SECTOR second.</strong> GRID is dropped. Both seat their data in the dial and let the case shape it — sub-dials and an aperture on one, a clipped band on the other — and everything on both is a real data source verified against Google's own schemas.</p>
   <dl class="meta">
     <div><dt>Target</dt><dd>Galaxy Watch Ultra 2</dd></div>
     <div><dt>Format</dt><dd>Watch Face Format v4</dd></div>
     <div><dt>Rendered at</dt><dd>498 × 498</dd></div>
-    <div><dt>Directions</dt><dd>3</dd></div>
-    <div><dt>Revision</dt><dd>4</dd></div>
+    <div><dt>Faces</dt><dd>2</dd></div>
+    <div><dt>Play listings</dt><dd>2</dd></div>
     <div><dt>Gate</dt><dd class="live">Open — needs you</dd></div>
   </dl>
 </header>
 
 <section>
   <div class="sec-head">
-    <h2>The three directions</h2>
-    <p>Same time, same data, same moment — so the comparison is fair.</p>
+    <h2>The two faces</h2>
+    <p>Same time, same data, same moment. Both ship free, both support always-on.</p>
   </div>
 
   <div class="controls">
@@ -313,7 +302,7 @@ section{margin-top:72px}
     ${QS.map(q => `<div class="q">
       <div class="qn">${String(q.n).padStart(2, '0')}</div>
       <div>
-        <h3>${q.t}${q.flag ? `<span class="q-flag">${q.flag}</span>` : ''}</h3>
+        <h3>${q.t}${q.answered ? '<span class="q-flag q-done">Answered</span>' : ''}${q.flag ? `<span class="q-flag">${q.flag}</span>` : ''}</h3>
         ${q.body || ''}
         <div class="rec"><span class="eyebrow">Recommendation</span><p>${q.rec}</p></div>
       </div>
@@ -322,9 +311,9 @@ section{margin-top:72px}
 </section>
 
 <div class="next">
-  <h2>What happens when you answer</h2>
+  <h2>What happens next</h2>
   <p>Reply <span class="reply">go with your recommendations</span> and I will take every default above — or answer the ones you care about and I will take the rest.</p>
-  <p>Then Design Lock v1 gets written down and Phase 1 starts: tooling on your Mac, the emulator, building Google's official sample end to end to prove the pipeline, then the project skeleton and a minimal version of the locked design running on your actual watch.</p>
+  <p>Then Design Lock v1 gets written down and Phase 1 starts on <strong>MERIDIAN</strong>: tooling on your Mac, the emulator, building Google's official sample end to end to prove the pipeline, then the project skeleton and a minimal version of the locked design running on your actual watch. SECTOR follows once MERIDIAN is published — it reuses the same repo, the same keystore, the same fonts and colour system, so the second face is far less work than the first.</p>
   <p>You will have two jobs in Phase 1, and I will write both out step by step for someone who has never done them: approving a couple of installs on the Mac, and turning on wireless debugging on the watch.</p>
 </div>
 </div>

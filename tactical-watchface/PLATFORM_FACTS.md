@@ -132,6 +132,27 @@ System default providers for `DefaultProviderPolicy`:
 
 ---
 
+## 3a. One watch face per app
+
+Verified against Google's own sample (`play-validations/memory-footprint/test-samples/sample-wf`):
+the face lives at the fixed path `res/raw/watchface.xml` with a single
+`res/xml/watch_face_info.xml`, and the manifest declares no per-face service — only
+`android:hasCode="false"` and the format-version property. There is no mechanism for a second face
+in the same package. Google's Play Console guidance says the same: each APK contains a single
+WFF watch face, and multiple faces are published as separate apps.
+
+Consequences for a two-face project:
+
+| Per face | Shared |
+|---|---|
+| Package name (permanent after first publish) | Signing keystore |
+| Play listing, icon, feature graphic, screenshots | Repo, `scripts/check.sh`, CI |
+| Store copy and changelog | Fonts and their licences |
+| Review cycle | Colour system, type scale, accent palette |
+| `watchface.xml`, `watch_face_info.xml`, `strings.xml` | Design language and QA matrix |
+
+---
+
 ## 4. Device
 
 - Galaxy Watch Ultra 2, 1.52″ round AMOLED, reported by spec sites as **498 × 498** (~327 ppi),
