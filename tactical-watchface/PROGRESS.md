@@ -1,10 +1,11 @@
 # PROGRESS
 
 **Current phase:** 0 — Discovery & design lock
-**Gate status:** OPEN — direction settled (two faces, GRID dropped); §10 questions still unanswered
+**Gate status:** SATISFIED for the design lock — **Design Lock v1 written 2026-08-31**. One item
+open (whether the compass readout earns a slot); it does not block Phase 1.
 **Scope:** Two faces — **MERIDIAN first, SECTOR second**. Two packages, two Play listings (D-015).
-**Next action:** Vince answers the remaining questions in `PHASE0_QUESTIONS.md`, then Phase 1 starts
-on MERIDIAN.
+**Next action:** Phase 1 on MERIDIAN — tooling, emulator, pipeline proof, skeleton, first deploy.
+Needs Vince at a Mac to approve installs and enable wireless ADB on the watch.
 
 ---
 
@@ -16,7 +17,7 @@ on MERIDIAN.
 | 2 | Verify platform facts — WFF versions, data sources, complication types | done → `PLATFORM_FACTS.md` |
 | 3 | Three design directions as rendered PNGs, interactive + ambient, two accents each | done → `mockups/` (12 renders + contact sheet) |
 | 4 | Send Vince the batched Phase 0 questions with recommendations | done → `PHASE0_QUESTIONS.md` |
-| 5 | **Gate:** Vince picks a direction and answers; write Design Lock v1 | **open** |
+| 5 | **Gate:** Vince picks a direction and answers; write Design Lock v1 | **done** |
 
 ### Evidence
 
@@ -107,10 +108,28 @@ Vince: *"shipping two faces. ditch C. don't use anymore in plans or anything."*
   track into a first pass and a much shorter second pass, and it is the reason questions 2, 8 and
   11 now need per-face answers.
 
+### Round 6 — Design Lock v1 (2026-08-31)
+
+Vince: *"all your recommendations are great. I'd like to however include the compass in the watch
+faces as well. also night mode."*
+
+- **Design Lock v1 is written** into `DECISIONS.md`. Phase 0's gate is met.
+- **Night Ops is in** and rendered on both faces (`mockups/option{A3,B2}_*_night.png`). Building it
+  surfaced a conflict worth recording: Night Ops makes the whole face red, so the low-battery red
+  has no hue left to signal with. Resolved by carrying the alert on *intensity* — the low-battery
+  value stays at full brightness while everything else dims. See D-016.
+- **The compass cannot be built** (D-017). Verified across the validator's data-source registry,
+  the complication provider enum, and every v1–v5 XSD: no magnetometer, heading or bearing at any
+  version, and `Gyro` is tilt parallax, not direction. Going in instead: a tap-to-open Compass
+  shortcut on both faces, plus a heading complication if a provider turns out to exist on the
+  device — a Phase 4 check. Vince decides whether the readout earns a slot.
+
 ### Blockers
 
-- Vince's answers (the gate itself).
-- No Android SDK, emulator, or watch in this environment — Phase 1 tooling is Mac-side work.
+- **Vince at his Mac.** Phase 1 needs him to approve a couple of installs and enable wireless ADB
+  on the watch. No Android SDK, emulator, or watch exists in this environment, so nothing further
+  can be built here.
+- Open, not blocking: whether the compass heading readout earns a slot on either face.
 
 ---
 
@@ -135,6 +154,9 @@ Vince: *"shipping two faces. ditch C. don't use anymore in plans or anything."*
 - `2026-08-31` — [re-read spec — §6 Phases, §8 Publishing, §9 Repo hygiene] after the two-face
   decision; all three assume a single face, which is what prompted verifying D-015 rather than
   replanning on an assumption.
+- `2026-08-31` — [re-read spec — §3.2 Hard constraints + §5.2 Forbidden + §5.5 Colour] on the
+  compass and night-mode requests; §5.2's "fake compass roses" and §5.5's "red means something is
+  wrong" are what produced D-017 and the intensity-based alert in D-016.
 
 ---
 

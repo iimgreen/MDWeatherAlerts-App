@@ -5,25 +5,36 @@ rewritten — a change becomes a new version.
 
 ---
 
-## Design Lock
+## Design Lock v1 — 2026-08-31
 
-**Partially locked — direction settled 2026-08-31, the rest of §10 still open.**
+Vince: *"all your recommendations are great. I'd like to however include the compass in the watch
+faces as well. also night mode."*
 
-Vince: *"shipping two faces. ditch C. don't use anymore in plans or anything."*
+Every §10 question answered. Changes from here are recorded as v2, v3 — this text is not rewritten.
 
-- **Two faces ship: MERIDIAN (Option B) first, then SECTOR (Option A).** Build order from his
-  earlier instruction, *"let's do B and A later once b is done"*.
-- **GRID (Option C) is dropped** and is not carried forward in any plan, render, or the generator.
-  Its renders are deleted (git history retains them) and `optionC`/`optionC2` are removed from
-  `mockups/src/faces.js`.
-- Design Lock v1 is written here in full once the remaining §10 questions are answered. The
-  layouts as rendered in `mockups/optionB2_*` and `mockups/optionA3_*` are the candidates it will
-  lock.
+| | Locked |
+|---|---|
+| **Faces** | Two: **MERIDIAN** (analog field watch) first, **SECTOR** (digital instrument) second. GRID dropped. |
+| **Names** | MERIDIAN, SECTOR. VECTOR is the spare. Play collision check before first upload. |
+| **Packages** | `com.mdweatheralerts.watchface.meridian`, `com.mdweatheralerts.watchface.sector`. Permanent after first publish. |
+| **Repo** | New dedicated repo; two Gradle app modules plus a shared resource module (D-015). Vince creates it empty. |
+| **Format** | WFF v4 (D-002, and the validator ceiling in `PLATFORM_FACTS.md` §1). |
+| **Colour** | Phosphor Amber `#FFB000` default; 8 accents + Mono + Night Ops. One accent visible at a time. |
+| **Time** | 24-hour default, seconds as the sweeping arc. 12/24h, leading zero and Arc/Digits/Off all configurable. |
+| **Second time** | UTC/Zulu default; selectable offset added in Phase 4 once `UTC_TIMESTAMP` units are confirmed on-device. |
+| **SECTOR data** | Band reads `STEPS · [weather slot] · BATT`; centre compartment is the complication slot. |
+| **MERIDIAN data** | Sub-dial slots: HR at 9, STEPS at 3. Date aperture at 6. Zulu above the pivot. |
+| **Gauges** | SECTOR: bars beneath their values (D-014). MERIDIAN: arcs flanking 12. Both native off `STEP_PERCENT` / `BATTERY_PERCENT`. |
+| **Slots** | MERIDIAN two, SECTOR one. More only if either feels thin on-wrist in Phase 4. |
+| **Night Ops** | **In.** Lit pixels dimmed ~35 %, accent to deep red `#B3261E` (D-016). |
+| **Flavors** | In — Default, Mono, Amber Ops, Ice, Minimal. |
+| **Also in** | Unread notification count. **Deferred past v1:** moon phase, sunrise/sunset. |
+| **QA** | Ultra 2 primary; one round Wear OS 6 emulator check before publishing. |
+| **Compass** | **Cannot be built as a live rose (D-017).** Tap-to-open Compass shortcut is in regardless; a heading complication is added if a provider exists on the device. Vince to confirm whether it earns a slot. |
 
-**Retained as history, not as plan:** D-007 and D-012 concern Option C. They stay because
-DECISIONS is a record and because D-012's finding is load-bearing elsewhere — the circular-clip
-technique it established is what MERIDIAN's sub-dials and SECTOR's data band (D-014) both rely on.
-That knowledge outlived the direction that discovered it.
+The layouts this locks are `mockups/optionB2_*` (MERIDIAN) and `mockups/optionA3_*` (SECTOR).
+
+---
 
 ---
 
@@ -243,3 +254,54 @@ Sequencing consequence worth stating: MERIDIAN goes through Phases 1–7 first a
 The second face skips most of Phase 1 (tooling, emulator, ADB, pipeline proof) and inherits the
 design system from the first, so it is substantially less work — but it does need its own Phase 7
 in full, because a listing and a review cycle are not shareable.
+
+### D-016 · Night Ops, and what it does to the low-battery red
+**2026-08-31.** Vince asked for night mode; it is in. Per §5.5: every lit pixel dimmed ~35 % and the
+accent shifted to deep red `#B3261E`, the night-vision preservation convention. Modelled in the
+mockups as a group opacity of 0.65, which is also the most likely build: black stays black and only
+lit pixels dim, so it costs nothing on an AMOLED panel. WFF v4 offers group `tintColor` and the
+colour-transform functions (`colorRgb`, `colorArgb`, `extractColorFromColors`) if a per-element
+palette swap turns out cleaner than a group alpha; that choice is Phase 2 work, not a lock.
+
+**The conflict this creates, and the fix.** §5.5 reserves red for "something is wrong" — the
+low-battery state turns the battery value and gauge `#FF5C5C`. In Night Ops the *entire face* is
+red, so hue can no longer carry the alarm. Signalling it with a second colour would put two accents
+on screen at once, which §5.2 forbids.
+
+So in Night Ops the alert is carried by **intensity, not hue**: the low-battery value renders at
+full brightness while everything else stays dimmed. Night-vision doctrine keeps everything dim, so
+the one bright thing on the dial is the thing demanding attention. That is a stronger signal in the
+dark than a colour shift would be, and it needs no second accent. To be built and screenshotted in
+Phase 3 with the other data states.
+
+Note also that Night Ops compounds with ambient — an already-dim AOD dimmed a further 35 % is very
+dark, which is the intent, but §5.9 requires testing AOD on the wrist rather than in the preview.
+The §5.10 "AOD brightness (Normal / Dim)" option is the escape hatch if it proves too dark.
+
+### D-017 · The compass cannot be built, and what goes in instead
+**2026-08-31.** Vince asked for a compass on both faces. It is not buildable, and this was checked
+rather than assumed:
+
+- No magnetometer, heading, bearing or azimuth data source exists in `VersionRegistry.kt` — the
+  exact set the validator accepts — at any format version.
+- No system complication provider for heading (`DefaultProviderPolicy` enumerates fourteen; none
+  is a compass).
+- Nothing in the v1–v5 XSDs matches magnet/heading/bearing/azimuth/compass.
+- The one motion element, `Gyro`, is explicitly documented as a parallax transform driven by
+  `ACCELEROMETER_ANGLE_*` — tilt against gravity. A rose driven by it would swing when the wrist
+  turned and point nowhere, which is §5.2's "fake compass roses that don't point anywhere" and
+  §3.2's "do not fake a compass" by name.
+
+**Built instead, both real:**
+
+1. **Tap-to-open.** A slot carries a compass glyph and launches the system Compass app on tap
+   (`Launch`, with `APP_SHORTCUT` as the default provider). Real function, no invented data, works
+   regardless of what complications exist. Going in on both faces.
+2. **A heading readout, if a provider exists.** If Samsung's Compass — or any compass app Vince
+   installs — publishes a `SHORT_TEXT` complication, a slot displays a genuine heading. Cannot be
+   confirmed from this environment; **first check in Phase 4**, and it costs a slot, so Vince
+   decides whether it earns one.
+
+Offered but not added: an inclinometer. Tilt *is* real, so a spirit level or pitch readout is
+buildable and would be an honest field instrument — but it is not what he asked for, and
+substituting it silently would be its own kind of faking. His call.

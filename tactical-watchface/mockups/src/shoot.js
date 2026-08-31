@@ -36,7 +36,7 @@ html,body{margin:0;padding:0;background:#000;}
 
   const jobs = [];
   for (const opt of (process.env.ONLY ? process.env.ONLY.split(',') : ['A', 'B', 'C']))
-    for (const acc of ['amber', 'ice'])
+    for (const acc of (process.env.ACCENTS ? process.env.ACCENTS.split(',') : ['amber', 'ice']))
       for (const amb of [false, true])
         jobs.push({ opt, acc, amb });
 

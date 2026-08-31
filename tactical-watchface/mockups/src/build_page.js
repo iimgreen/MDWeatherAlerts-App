@@ -46,20 +46,29 @@ const FINDINGS = [
   ['warn', 'Panel resolution unconfirmed', 'These are drawn at 498×498 from published specs. The spec is explicit that it must be read off the hardware — first ADB command in Phase 1. Every position is a fraction of the radius, so a different panel rescales cleanly.'],
 ];
 
-const QS = [
-  { n: 0, t: 'Where should this project live?', flag: 'Not in the spec', body: `<p>This branch is on the <strong>MD Weather Alerts</strong> repo, which already holds a different product. A watch-face <code>CLAUDE.md</code> at that root would misdirect every future session there, so for now everything sits in a <code>tactical-watchface/</code> folder.</p>`, rec: `<strong>A new dedicated repo</strong> — the folder moves across wholesale and nothing else changes. You would create the empty repo; I do the rest. Keeping it where it is also works, it is just untidy.` },
-  { n: 1, t: 'Which design direction?', answered: true, body: `<p><strong>Both MERIDIAN and SECTOR ship, MERIDIAN first. GRID is dropped</strong> and is not carried forward anywhere.</p>`, rec: `Settled. GRID's renders are removed and it is out of the generator; the reasoning behind it stays in <code>DECISIONS.md</code> as history, including the circular-clip technique it discovered — which is what SECTOR's data band and MERIDIAN's sub-dials now both use.` },
-  { n: 2, t: 'What are they called?', flag: 'Now two answers', body: `<p>Two faces means two store names, two on-watch names. They will sit next to each other in your Play account, so they should read as a pair without being cute about it.</p>`, rec: `<strong>MERIDIAN and SECTOR</strong> — the working names already do the job: both single words, both instrument vocabulary, neither says "tactical". VECTOR is the spare if one collides. I will check the Play Store for collisions on whichever two you settle on.` },
-  { n: 3, t: 'Default accent colour?', body: `<p>Eight ship regardless — Phosphor Amber, Signal Orange, Safety Yellow, NVG Green, Ice, Cobalt, Coral, Bone — plus a Mono theme. This is just what it looks like out of the box.</p>`, rec: `<strong>Phosphor Amber</strong> if you want this to feel like a family with your Garmin TELEMETRY face; otherwise Signal Orange. Both accents are rendered above — use the toggle.` },
-  { n: 4, t: '24-hour default? Seconds shown by default?', rec: `<strong>24-hour, seconds as the sweeping arc.</strong> Both stay configurable — 12/24h, leading zero, and Arc / Digits / Off.` },
-  { n: 5, t: 'Secondary time zone — UTC fixed, or selectable offset?', flag: 'Changed by verification', body: `<p>WFF has no second-time-zone data source, so this is expression arithmetic on the epoch timestamp rather than a built-in field. Buildable either way.</p>`, rec: `<strong>Ship UTC/Zulu first, add a selectable offset in Phase 4.</strong> One caveat: I could not confirm whether the timestamp is in milliseconds or seconds, so I verify that on your watch first. Fallback if it turns out unworkable is a World Clock complication — real, but less elegant.` },
-  { n: 6, t: 'Which three data fields, and in what order?', flag: 'Changed by verification', body: `<p>The picker list has to shrink to what exists: steps, step goal, heart rate, battery, weather, moon phase, notification count. No calories, distance or floors — those can only arrive through a complication slot.</p>`, rec: `<strong>STEPS · HR · BATT.</strong> Note the order is not the spec's. Listing HR first puts the steps <em>value</em> in the centre while the step <em>gauge</em> sits on the left edge; reordering pairs each gauge with the number directly inboard of it, so an unlabelled arc is unambiguous.` },
-  { n: 7, t: 'Left and right gauge defaults?', rec: `<strong>Left = step goal in the accent, right = battery in neutral white,</strong> turning red when low. Both drive natively; no complication needed.` },
-  { n: 8, t: 'How many complication slots, and where?', body: `<p>The two faces answer this differently because their layouts do.</p>`, rec: `<strong>MERIDIAN: two, the sub-dials at 3 and 9.</strong> <strong>SECTOR: one, the centre compartment of the data band.</strong> Both are what the layout already supports without crowding. If either feels thin on your wrist we add slots in Phase 4 rather than guessing now.` },
-  { n: 9, t: 'Which nice-to-haves do you want?', body: `<p>Night Ops (everything dimmed ~35%, accent shifts to deep red) · Flavors (one-tap presets in the Galaxy Wearable app) · Notification count · Moon phase · Sunrise/sunset · Alarm indicator.</p><p class="q-caveat">Sunrise/sunset is complication-only. I found no alarm data source at all — treat it as unavailable unless it turns up.</p>`, rec: `<strong>Yes to Flavors and Night Ops, yes to notification count; skip moon phase and sunrise/sunset for v1.</strong> They earn their place on a hiking face, less so on this one, and all are easy to add later.` },
-  { n: 10, t: 'WFF v4 or v5?', flag: 'Changed by verification', body: `<p>Not really a preference any more — see the validator finding above.</p>`, rec: `<strong>v4.</strong> It also reaches far more devices (Wear OS 6+, so Pixel Watch and Galaxy Watch 4 onward), and none of the v5-only features are needed by any of the three directions. Raising it later is a one-line manifest change plus a re-test.` },
-  { n: 11, t: 'Package names?', flag: 'Now two answers', body: `<p>One per face, and <strong>neither can ever be changed after first publish</strong>. Worth a moment.</p>`, rec: `<code>com.mdweatheralerts.watchface.meridian</code> and <code>com.mdweatheralerts.watchface.sector</code> — reusing the domain you already own, which keeps them verifiable and consistent with your existing Play Console app. If you would rather these not sit under the weather brand, give me a domain you own and I will use that for both.` },
-  { n: 12, t: 'Broader device QA, or Ultra 2 only for v1?', rec: `<strong>Ultra 2 primary, plus one round Wear OS 6 emulator check before publishing.</strong> The face gets listed for other round devices so it should not look broken on them, but they are not worth a full test matrix for v1.` },
+const LOCK = [
+  ['Faces', 'MERIDIAN then SECTOR', 'Two apps — WFF allows one face per package'],
+  ['Names', 'MERIDIAN · SECTOR', 'Checked for Play collisions before first upload'],
+  ['Packages', 'com.mdweatheralerts.watchface.meridian / .sector', 'Permanent after first publish'],
+  ['Repo', 'New dedicated repo, two app modules + shared resources', 'You create it empty; I lay it out'],
+  ['Format', 'WFF v4', 'The validator still caps at 4, so v5 would mean no automated gate'],
+  ['Accent', 'Phosphor Amber default, 8 + Mono + Night Ops', 'One accent visible at a time'],
+  ['Time', '24-hour, seconds as the sweeping arc', 'Both user-configurable'],
+  ['Second time', 'UTC / Zulu, selectable offset in Phase 4', 'Arithmetic on the epoch timestamp'],
+  ['SECTOR row', 'STEPS · [weather slot] · BATT', 'Centre compartment is the complication'],
+  ['MERIDIAN dials', 'HR at 9 · STEPS at 3', 'Both are complication slots'],
+  ['Gauges', 'SECTOR: bars under their values · MERIDIAN: arcs flanking 12', 'Native, no complication needed'],
+  ['Night Ops', 'In — dimmed ~35%, accent to deep red', 'See the toggle above'],
+  ['Flavors', 'In — Default, Mono, Amber Ops, Ice, Minimal', 'One-tap presets in Galaxy Wearable'],
+  ['Also in', 'Notification count', 'Moon phase and sunrise/sunset deferred past v1'],
+  ['QA', 'Ultra 2 primary, one Wear OS 6 round emulator check', 'Before publishing'],
+];
+
+const COMPASS = [
+  ['A heading readout in a slot', 'best', 'If Samsung\'s Compass app — or any compass app you install — publishes a complication, a slot can show a real heading like <code>347° NW</code>. That is genuine data from the magnetometer, routed through an app that can read it. Two caveats: it updates at complication speed, seconds to minutes, so it is a readout rather than a needle you would navigate by; and I cannot confirm from here that such a provider exists on your watch. It is the first thing I check in Phase 4.'],
+  ['A tap target that opens Compass', 'good', 'A slot can carry a compass icon and open the real Compass app the instant you tap it. Real function, no invented data, and it works whether or not a complication provider exists. This is what I would build regardless — it costs nothing and it is what you actually want when you need a bearing.'],
+  ['A live compass rose on the dial', 'no', 'Not possible. WFF exposes no magnetometer, no heading, no bearing, at any format version — I checked every data source in Google\'s validator and every element in the v5 schemas. The only motion sensor is the accelerometer, which reports tilt against gravity, not direction. A rose driven by it would swing as you turned your wrist and point at nothing, which is the exact thing the spec forbids by name.'],
+  ['An inclinometer instead', 'extra', 'Not a compass, but worth knowing it exists: tilt <em>is</em> real and readable, so a true spirit-level or pitch readout is buildable and would be an honest field instrument. Say the word if you want it on either face; I would not add it uninvited.'],
 ];
 
 const chip = { ok: ['Available', 'ok'], warn: ['Needs care', 'warn'], no: ['Not available', 'no'] };
@@ -75,7 +84,7 @@ const faceCard = o => `
     ${o.ships ? `<span class="ships">${o.ships}</span>` : ''}
   </header>
   <div class="stage">
-    ${['interactive', 'ambient'].map(m => ['amber', 'ice'].map(a => `<img class="face" src="${d(`option${o.k}_${m}_${a}.png`)}" alt="${o.name}, ${m} mode, ${a} accent" data-mode="${m}" data-accent="${a}"${m === 'interactive' && a === 'amber' ? '' : ' hidden'}>`).join('')).join('')}
+    ${['interactive', 'ambient'].map(m => ['amber', 'ice', 'night'].map(a => `<img class="face" src="${d(`option${o.k}_${m}_${a}.png`)}" alt="${o.name}, ${m} mode, ${a === 'night' ? 'Night Ops' : a} accent" data-mode="${m}" data-accent="${a}"${m === 'interactive' && a === 'amber' ? '' : ' hidden'}>`).join('')).join('')}
   </div>
   <p class="lede">${o.lede}</p>
   <dl class="reads">
@@ -208,6 +217,17 @@ section{margin-top:72px}
 .pill.ok{background:var(--ok-bg);color:var(--ok)}
 .pill.warn{background:var(--warn-bg);color:var(--warn)}
 .pill.no{background:var(--no-bg);color:var(--no)}
+.pill.c-best{background:var(--ok-bg);color:var(--ok)}
+.pill.c-good{background:var(--ok-bg);color:var(--ok)}
+.pill.c-no{background:var(--no-bg);color:var(--no)}
+.pill.c-extra{background:var(--sunk);color:var(--ink-3)}
+.lock{display:flex;flex-direction:column}
+.lock-row{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:13px 0;border-bottom:1px solid var(--rule-soft)}
+.lock-row:first-child{border-top:1px solid var(--rule-soft)}
+.lock-row dt{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);padding-top:4px}
+.lock-row dd{margin:0;display:flex;flex-direction:column;gap:2px}
+.lock-row dd strong{font-family:"Barlow Semi Condensed",sans-serif;font-size:17.5px;font-weight:600;color:var(--ink)}
+.lock-row dd span{font-size:13.5px;color:var(--ink-3)}
 .find h4{margin:0 0 4px;font-family:"Barlow Semi Condensed",sans-serif;font-size:19px;font-weight:600}
 .find p{margin:0;font-size:15px;color:var(--ink-2);max-width:70ch}
 
@@ -246,23 +266,23 @@ section{margin-top:72px}
 <div class="wrap">
 <header class="top">
   <div class="ticks">${Array.from({ length: 41 }, () => '<i></i>').join('')}</div>
-  <p class="eyebrow">Phase 0 · Discovery &amp; design lock</p>
-  <h1>Two faces.</h1>
-  <p class="sub">Two tactical faces for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. <strong>MERIDIAN ships first, SECTOR second.</strong> GRID is dropped. Both seat their data in the dial and let the case shape it — sub-dials and an aperture on one, a clipped band on the other — and everything on both is a real data source verified against Google's own schemas.</p>
+  <p class="eyebrow">Phase 0 · Design Lock v1</p>
+  <h1>Locked.</h1>
+  <p class="sub">Two tactical faces for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. <strong>MERIDIAN ships first, SECTOR second.</strong> Every question is answered and Design Lock v1 is written — Night&nbsp;Ops is in, and you can see it on the toggle. <strong>One request I cannot build: the compass.</strong> That is below, with what I can do instead.</p>
   <dl class="meta">
     <div><dt>Target</dt><dd>Galaxy Watch Ultra 2</dd></div>
     <div><dt>Format</dt><dd>Watch Face Format v4</dd></div>
     <div><dt>Rendered at</dt><dd>498 × 498</dd></div>
     <div><dt>Faces</dt><dd>2</dd></div>
-    <div><dt>Play listings</dt><dd>2</dd></div>
-    <div><dt>Gate</dt><dd class="live">Open — needs you</dd></div>
+    <div><dt>Accents</dt><dd>8 + Mono + Night Ops</dd></div>
+    <div><dt>Gate</dt><dd class="live">One open item</dd></div>
   </dl>
 </header>
 
 <section>
   <div class="sec-head">
     <h2>The two faces</h2>
-    <p>Same time, same data, same moment. Both ship free, both support always-on.</p>
+    <p>Same time, same data, same moment. Both ship free, both support always-on and Night Ops.</p>
   </div>
 
   <div class="controls">
@@ -276,6 +296,7 @@ section{margin-top:72px}
       <div class="seg" id="seg-accent">
         <button data-v="amber" aria-pressed="true"><span class="swatch" style="background:#FFB000"></span>Phosphor Amber</button>
         <button data-v="ice" aria-pressed="false"><span class="swatch" style="background:#9AD8FF"></span>Ice</button>
+        <button data-v="night" aria-pressed="false"><span class="swatch" style="background:#B3261E"></span>Night Ops</button>
       </div>
     </div>
   </div>
@@ -295,24 +316,27 @@ section{margin-top:72px}
 
 <section>
   <div class="sec-head">
-    <h2>Thirteen questions</h2>
-    <p>Answer any subset. Anything you skip, I take the recommendation.</p>
+    <h2>The compass</h2>
+    <p>You asked for it; I have to tell you what is actually possible.</p>
   </div>
-  <div class="qs">
-    ${QS.map(q => `<div class="q">
-      <div class="qn">${String(q.n).padStart(2, '0')}</div>
-      <div>
-        <h3>${q.t}${q.answered ? '<span class="q-flag q-done">Answered</span>' : ''}${q.flag ? `<span class="q-flag">${q.flag}</span>` : ''}</h3>
-        ${q.body || ''}
-        <div class="rec"><span class="eyebrow">Recommendation</span><p>${q.rec}</p></div>
-      </div>
-    </div>`).join('')}
+  <div class="finds">
+    ${COMPASS.map(([h, k, b]) => `<div class="find"><span class="pill c-${k}">${{best:'Recommended',good:'Also doing this',no:'Not possible',extra:'If you want it'}[k]}</span><div><h4>${h}</h4><p>${b}</p></div></div>`).join('')}
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2>Design Lock v1</h2>
+    <p>Every answer, written down. Changes from here become v2.</p>
+  </div>
+  <div class="lock">
+    ${LOCK.map(([k, v, n]) => `<div class="lock-row"><dt>${k}</dt><dd><strong>${v}</strong><span>${n}</span></dd></div>`).join('')}
   </div>
 </section>
 
 <div class="next">
   <h2>What happens next</h2>
-  <p>Reply <span class="reply">go with your recommendations</span> and I will take every default above — or answer the ones you care about and I will take the rest.</p>
+  <p>One thing left: tell me whether the compass slot is worth a position on either face, or whether the tap-to-open shortcut is enough. Everything else is locked.</p>
   <p>Then Design Lock v1 gets written down and Phase 1 starts on <strong>MERIDIAN</strong>: tooling on your Mac, the emulator, building Google's official sample end to end to prove the pipeline, then the project skeleton and a minimal version of the locked design running on your actual watch. SECTOR follows once MERIDIAN is published — it reuses the same repo, the same keystore, the same fonts and colour system, so the second face is far less work than the first.</p>
   <p>You will have two jobs in Phase 1, and I will write both out step by step for someone who has never done them: approving a couple of installs on the Mac, and turning on wireless debugging on the watch.</p>
 </div>

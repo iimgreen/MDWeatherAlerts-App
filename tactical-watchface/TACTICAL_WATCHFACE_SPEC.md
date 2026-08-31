@@ -440,4 +440,49 @@ Write it the way Samsung or a serious indie studio would: what the face is, what
 
 *(Appended by Claude Code only, to record Vince's answers. Nothing above this line is ever edited.)*
 
-*None yet — Phase 0 questions are pending Vince's answers.*
+### 2026-08-31 — Phase 0 answers (Design Lock v1)
+
+Vince accepted every recommendation in the §10 batch, with two additions and one deletion. Recorded
+here verbatim where he was explicit; the full lock is in `DECISIONS.md`.
+
+**Scope changed from one face to two.** *"shipping two faces. ditch C. don't use anymore in plans or
+anything."* MERIDIAN (Option B) ships first, SECTOR (Option A) second — order from *"let's do B and
+A later once b is done"*. GRID is dropped entirely.
+
+This affects §6, §7 and §8, all written for a single face: **WFF permits one watch face per app**
+(verified, `PLATFORM_FACTS.md` §3a), so this is two packages, two Play listings, two store asset
+sets and two review cycles, sharing one keystore, repo, design system and QA matrix.
+
+**Two design changes he asked for directly:**
+
+- *"I just don't like how the actual time is up high on the face. should it be centered?"* — yes.
+  SECTOR's time now sits on the true vertical centre, which cost one row (D-011), and knock-on from
+  that moved its gauges into the data row (D-014).
+- *"the info squares are not utilizing the watches round space. I want it to make use of the
+  space."* — applied to GRID first (D-012), then, once the principle was clear, to SECTOR's data
+  band as well (D-014) and to MERIDIAN's sub-dials and date aperture (D-013).
+
+**Two additions:** *"I'd like to however include the compass in the watch faces as well. also night
+mode."*
+
+- **Night mode: in.** Built as §5.5's Night Ops (D-016). One consequence the spec did not
+  anticipate: Night Ops turns the whole face red, so §5.5's low-battery red has no hue left to
+  signal with. Resolved by carrying that alert on intensity instead — the low-battery value stays
+  at full brightness while everything else dims.
+- **Compass: cannot be built.** Verified against the validator's data-source registry, the
+  complication provider enum, and every v1–v5 XSD (D-017). WFF exposes no magnetometer, heading or
+  bearing at any version; `Gyro` is tilt parallax, not direction. Per §5.8, the nearest real
+  alternatives go in instead: a tap-to-open Compass shortcut on both faces, and a heading
+  complication if a provider proves to exist on the device (Phase 4 check). Whether that readout
+  earns a slot is still Vince's to decide.
+
+**Corrections to the spec's own assumptions,** all verified rather than assumed:
+
+- Day-of-year needs no computation — `DAY_OF_YEAR` is a v1 source, as is ISO week (§5.8 planned a
+  fallback that is unnecessary).
+- There is no second-time-zone data source; Zulu comes from arithmetic on `UTC_TIMESTAMP` (§5.8).
+- No sunrise/sunset, calories, distance or floors sources exist, so §5.8's data-field picker list
+  shrinks to what the platform actually exposes.
+- §5.8 says "ICON"; the actual complication type is `MONOCHROMATIC_IMAGE`.
+- §3.3's v4-vs-v5 recommendation is stronger than taste: Google's validator still caps at v4, so
+  v5 would mean building without the gate §7.1 requires.

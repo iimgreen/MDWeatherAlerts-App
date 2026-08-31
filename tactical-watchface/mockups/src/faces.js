@@ -15,7 +15,11 @@ const T = {
   gaugeTrack: '#2A2A2A', alert: '#FF5C5C',
 };
 const AMB = { primary: '#C8C8C8', secondary: '#6E6E6E', tertiary: '#4A4A4A', tick: '#4A4A4A', faint: '#3A3A3A', value: '#8A8A8A' };
-const ACCENTS = { amber: '#FFB000', ice: '#9AD8FF' };
+const ACCENTS = { amber: '#FFB000', ice: '#9AD8FF', night: '#B3261E' };
+// Night Ops (spec 5.5): every lit pixel dimmed ~35% and the accent shifted to a deep
+// red, the night-vision preservation convention. Modelled here as a group opacity,
+// which is also the simplest way to build it — black stays black, only lit pixels dim.
+const NIGHT_DIM = 0.65;
 
 // ---- sample state --------------------------------------------------------
 // Local 14:38:22 EDT · UTC 18:38 · Sun 30 Aug 2026 (DOY 242, verified)
@@ -366,10 +370,11 @@ function optionA3(acc, amb) {
 const OPTIONS = { A: optionA, B: optionB, A2: optionA2, B2: optionB2, A3: optionA3 };
 
 function svg(option, accentKey, ambient) {
+  const night = accentKey === 'night';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">
 <defs><clipPath id="c"><circle cx="${C}" cy="${C}" r="${C}"/></clipPath></defs>
 <g clip-path="url(#c)"><rect width="${S}" height="${S}" fill="${T.bg}"/>
-${OPTIONS[option](ACCENTS[accentKey], ambient)}
+<g${night ? ` opacity="${NIGHT_DIM}"` : ''}>${OPTIONS[option](ACCENTS[accentKey], ambient)}</g>
 </g></svg>`;
 }
 
