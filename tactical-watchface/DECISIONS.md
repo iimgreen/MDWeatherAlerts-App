@@ -175,3 +175,35 @@ requires.
 
 The residual crossing is real and stays: at 14:38 the hour hand meets the STEPS sub-dial, and the
 mockup deliberately shows that hour rather than a flattering one.
+
+### D-014 · Option A's data row is seated, and its gauges move under their values
+**2026-08-31.** Two problems, one fix. Both were created or exposed by centring the time (D-011).
+
+**The gauges stopped measuring anything nearby.** D-006 put the step-goal arc on the left and the
+battery arc on the right specifically so each sat outboard of the value it measures. Centring the
+time moved the values to the bottom of the face while the arcs stayed at 9 and 3, so the pairing
+that justified their placement was gone — two unlabelled arcs beside the time, measuring numbers
+40 % of the dial away. The progress therefore moved into the row as 3 px bars directly beneath
+each number, which is the same device C uses (D-012) and leaves no ambiguity at all. The perimeter
+arcs are removed.
+
+That is a deviation from §5.4, which specifies "two arc gauges hugging the tick track" for this
+direction. It is deliberate: the spec's sketch assumed the time sat high with the data beneath it,
+and Vince's centring changed that premise. Reversible if he wants the arcs back, but the pairing
+would go with them.
+
+**The row was bare text on black** — the same failure as Option B's slots (D-013), spotted by
+applying B's lesson back to A. The three values now sit on a recessed ground with hairline
+separators, which also gives the complication slot a visible compartment; previously nothing
+distinguished the swappable position from the two built-in ones.
+
+The band overhangs the case and is clipped, so its ends are arcs rather than a rectangle sitting
+inside a circle — Vince's round-space point from round 2, applied here rather than only to C. The
+first attempt clipped at r=238 like C's panels and the band swallowed the tick track at both ends.
+The clip is now r=208: concentric with the track by construction, and 6 px inside the majors, so
+the gap is uniform at every angle rather than eyeballed. Value size dropped 34 → 28 to keep
+`100,000` inside a compartment at the narrower radius.
+
+Net effect across the three directions: each now seats its data in the dial and lets the case
+shape it — sub-dials and an aperture in B, clipped panels in C, a clipped band in A. That
+consistency was not planned; it fell out of fixing each one honestly.

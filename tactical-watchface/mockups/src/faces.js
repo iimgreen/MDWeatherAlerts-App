@@ -400,7 +400,63 @@ function optionB2(acc, amb) {
   return g;
 }
 
-const OPTIONS = { A: optionA, B: optionB, C: optionC, A2: optionA2, C2: optionC2, B2: optionB2 };
+
+// =========================================================================
+// OPTION A3 — SECTOR, seated   the data row gets a ground and its own gauges
+// Centring the time (A2) left the flanking arcs measuring values that had moved
+// to the bottom of the face. The progress moves into the row, under the number
+// it belongs to, and the row gets a recessed ground so the values are seated in
+// the dial rather than floating on it.
+// =========================================================================
+function optionA3(acc, amb) {
+  const pri = amb ? AMB.primary : T.primary;
+  const sec = amb ? AMB.secondary : T.secondary;
+  const ter = amb ? AMB.tertiary : T.tertiary;
+  const SUNK = '#0D0D0D', RING = '#1F1F1F';
+  const BY = 306, BH = 68;
+  // The band overhangs and is clipped, so its ends are arcs that fill the chord
+  // instead of a rectangle sitting inside it. The clip radius is concentric with
+  // the tick track and 6px inside the majors, so the band never eats the track.
+  let g = `<defs><clipPath id="aband"><circle cx="${C}" cy="${C}" r="208"/></clipPath></defs>`;
+
+  for (let i = 0; i < 60; i++) {
+    const a = i * 6, major = i % 5 === 0;
+    if (amb) { if (major) g += tick(a, 232, 218, 2.5, a === 0 ? acc : AMB.tick); }
+    else g += major ? tick(a, 232, 214, 2.5, T.tickMajor) : tick(a, 232, 224, 1.5, T.tickMinor);
+  }
+  if (!amb) g += arc(237, 0, D.ss * 6, 2.5, acc);    // the only perimeter element besides the track
+
+  g += text(116, 142, `${D.dow} ${D.day} ${D.mon}`, { fam: 'mono', size: 19, fill: sec, track: 1.6 });
+  g += text(382, 142, `DOY ${D.doy}`, { fam: 'mono', size: 19, fill: ter, track: 1.6, anchor: 'end' });
+  g += zulu(249, 190, { size: 30, fill: sec, zFill: ter, anchor: 'middle' });
+  g += text(249, 289, `${D.hh}:${D.mm}`, { size: 110, weight: 600, fill: pri, anchor: 'middle' });
+
+  // the seated row: one ground, three compartments, hairline separators
+  if (!amb) {
+    g += `<g clip-path="url(#aband)"><rect x="30" y="${BY}" width="438" height="${BH}" rx="14" fill="${SUNK}"/></g>`;
+    for (const sx of [187.5, 310.5]) g += `<line x1="${sx}" y1="${BY + 12}" x2="${sx}" y2="${BY + BH - 12}" stroke="${RING}" stroke-width="1"/>`;
+  }
+
+  const cells = [
+    { x: 126, l: 'STEPS', v: D.steps, bar: D.stepPct },
+    { x: 249, l: 'WEATHER', v: D.temp, slot: true },
+    { x: 372, l: 'BATT', v: `${D.batt}%`, bar: D.batt / 100 },
+  ];
+  for (const c of cells) {
+    if (amb && c.slot) continue;                     // the slot is not redrawn in ambient
+    const low = D.batt <= 15 && c.l === 'BATT';
+    g += text(c.x, 332, c.l, { fam: 'mono', size: 12, fill: amb ? AMB.faint : ter, track: 1.6, anchor: 'middle' });
+    if (c.slot) { g += wxIcon(c.x - 25, 354, 0.8, T.secondary); g += text(c.x - 4, 360, c.v, { size: 28, weight: 600, fill: T.primary }); }
+    else g += text(c.x, 360, c.v, { size: 28, weight: 600, fill: low ? T.alert : (amb ? AMB.value : T.primary), anchor: 'middle' });
+    if (c.bar != null && !amb) {                     // the gauge, directly under its own number
+      g += `<rect x="${c.x - 42}" y="366" width="84" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
+      g += `<rect x="${c.x - 42}" y="366" width="${f(84 * c.bar)}" height="3" rx="1.5" fill="${low ? T.alert : (c.l === 'STEPS' ? acc : T.tickMajor)}"/>`;
+    }
+  }
+  return g;
+}
+
+const OPTIONS = { A: optionA, B: optionB, C: optionC, A2: optionA2, C2: optionC2, B2: optionB2, A3: optionA3 };
 
 function svg(option, accentKey, ambient) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">

@@ -76,6 +76,21 @@ first and A as a second face afterwards. That would make this a two-face roadmap
 Phase 1–7 scope (one bundle with two faces, or two Play listings). Worth confirming before
 Phase 1 starts; it does not affect the design lock.
 
+### Round 4 — Option A (2026-08-31)
+
+Vince: *"now do A"* — the same craft pass B and C got.
+
+- **A — data row seated, gauges moved under their values.** Centring the time in round 2 had
+  quietly broken D-006's gauge-to-value pairing, leaving two unlabelled arcs beside the time
+  measuring numbers at the bottom of the face. Progress moved into the row; the perimeter arcs are
+  removed, which is a conscious §5.4 deviation. The row also gained a recessed ground — Option B's
+  lesson applied back to A — which additionally gives the complication slot a visible compartment.
+- Caught mid-revision: the band was first drawn as a rectangle inside the circle, i.e. exactly what
+  Vince objected to in C. Clipping it to the case fixed that, but at r=238 it swallowed the tick
+  track; the clip is now concentric with the track and 6 px inside it. See D-014.
+- The three directions have converged on one idea without that being planned: data is seated in the
+  dial and shaped by the case, not laid on top of it as a rectangle.
+
 ### Blockers
 
 - Vince's answers (the gate itself).
@@ -98,6 +113,9 @@ Phase 1 starts; it does not affect the design lock.
 - `2026-08-31` — [re-read spec — §5.1 What tactical means + §5.3 Required qualities] before
   reworking Option B; "instrument-grade" is what reframed the hand-crossing as a depth problem
   rather than a layout cost.
+- `2026-08-31` — [re-read spec — §5.4 Option A brief + §5.7 Layout rules] before reworking Option
+  A; §5.7's consistent-gap rule is what sent the band's clip radius to a circle concentric with
+  the tick track instead of a hand-picked inset.
 
 ---
 
