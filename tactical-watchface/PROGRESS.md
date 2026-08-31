@@ -1,8 +1,8 @@
 # PROGRESS
 
 **Current phase:** 0 — Discovery & design lock
-**Gate status:** OPEN — blocked on Vince (direction + Section 10 answers)
-**Next action:** Vince picks a direction and answers the 13 questions in `PHASE0_QUESTIONS.md`.
+**Gate status:** OPEN — direction narrowing to A; questions still unanswered
+**Next action:** Vince confirms A (as revised) and answers the 13 questions in `PHASE0_QUESTIONS.md`.
 
 ---
 
@@ -40,6 +40,28 @@
 - Panel resolution is **unconfirmed**: 498 × 498 is a spec-sheet figure, and §2 requires reading it
   off the hardware. First ADB command in Phase 1.
 
+### Round 2 — Vince's feedback (2026-08-31)
+
+Recorded verbatim:
+
+> "before answering any questions, I like watchface 1 - I just don't like how the actual time is
+> up high on the face. should it be centered? also the 3rd one that's modular, great idea, but the
+> info squares are not utilizing the watches round space. I want it to make use of the space"
+
+Both acted on; neither needed a question back.
+
+- **A — time centred.** Its optical centre now sits on 249.5 of 498. This cost one row: Zulu moved
+  above the time and the separate weather block folded into the data row, whose centre position
+  became the complication slot. See D-011 for why no arrangement keeps all six rows *and* centres
+  the time.
+- **C — panels sized to the disc.** The 2×2 rectangle became four panels that overhang the case,
+  with the circular clip cutting their outer corners into arcs. Buildable natively; see D-012.
+- Caught while revising: the first pass at C's new layout removed the perimeter entirely, leaving
+  ambient with no accent element at all — a §5.9 violation. The 12 index is back in both modes.
+
+Renders: `mockups/option{A2,C2}_{interactive,ambient}_{amber,ice}.png`. The review page and the
+artifact now show the revised versions with a before thumbnail on each.
+
 ### Blockers
 
 - Vince's answers (the gate itself).
@@ -55,6 +77,10 @@
   caught the Option C perimeter arcs reading as decoration (D-007) and the ambient heart-rate value
   reading as fake data (D-008).
 - `2026-08-30` — [re-read spec — §6 Phase 0 + §10] before writing the question batch.
+- `2026-08-31` — [re-read spec — §5.3 Required qualities + §5.7 Layout rules] before reworking
+  Option A's centring; confirmed the shared-baseline rule, which killed the staggered "arc" row.
+- `2026-08-31` — [re-read spec — §5.2 Forbidden + §5.9 AOD] while revising Option C; caught the
+  shortened gauges reading as brackets, and the missing ambient accent anchor.
 
 ---
 

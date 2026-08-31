@@ -106,3 +106,46 @@ the face can follow the platform's own definition of low instead of duplicating 
 may not match what the watch shows elsewhere. If on-device testing shows the flag trips at a
 different level than Vince expects, fall back to an explicit `BATTERY_PERCENT <= 15` comparison and
 record it here.
+
+### D-011 · Option A centres the time by dropping a row
+**2026-08-31.** Vince's feedback: he likes A but not that the time sits high. He is right, and
+the cause is arithmetic rather than taste. The composition was balanced around the screen centre,
+but the *time* was not, because four rows stacked below it (Zulu, labels, values, weather) against
+one above (date). With a 110 px time, centring its cap on y=249 leaves room for two rows below,
+not four.
+
+So one row had to go. The Zulu line moved *above* the time to sit with the date, and the separate
+bottom-centre weather block was absorbed into the data row — the row's centre position is now the
+complication slot itself. That satisfies §5.8's "at least one complication slot" while putting the
+time's optical centre on 249.5 of 498.
+
+The gauges also changed. Freeing the lower disc first tempted me to shorten them to ~34°, but
+rendered, two short symmetric arcs beside the time read as brackets framing it — the same
+decoration failure that killed Option C's perimeter arcs in D-007. They are back to 60°, which is
+long enough to read as an instrument and still clears the data row (checked by angle and radius,
+not by eye).
+
+Cost, stated plainly: three values instead of three plus weather. Heart rate can occupy any of the
+three positions.
+
+### D-012 · Option C's panels are sized to the disc, not to a rectangle
+**2026-08-31.** Vince's feedback: the modular idea is good but "the info squares are not utilizing
+the watch's round space." Correct — a 2×2 grid of rectangles inscribed in a circle discards all
+four corners, which on a 498 px disc is a large fraction of the usable area.
+
+The fix uses a mechanism the platform already provides. `WatchFace` carries
+`clipShape="CIRCLE"` (the default), so the system clips everything drawn beyond the case. A
+`RoundRectangle` with a `Fill` — both verified present in the v4 XSD — can therefore be drawn
+*past* the edge and the bezel cuts its outer corners into arcs at no cost. The four panels now
+overhang the case and reach the top and bottom of the disc, with an 11 px rim.
+
+Rejected on the way: a four-sector annular ring around a central time. It fills the disc more
+completely, but horizontal text in the 3 and 9 sectors gets a window only ~92 px wide, and
+`100,000` steps needs 110 px at the row's type size (D-004). Curved text would fix the width and
+wreck the legibility. Three horizontal bands — panels, time, panels — keep every value on a
+straight baseline and still fill the round space.
+
+Content inside each panel is placed against the chord at its own height, not against the panel's
+bounding box, so nothing drifts into a clipped corner. The accent index at 12 was kept: it clears
+the panels (they reach r=209 on the vertical axis) and it is what keeps ambient identifiable
+under §5.9, which the first pass at this layout had quietly broken by removing the perimeter.

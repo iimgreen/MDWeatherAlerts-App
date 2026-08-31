@@ -221,7 +221,111 @@ function optionC(acc, amb) {
   return g;
 }
 
-const OPTIONS = { A: optionA, B: optionB, C: optionC };
+
+// =========================================================================
+// OPTION A2 — SECTOR, CENTRED   time on the true vertical axis
+// Centring the time costs one row: the separate weather line is gone, and the
+// bottom row's centre position becomes the complication slot instead.
+// =========================================================================
+function optionA2(acc, amb) {
+  const pri = amb ? AMB.primary : T.primary;
+  const sec = amb ? AMB.secondary : T.secondary;
+  const ter = amb ? AMB.tertiary : T.tertiary;
+  let g = '';
+
+  for (let i = 0; i < 60; i++) {
+    const a = i * 6, major = i % 5 === 0;
+    if (amb) { if (major) g += tick(a, 232, 218, 2.5, a === 0 ? acc : AMB.tick); }
+    else g += major ? tick(a, 232, 214, 2.5, T.tickMajor) : tick(a, 232, 224, 1.5, T.tickMinor);
+  }
+  if (!amb) {
+    g += arc(237, 0, D.ss * 6, 2.5, acc);
+    // 60deg gauges: short enough to clear the data row, long enough to read as
+    // gauges rather than as brackets framing the time
+    g += arc(200, 240, 300, 4, T.gaugeTrack);
+    g += arc(200, 300 - 60 * D.stepPct, 300, 4, acc);
+    g += arc(200, 60, 120, 4, T.gaugeTrack);
+    g += arc(200, 120 - 60 * (D.batt / 100), 120, 4, D.batt <= 15 ? T.alert : T.tickMajor);
+  }
+
+  g += text(116, 142, `${D.dow} ${D.day} ${D.mon}`, { fam: 'mono', size: 19, fill: sec, track: 1.6 });
+  g += text(382, 142, `DOY ${D.doy}`, { fam: 'mono', size: 19, fill: ter, track: 1.6, anchor: 'end' });
+  g += zulu(249, 190, { size: 30, fill: sec, zFill: ter, anchor: 'middle' });
+  // cap height at 110 is 79px, so baseline 289 puts the optical centre on 249.5
+  g += text(249, 289, `${D.hh}:${D.mm}`, { size: 110, weight: 600, fill: pri, anchor: 'middle' });
+
+  // one row, one baseline — the centre position is the complication slot
+  const cols = [
+    { x: 138, l: 'STEPS', v: D.steps },
+    { x: 249, l: 'WEATHER', v: D.temp, slot: true },
+    { x: 360, l: 'BATT', v: `${D.batt}%` },
+  ];
+  for (const c of cols) {
+    if (amb && c.slot) continue;
+    const low = D.batt <= 15 && c.l === 'BATT';
+    g += text(c.x, 336, c.l, { fam: 'mono', size: 14, fill: amb ? AMB.faint : ter, track: 1.6, anchor: 'middle' });
+    if (c.slot) { g += wxIcon(220, 366, 0.9, T.secondary); g += text(242, 372, c.v, { size: 34, weight: 600, fill: T.primary }); }
+    else g += text(c.x, 372, c.v, { size: 34, weight: 600, fill: low ? T.alert : (amb ? AMB.value : T.primary), anchor: 'middle' });
+  }
+  return g;
+}
+
+// =========================================================================
+// OPTION C2 — GRID, ROUND   panels sized to the disc, not to a rectangle
+// The panels overhang the case; WatchFace clipShape="CIRCLE" cuts their outer
+// corners to the bezel arc, so the layout fills the round space natively.
+// =========================================================================
+function optionC2(acc, amb) {
+  const pri = amb ? AMB.primary : T.primary;
+  const sec = amb ? AMB.secondary : T.secondary;
+  const ter = amb ? AMB.tertiary : T.tertiary;
+  const R = 238;                                     // panel clip — an 11px rim inside the bezel
+  let g = `<defs><clipPath id="disc"><circle cx="${C}" cy="${C}" r="${R}"/></clipPath></defs>`;
+  g += tick(0, 232, 220, 2.5, acc);                  // orientation index, and the accent
+                                                     // anchor that keeps ambient identifiable
+
+
+  const cells = [
+    { x: 4, y: 40, al: 'l', t: 'WEATHER', v: D.temp, wx: true },
+    { x: 253, y: 40, al: 'r', t: 'HEART RATE', v: D.hr },
+    { x: 4, y: 320, al: 'l', t: 'STEPS', v: D.steps, bar: D.stepPct },
+    { x: 253, y: 320, al: 'r', t: 'BATTERY', v: `${D.batt}%`, bar: D.batt / 100 },
+  ];
+
+  if (!amb) {                                        // panel grounds, clipped to the disc
+    g += `<g clip-path="url(#disc)">` +
+      cells.map(c => `<rect x="${c.x}" y="${c.y}" width="241" height="138" rx="20" fill="${T.surface}"/>`).join('') +
+      `</g>`;
+  }
+
+  for (const c of cells) {
+    if (amb && !['WEATHER', 'BATTERY'].includes(c.t)) continue;
+    const low = D.batt <= 15 && c.t === 'BATTERY';
+    const left = c.al === 'l';
+    const tx = left ? 74 : 424, anchor = left ? 'start' : 'end';
+    g += text(tx, c.y + (left === (c.y < 200) ? 0 : 0) + (c.y < 200 ? 78 : 28), c.t, { fam: 'mono', size: 12, fill: amb ? AMB.faint : T.tertiary, track: 1.6, anchor });
+    if (c.wx && !amb) g += wxIcon(87, c.y + 112, 0.85, T.secondary);
+    g += text(c.wx && !amb ? 105 : tx, c.y + (c.y < 200 ? 118 : 68), c.v,
+      { size: 34, weight: 600, fill: low ? T.alert : (amb ? AMB.value : T.primary), anchor: c.wx && !amb ? 'start' : anchor });
+    if (c.bar != null && !amb) {
+      const bx = left ? 74 : 304;
+      g += `<rect x="${bx}" y="${c.y + 76}" width="120" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
+      g += `<rect x="${bx}" y="${c.y + 76}" width="${f(120 * c.bar)}" height="3" rx="1.5" fill="${low ? T.alert : (c.t === 'STEPS' ? acc : T.tickMajor)}"/>`;
+    }
+  }
+
+  // centre band — date, time on the vertical axis, Zulu on the same baseline
+  g += text(74, 216, `${D.dow} ${D.day} ${D.mon}   ·   ${D.doy}`, { fam: 'mono', size: 16, fill: sec, track: 1.6 });
+  g += zulu(424, 216, { size: 26, fill: sec, zFill: ter, anchor: 'end' });
+  g += text(72, 298, `${D.hh}:${D.mm}`, { size: 96, weight: 600, fill: pri });
+  if (!amb) {
+    g += `<rect x="72" y="308" width="352" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
+    g += `<rect x="72" y="308" width="${f(352 * D.ss / 60)}" height="3" rx="1.5" fill="${acc}"/>`;
+  }
+  return g;
+}
+
+const OPTIONS = { A: optionA, B: optionB, C: optionC, A2: optionA2, C2: optionC2 };
 
 function svg(option, accentKey, ambient) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">
