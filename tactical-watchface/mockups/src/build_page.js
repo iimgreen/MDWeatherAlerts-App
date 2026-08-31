@@ -5,39 +5,45 @@ const d = f => 'data:image/png;base64,' + fs.readFileSync(path.join(M, f)).toStr
 
 const OPTS = [
   {
-    k: 'A', name: 'SECTOR', kind: 'Digital instrument',
-    lede: 'Big 24-hour time with a Zulu line beneath it, date and day-of-year across the top, three values on a shared baseline, two arc gauges hugging the tick track, and seconds sweeping the outer track.',
+    k: 'A2', name: 'SECTOR', kind: 'Digital instrument', revised: true,
+    before: 'optionA_interactive_amber.png',
+    beforeNote: 'The time sat high because four rows stacked beneath it. Zulu moved above the time, and the separate weather row was absorbed into the data row — which buys enough space for the time to sit on the true centre.',
+    lede: 'Date and day-of-year across the top, Zulu beneath them, then the time centred on the vertical axis, and one row of three values below it. Seconds sweep the outer track; two gauges flank the time.',
     reads: [
-      ['Time', 'Dominant, tabular, left-aligned so the block reads as one unit'],
+      ['Time', 'Optical centre on the screen centre — its cap is centred on 249 of 498'],
       ['Gauges', 'Step goal left, battery right — each directly outboard of its own number'],
-      ['Slot', 'One complication, bottom centre, weather by default'],
+      ['Slot', 'The centre of the bottom row is the complication, weather by default'],
       ['Ambient', 'Twelve majors, dimmed block, accent kept on the 12 index'],
     ],
-    note: 'The strongest ambient mode of the three, and the most data per glance without crowding.',
+    note: 'The trade for centring the time: the face carries three values instead of three plus a separate weather line. Heart rate can take any of the three positions.',
     tone: 'good',
   },
   {
-    k: 'B', name: 'MERIDIAN', kind: 'Analog field watch',
-    lede: 'Full 60-tick minute track, hour numerals, hands with a lumed accent tip, round complication slots at 3 and 9, date and day-of-year at 6, Zulu digital above centre.',
+    k: 'B2', name: 'MERIDIAN', kind: 'Analog field watch', revised: true,
+    before: 'optionB_interactive_amber.png',
+    beforeNote: 'The hands crossing the slot labels looked broken because the labels were bare text floating on the dial, with nothing for a hand to pass over. Recessing the slots into sub-dials and framing the date in an aperture seats both in the dial, so a hand crossing them now reads the way it does on a real watch.',
+    lede: 'Full 60-tick minute track, hour numerals, hands with a lumed accent tip, two recessed sub-dials at 3 and 9, a framed date aperture at 6, and Zulu above the pivot.',
     reads: [
-      ['Hands', 'Tapered, hairline-outlined so they stay separate when they overlap'],
-      ['Numerals', '3 and 9 omitted — the complication slots live there'],
-      ['Gauges', 'Flanking 12, clear of the numerals'],
+      ['Sub-dials', 'Both are complication slots, recessed and ringed like a real dial'],
+      ['Date', 'A framed aperture at 6 — the field-watch device'],
+      ['Hands', 'Tapered, with a 2px case-coloured outline so they stay legible over a sub-dial'],
       ['Ambient', 'Hands become outlines; four numerals return for orientation'],
     ],
-    note: 'Honest flaw: the hands cross the slot labels several hours a day — visible above, where the hour hand cuts through "STEPS". Every analog face with sub-dials has this. It is the cost of the layout, not a bug I can fix.',
-    tone: 'warn',
+    note: 'The hands still cross the sub-dials several hours a day — unavoidable on an analog dial, and visible above where the hour hand meets "STEPS". What changed is that it now reads as intended rather than as a collision.',
+    tone: 'good',
   },
   {
-    k: 'C', name: 'GRID', kind: 'Modular',
-    lede: 'Time top-left with the seconds bar as its underline, four data cells in a 2×2 block with in-cell progress bars, Zulu at the foot, and a single accent index at 12.',
+    k: 'C2', name: 'GRID', kind: 'Modular', revised: true,
+    before: 'optionC_interactive_amber.png',
+    beforeNote: 'The 2×2 block was a rectangle sitting inside a circle, so it threw away all four corners. The panels now overhang the case and the bezel cuts their outer corners into arcs — they reach the top and bottom of the disc.',
+    lede: 'Four panels sized to the disc rather than to a rectangle, a full-width time band through the middle carrying date, time and Zulu, and the seconds bar spanning the whole band.',
     reads: [
-      ['Cells', 'All four are complication slots — swap any of them for anything'],
-      ['Gauges', 'Inside the cells they measure, as bars under the value'],
-      ['Perimeter', 'Deliberately bare except the 12 index'],
+      ['Panels', 'All four are complication slots — swap any of them for anything'],
+      ['Shape', 'Panels overhang the case; the circular clip cuts the outer corners'],
+      ['Gauges', 'Inside the panels they measure, as bars under the value'],
       ['Ambient', 'Weather and battery only — heart rate is not sampled in AOD'],
     ],
-    note: 'Most legible at a glance, least distinctive. The spec sketched corner arc gauges here; rendered, they read as decorative brackets, so the gauges moved into the cells.',
+    note: 'This is native, not a trick: the whole face is already clipped to a circle, so a panel drawn past the edge gets its corners cut by the system for free.',
     tone: 'neutral',
   },
 ];
@@ -55,7 +61,7 @@ const FINDINGS = [
 
 const QS = [
   { n: 0, t: 'Where should this project live?', flag: 'Not in the spec', body: `<p>This branch is on the <strong>MD Weather Alerts</strong> repo, which already holds a different product. A watch-face <code>CLAUDE.md</code> at that root would misdirect every future session there, so for now everything sits in a <code>tactical-watchface/</code> folder.</p>`, rec: `<strong>A new dedicated repo</strong> — the folder moves across wholesale and nothing else changes. You would create the empty repo; I do the rest. Keeping it where it is also works, it is just untidy.` },
-  { n: 1, t: 'Which design direction?', body: `<p>A, B, C, or a combination — mixing is fine. A's layout with C's in-cell progress bars would work, for instance.</p>`, rec: `<strong>A — SECTOR.</strong> Most real data per glance without crowding, the best ambient mode, and the one-accent-one-job discipline holds cleanly. C is the most legible but the least distinctive; B's hand-over-label problem is above.` },
+  { n: 1, t: 'Which design direction?', body: `<p>A, B, C, or a combination — mixing is fine. A's layout with C's in-cell progress bars would work, for instance.</p>`, rec: `<strong>A — SECTOR,</strong> as revised. It was your pick and the centring fixes what bothered you. But all three have had a pass now and the gap has closed: C changed most from filling the round case, and B's sub-dials fixed the flaw I flagged first time round. Worth re-comparing before you commit.` },
   { n: 2, t: 'What is it called?', body: `<p>Store name and on-watch name. One or two syllables, no "Pro", and no "Tactical" in the name itself.</p>`, rec: `<strong>SECTOR</strong>, MERIDIAN, or VECTOR — I would ship <em>SECTOR</em>. I will check the Play Store for collisions once you shortlist.` },
   { n: 3, t: 'Default accent colour?', body: `<p>Eight ship regardless — Phosphor Amber, Signal Orange, Safety Yellow, NVG Green, Ice, Cobalt, Coral, Bone — plus a Mono theme. This is just what it looks like out of the box.</p>`, rec: `<strong>Phosphor Amber</strong> if you want this to feel like a family with your Garmin TELEMETRY face; otherwise Signal Orange. Both accents are rendered above — use the toggle.` },
   { n: 4, t: '24-hour default? Seconds shown by default?', rec: `<strong>24-hour, seconds as the sweeping arc.</strong> Both stay configurable — 12/24h, leading zero, and Arc / Digits / Off.` },
@@ -74,11 +80,12 @@ const chip = { ok: ['Available', 'ok'], warn: ['Needs care', 'warn'], no: ['Not 
 const faceCard = o => `
 <article class="dir" id="dir-${o.k}">
   <header class="dir-head">
-    <span class="key">${o.k}</span>
+    <span class="key">${o.k.replace("2", "")}</span>
     <div class="dir-id">
       <h3>${o.name}</h3>
       <p class="kind">${o.kind}</p>
     </div>
+    ${o.revised ? '<span class="revised">Revised</span>' : ''}
   </header>
   <div class="stage">
     ${['interactive', 'ambient'].map(m => ['amber', 'ice'].map(a => `<img class="face" src="${d(`option${o.k}_${m}_${a}.png`)}" alt="${o.name}, ${m} mode, ${a} accent" data-mode="${m}" data-accent="${a}"${m === 'interactive' && a === 'amber' ? '' : ' hidden'}>`).join('')).join('')}
@@ -88,6 +95,10 @@ const faceCard = o => `
     ${o.reads.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}
   </dl>
   <p class="note note-${o.tone}">${o.note}</p>
+  ${o.before ? `<div class="before">
+    <img src="${d(o.before)}" alt="${o.name} as first drawn">
+    <div><span class="eyebrow">What changed</span><p>${o.beforeNote}</p></div>
+  </div>` : ''}
 </article>`;
 
 const html = `<title>Watch Face Design Lock</title>
@@ -193,6 +204,12 @@ section{margin-top:72px}
 .note-good{border-color:var(--ok);color:var(--ink-2)}
 .note-warn{border-color:var(--warn);color:var(--ink-2)}
 .note-neutral{border-color:var(--rule);color:var(--ink-2)}
+.revised{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--ok-bg);color:var(--ok)}
+.before{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:start;
+  padding-top:16px;border-top:1px solid var(--rule-soft)}
+.before img{width:72px;height:72px;border-radius:50%;display:block;opacity:.6}
+.before p{margin:3px 0 0;font-size:13.5px;color:var(--ink-3)}
 
 /* findings -------------------------------------------------------------- */
 .finds{display:flex;flex-direction:column;gap:0}
@@ -242,12 +259,13 @@ section{margin-top:72px}
   <div class="ticks">${Array.from({ length: 41 }, () => '<i></i>').join('')}</div>
   <p class="eyebrow">Phase 0 · Discovery &amp; design lock</p>
   <h1>Pick a direction.</h1>
-  <p class="sub">Three ways to build a tactical face for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. Everything on every face below is a real data source I verified against Google's own schemas — nothing is decorative, and nothing is invented.</p>
+  <p class="sub">Three ways to build a tactical face for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. <strong>All three are revised</strong> — the time sits on the centre, the modular panels fill the round case, and the analog dial's slots are recessed so the hands cross them properly. Everything on every face is a real data source verified against Google's own schemas.</p>
   <dl class="meta">
     <div><dt>Target</dt><dd>Galaxy Watch Ultra 2</dd></div>
     <div><dt>Format</dt><dd>Watch Face Format v4</dd></div>
     <div><dt>Rendered at</dt><dd>498 × 498</dd></div>
     <div><dt>Directions</dt><dd>3</dd></div>
+    <div><dt>Revision</dt><dd>3</dd></div>
     <div><dt>Gate</dt><dd class="live">Open — needs you</dd></div>
   </dl>
 </header>

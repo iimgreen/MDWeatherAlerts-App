@@ -1,8 +1,8 @@
 # PROGRESS
 
 **Current phase:** 0 — Discovery & design lock
-**Gate status:** OPEN — direction narrowing to A; questions still unanswered
-**Next action:** Vince confirms A (as revised) and answers the 13 questions in `PHASE0_QUESTIONS.md`.
+**Gate status:** OPEN — all three directions revised; questions still unanswered
+**Next action:** Vince picks a direction and answers the 13 questions in `PHASE0_QUESTIONS.md`.
 
 ---
 
@@ -62,6 +62,20 @@ Both acted on; neither needed a question back.
 Renders: `mockups/option{A2,C2}_{interactive,ambient}_{amber,ice}.png`. The review page and the
 artifact now show the revised versions with a before thumbnail on each.
 
+### Round 3 — Option B (2026-08-31)
+
+Vince: *"let's do B and A later once b is done"* — B worked now, A revisited after.
+
+- **B — slots recessed into sub-dials, date into an aperture.** This retires the "honest flaw" I
+  reported in round 1. The hands crossing the slots was never the problem; the slots having no
+  ground to be crossed *over* was. See D-013.
+- All three directions have now had a revision pass, so the comparison is finally like-for-like.
+
+**Open sequencing question, not blocking:** "B and A later once B is done" reads as shipping B
+first and A as a second face afterwards. That would make this a two-face roadmap, which changes
+Phase 1–7 scope (one bundle with two faces, or two Play listings). Worth confirming before
+Phase 1 starts; it does not affect the design lock.
+
 ### Blockers
 
 - Vince's answers (the gate itself).
@@ -81,6 +95,9 @@ artifact now show the revised versions with a before thumbnail on each.
   Option A's centring; confirmed the shared-baseline rule, which killed the staggered "arc" row.
 - `2026-08-31` — [re-read spec — §5.2 Forbidden + §5.9 AOD] while revising Option C; caught the
   shortened gauges reading as brackets, and the missing ambient accent anchor.
+- `2026-08-31` — [re-read spec — §5.1 What tactical means + §5.3 Required qualities] before
+  reworking Option B; "instrument-grade" is what reframed the hand-crossing as a depth problem
+  rather than a layout cost.
 
 ---
 

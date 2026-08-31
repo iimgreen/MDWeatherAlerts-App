@@ -149,3 +149,29 @@ Content inside each panel is placed against the chord at its own height, not aga
 bounding box, so nothing drifts into a clipped corner. The accent index at 12 was kept: it clears
 the panels (they reach r=209 on the vertical axis) and it is what keeps ambient identifiable
 under §5.9, which the first pass at this layout had quietly broken by removing the perimeter.
+
+### D-013 · Option B's slots become recessed sub-dials; the date gets an aperture
+**2026-08-31.** The flaw I flagged in round 1 — the hands crossing the complication labels at 3 and
+9 — was misdiagnosed as a layout cost to be lived with. It is not. Every analog watch with
+sub-dials has hands crossing them, and it does not look broken on a real watch, because the hand
+crosses *a dial*. Mine crossed bare text floating on black, which reads as a collision rather than
+as depth.
+
+So the slots are now recessed: a `#0D0D0D` disc with a `#1F1F1F` hairline ring, r=46. The date
+moved into a framed aperture at 6 (`RoundRectangle` with the same ground and ring) instead of
+floating text, which is the authentic field-watch device and seats it in the dial the same way.
+The hands gained a 2 px case-coloured outline — up from 1.5 px — so they stay separated over a
+lit sub-dial ground.
+
+Moving the slots off the 3/9 axis was the other option and was rejected: hands sweep the whole
+dial, so it relocates the crossing rather than solving it, and it gives up the positions users
+expect a field watch to use.
+
+Sizing: the sub-dial value dropped to 26 px and the dial grew from r=42 to r=46 after the first
+render showed `8,420` nearly touching the ring. These are complication slots, so the value is not
+under our control — `SHORT_TEXT` providers abbreviate (`100K`), which is what makes a small dial
+workable at all. Worth re-checking in Phase 4 against the five providers per slot the spec
+requires.
+
+The residual crossing is real and stays: at 14:38 the hour hand meets the STEPS sub-dial, and the
+mockup deliberately shows that hour rather than a flattering one.

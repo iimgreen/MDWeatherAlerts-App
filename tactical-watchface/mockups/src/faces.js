@@ -325,7 +325,82 @@ function optionC2(acc, amb) {
   return g;
 }
 
-const OPTIONS = { A: optionA, B: optionB, C: optionC, A2: optionA2, C2: optionC2 };
+
+// =========================================================================
+// OPTION B2 — MERIDIAN, revised   recessed sub-dials and a date aperture
+// The hands still cross the slots several hours a day; that is unavoidable on
+// an analog dial. What changes is that they now cross *something* — a recessed
+// sub-dial, the way a real watch is built — instead of bare floating text.
+// =========================================================================
+function optionB2(acc, amb) {
+  const pri = amb ? AMB.primary : T.primary;
+  const sec = amb ? AMB.secondary : T.secondary;
+  const ter = amb ? AMB.tertiary : T.tertiary;
+  const SUNK = '#0D0D0D', RING = '#1F1F1F';
+  let g = '';
+
+  for (let i = 0; i < 60; i++) {
+    const a = i * 6, major = i % 5 === 0;
+    if (amb) { if (major) g += tick(a, 232, 218, 2.5, a === 0 ? acc : AMB.tick); }
+    else g += major ? tick(a, 232, 215, 2.5, T.tickMajor) : tick(a, 232, 225, 1.5, T.tickMinor);
+  }
+  if (!amb) {
+    g += arc(206, 296, 352, 4, T.gaugeTrack);
+    g += arc(206, 296, 296 + 56 * D.stepPct, 4, acc);
+    g += arc(206, 8, 64, 4, T.gaugeTrack);
+    g += arc(206, 64 - 56 * (D.batt / 100), 64, 4, D.batt <= 15 ? T.alert : T.tickMajor);
+  }
+
+  // hour numerals — 3 and 9 give way to the sub-dials
+  const hours = amb ? [12, 3, 6, 9] : [12, 1, 2, 4, 5, 6, 7, 8, 10, 11];
+  for (const h of hours) {
+    const [x, y] = P(178, h * 30);
+    g += text(x, y + 9.5, String(h), { size: 27, weight: 500, fill: amb ? AMB.tertiary : (h === 12 ? T.primary : '#A0A0A0'), anchor: 'middle' });
+  }
+
+  // recessed sub-dials at 3 and 9 — the hands pass over a dial, not over nothing
+  if (!amb) for (const sd of [{ x: 115, t: 'HR', v: D.hr }, { x: 383, t: 'STEPS', v: D.steps }]) {
+    g += `<circle cx="${sd.x}" cy="${C}" r="46" fill="${SUNK}" stroke="${RING}" stroke-width="1"/>`;
+    g += text(sd.x, 236, sd.t, { fam: 'mono', size: 11, fill: T.tertiary, track: 1.6, anchor: 'middle' });
+    g += text(sd.x, 274, sd.v, { size: 26, weight: 600, fill: T.primary, anchor: 'middle' });
+  }
+
+  // date aperture at 6 — a framed window, the field-watch device, so the date
+  // is seated in the dial rather than floating on it
+  if (!amb) g += `<rect x="175" y="338" width="148" height="36" rx="7" fill="${SUNK}" stroke="${RING}" stroke-width="1"/>`;
+  g += text(249, 362, `${D.dow} ${D.day} ${D.mon}`, { fam: 'mono', size: 16, fill: sec, track: 1.8, anchor: 'middle' });
+
+  // Zulu and day-of-year sit above the pivot, clear of the hand tails
+  g += zulu(249, 166, { size: 28, fill: sec, zFill: ter, anchor: 'middle' });
+  if (!amb) g += text(249, 194, `DOY ${D.doy}`, { fam: 'mono', size: 13, fill: ter, track: 1.6, anchor: 'middle' });
+
+  const hAng = ((14 % 12) + 38 / 60) * 30;
+  const mAng = 38 * 6 + D.ss * 0.1;
+  const quad = (ang, l1, l2, w1, w2) => {
+    const [ax, ay] = P(l1, ang), [bx, by] = P(l2, ang);
+    const n = rad(ang + 90), dx = Math.cos(n), dy = Math.sin(n);
+    return `${f(ax + dx * w1 / 2)},${f(ay + dy * w1 / 2)} ${f(bx + dx * w2 / 2)},${f(by + dy * w2 / 2)} ${f(bx - dx * w2 / 2)},${f(by - dy * w2 / 2)} ${f(ax - dx * w1 / 2)},${f(ay - dy * w1 / 2)}`;
+  };
+  const hand = (ang, len, tail, wBase, wTip, tipLen) => {
+    const wAtTip = wTip + (wBase - wTip) * tipLen / (len + tail);
+    if (amb) return `<polygon points="${quad(ang, -tail, len, wBase, wTip)}" fill="none" stroke="${AMB.primary}" stroke-width="2" stroke-linejoin="round"/>`;
+    // a 2px case-coloured outline is what keeps the hand legible over a sub-dial
+    let s = `<polygon points="${quad(ang, -tail, len - tipLen, wBase, wAtTip)}" fill="${T.primary}" stroke="${T.bg}" stroke-width="2" stroke-linejoin="round"/>`;
+    if (tipLen) s += `<polygon points="${quad(ang, len - tipLen, len, wAtTip, wTip)}" fill="${acc}" stroke="${T.bg}" stroke-width="2" stroke-linejoin="round"/>`;
+    return s;
+  };
+  g += hand(hAng, 130, 24, 11, 6.5, 0);
+  g += hand(mAng, 198, 28, 8.5, 4.5, 28);
+  if (!amb) {
+    const [sx, sy] = P(210, D.ss * 6), [tx, ty] = P(-48, D.ss * 6);
+    g += `<line x1="${f(tx)}" y1="${f(ty)}" x2="${f(sx)}" y2="${f(sy)}" stroke="${acc}" stroke-width="2"/>`;
+    g += `<circle cx="${f(tx)}" cy="${f(ty)}" r="5" fill="${acc}"/>`;
+  }
+  g += `<circle cx="${C}" cy="${C}" r="6.5" fill="${pri}"/><circle cx="${C}" cy="${C}" r="2.5" fill="${T.bg}"/>`;
+  return g;
+}
+
+const OPTIONS = { A: optionA, B: optionB, C: optionC, A2: optionA2, C2: optionC2, B2: optionB2 };
 
 function svg(option, accentKey, ambient) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">
