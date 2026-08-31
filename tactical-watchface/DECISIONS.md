@@ -22,15 +22,15 @@ Every §10 question answered. Changes from here are recorded as v2, v3 — this 
 | **Colour** | Phosphor Amber `#FFB000` default; 8 accents + Mono + Night Ops. One accent visible at a time. |
 | **Time** | 24-hour default, seconds as the sweeping arc. 12/24h, leading zero and Arc/Digits/Off all configurable. |
 | **Second time** | UTC/Zulu default; selectable offset added in Phase 4 once `UTC_TIMESTAMP` units are confirmed on-device. |
-| **SECTOR data** | Band reads `STEPS · [weather slot] · BATT`; centre compartment is the complication slot. |
-| **MERIDIAN data** | Sub-dial slots: HR at 9, STEPS at 3. Date aperture at 6. Zulu above the pivot. |
+| **SECTOR data** | Band reads `STEPS · [weather] · [heading] · BATT` — four compartments, two of them complication slots. |
+| **MERIDIAN data** | Sub-dial slots: HR at 9, heading at 3. Steps keeps its arc gauge. Date aperture at 6. Zulu above the pivot. |
 | **Gauges** | SECTOR: bars beneath their values (D-014). MERIDIAN: arcs flanking 12. Both native off `STEP_PERCENT` / `BATTERY_PERCENT`. |
-| **Slots** | MERIDIAN two, SECTOR one. More only if either feels thin on-wrist in Phase 4. |
-| **Night Ops** | **In.** Lit pixels dimmed ~35 %, accent to deep red `#B3261E` (D-016). |
+| **Slots** | Two per face. One on each defaults to the heading readout. |
+| **Night mode** | **On / Off / Auto** in the customization menu. Auto runs off daylight, not the light sensor (D-018). |
 | **Flavors** | In — Default, Mono, Amber Ops, Ice, Minimal. |
 | **Also in** | Unread notification count. **Deferred past v1:** moon phase, sunrise/sunset. |
 | **QA** | Ultra 2 primary; one round Wear OS 6 emulator check before publishing. |
-| **Compass** | **Cannot be built as a live rose (D-017).** Tap-to-open Compass shortcut is in regardless; a heading complication is added if a provider exists on the device. Vince to confirm whether it earns a slot. |
+| **Compass** | **Heading readout gets a slot on both faces**, plus tap-to-open Compass. No live rose — WFF exposes no magnetometer (D-017). |
 
 The layouts this locks are `mockups/optionB2_*` (MERIDIAN) and `mockups/optionA3_*` (SECTOR).
 
@@ -305,3 +305,62 @@ rather than assumed:
 Offered but not added: an inclinometer. Tilt *is* real, so a spirit level or pitch readout is
 buildable and would be an honest field instrument — but it is not what he asked for, and
 substituting it silently would be its own kind of faking. His call.
+
+### D-018 · Night mode ships as On / Off / Auto, and Auto runs off daylight
+**2026-08-31.** Vince: *"night mode should be the native night mode Samsung ultra 2 watch faces have.
+on, off, or auto setting."* The three-option setting is buildable. Parity with Samsung's is not,
+and the gap is worth stating precisely because he will notice it.
+
+**What Samsung's actually is.** Night mode on the Galaxy Watch Ultra runs on exactly two faces —
+*Simple Ultra* and *Ultra Analog*, both first-party — and it triggers off the **ambient light
+sensor**: the face goes red when the watch detects dim surroundings, and back when it detects
+bright. Auto/On/Off live under long-press → Customize.
+
+**Why a WFF face cannot join it.** Two independent blocks, both verified:
+
+- No ambient-light data source exists. The validator's `SOURCES` map has accelerometer, battery,
+  health, weather, time, date, notifications — no light sensor at any version.
+- `Variant` has exactly one legal `mode`: `AMBIENT`. The v5 XSD enumerates that single value, so
+  there is no night-mode variant for the system to drive.
+
+Nothing in WFF exposes the system night-mode state either, so the face cannot even follow along
+when Samsung's own toggles. This is a first-party feature; a third-party face gets no signal.
+
+**What ships instead.** A `ListConfiguration` under Display: **On / Off / Auto** — the same three
+options in the same menu, with the same look (dimmed ~35 %, accent to deep red). On and Off behave
+identically to Samsung's.
+
+**Auto is where they differ.** With no light sensor, Auto is driven by `WEATHER.IS_DAY` (v2) —
+real daylight at the user's location, and honest data rather than a clock guess. So it switches at
+actual sunset and sunrise, tracking the seasons, instead of when he walks into a dark room. A dark
+garage at noon will not trigger it. When weather is unavailable (phone disconnected, no location)
+`WEATHER.IS_AVAILABLE` is false and there is no daylight signal, so Auto falls back to a fixed
+evening window off `HOUR_0_23` — a schedule, not invented data — so the setting always does
+something. Both branches are `Condition` expressions; no new capability needed.
+
+If on-wrist testing shows the daylight switch feels wrong, the fallback schedule can become the
+primary and daylight the refinement. Recorded as a Phase 3 evaluation item.
+
+### D-019 · The heading readout takes a slot on both faces
+**2026-08-31.** Vince: *"give the compass readout a slot and reading as you recommended and on both
+faces."* Settles the item D-017 left open. Both faces now carry two complication slots, one of
+which defaults to a heading provider.
+
+- **MERIDIAN** — the 3 o'clock sub-dial becomes heading; HR keeps 9. Steps was the displaced
+  default and loses nothing important: its progress is already the step-goal arc flanking 12, so
+  the dial still reports it, just as a gauge instead of a number.
+- **SECTOR** — the band goes from three compartments to four: `STEPS · [weather] · [heading] ·
+  BATT`. Adding a compartment rather than displacing weather keeps a §5.8 "must have" on the face.
+  Geometry: the band's chord at the value baseline is 351.8 px wide (half-width
+  `sqrt(208² − 111²) = 175.9`), so four compartments are 88 px each. Value type drops 28 → 26 px
+  and labels 12 → 11 px to suit; `100,000` steps at 26 px is 84.5 px and fits, with auto-size still
+  the backstop per D-004.
+
+Neither face shows heading in ambient — it is a complication, and like heart rate it does not
+update on an AOD cadence, so showing a stale bearing would be D-008's error repeated. Both slots
+drop out in ambient as the weather slot already did.
+
+Still true, and still worth repeating at Phase 4: **whether any provider on the device actually
+publishes a heading complication is unconfirmed.** If none does, the slot falls back to its
+secondary default and the tap-to-open Compass shortcut carries the feature alone. That check is the
+first thing in Phase 4.

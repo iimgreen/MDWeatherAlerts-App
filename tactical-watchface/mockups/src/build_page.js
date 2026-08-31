@@ -8,9 +8,9 @@ const OPTS = [
     k: 'B2', name: 'MERIDIAN', kind: 'Analog field watch', revised: true, ships: 'Ships first',
     before: 'optionB_interactive_amber.png',
     beforeNote: 'The hands crossing the slot labels looked broken because the labels were bare text floating on the dial, with nothing for a hand to pass over. Recessing the slots into sub-dials and framing the date in an aperture seats both in the dial, so a hand crossing them now reads the way it does on a real watch.',
-    lede: 'Full 60-tick minute track, hour numerals, hands with a lumed accent tip, two recessed sub-dials at 3 and 9, a framed date aperture at 6, and Zulu above the pivot.',
+    lede: 'Full 60-tick minute track, hour numerals, hands with a lumed accent tip, recessed sub-dials at 3 and 9 carrying heading and heart rate, a framed date aperture at 6, and Zulu above the pivot.',
     reads: [
-      ['Sub-dials', 'Both are complication slots, recessed and ringed like a real dial'],
+      ['Sub-dials', 'HR at 9, heading at 3 — both complication slots, recessed and ringed'],
       ['Date', 'A framed aperture at 6 — the field-watch device'],
       ['Hands', 'Tapered, with a 2px case-coloured outline so they stay legible over a sub-dial'],
       ['Ambient', 'Hands become outlines; four numerals return for orientation'],
@@ -22,14 +22,14 @@ const OPTS = [
     k: 'A3', name: 'SECTOR', kind: 'Digital instrument', revised: true, ships: 'Ships second',
     before: 'optionA_interactive_amber.png',
     beforeNote: 'Two passes. First the time came down to the true centre, which cost a row — Zulu moved above it and the weather line folded into the data row. That left the two arc gauges at 9 and 3 measuring values that had moved to the bottom of the face, so the progress moved into the row, under the number it belongs to, and the row gained a recessed ground that overhangs the case.',
-    lede: 'Date and day-of-year across the top, Zulu beneath them, the time centred on the vertical axis, and a seated three-compartment band below carrying the values with their own gauges.',
+    lede: 'Date and day-of-year across the top, Zulu beneath them, the time centred on the vertical axis, and a seated four-compartment band below carrying steps, weather, heading and battery.',
     reads: [
       ['Time', 'Optical centre on the screen centre — its cap is centred on 249 of 498'],
       ['Band', 'Overhangs the case; clipped concentric with the tick track, 6px inside it'],
       ['Gauges', 'Under the number each one measures, inside its own compartment'],
       ['Ambient', 'Twelve majors, the band ground drops away, accent kept on the 12 index'],
     ],
-    note: 'The trade for centring the time: three values instead of three plus a separate weather line. The centre compartment is the complication slot; heart rate can take any of the three.',
+    note: 'The band went from three compartments to four to seat the heading readout. Heart rate can take any compartment you prefer — every one of them is configurable.',
     tone: 'good',
   },
 ];
@@ -52,24 +52,25 @@ const LOCK = [
   ['Packages', 'com.mdweatheralerts.watchface.meridian / .sector', 'Permanent after first publish'],
   ['Repo', 'New dedicated repo, two app modules + shared resources', 'You create it empty; I lay it out'],
   ['Format', 'WFF v4', 'The validator still caps at 4, so v5 would mean no automated gate'],
-  ['Accent', 'Phosphor Amber default, 8 + Mono + Night Ops', 'One accent visible at a time'],
+  ['Accent', 'Phosphor Amber default, 8 + Mono', 'One accent visible at a time; night mode overrides it'],
   ['Time', '24-hour, seconds as the sweeping arc', 'Both user-configurable'],
   ['Second time', 'UTC / Zulu, selectable offset in Phase 4', 'Arithmetic on the epoch timestamp'],
-  ['SECTOR row', 'STEPS · [weather slot] · BATT', 'Centre compartment is the complication'],
-  ['MERIDIAN dials', 'HR at 9 · STEPS at 3', 'Both are complication slots'],
+  ['SECTOR band', 'STEPS · [weather] · [heading] · BATT', 'Four compartments, two of them slots'],
+  ['MERIDIAN dials', 'HR at 9 · [heading] at 3', 'Both slots; steps keeps its arc gauge'],
+  ['Compass', 'Heading readout in a slot, both faces', 'Plus tap-to-open Compass. No live rose — WFF has no magnetometer'],
   ['Gauges', 'SECTOR: bars under their values · MERIDIAN: arcs flanking 12', 'Native, no complication needed'],
-  ['Night Ops', 'In — dimmed ~35%, accent to deep red', 'See the toggle above'],
-  ['Flavors', 'In — Default, Mono, Amber Ops, Ice, Minimal', 'One-tap presets in Galaxy Wearable'],
+  ['Night mode', 'On / Off / Auto', 'Auto runs off daylight, not the light sensor — see above'],
+  ['Flavors', 'Default, Mono, Amber Ops, Ice, Minimal', 'One-tap presets in Galaxy Wearable'],
   ['Also in', 'Notification count', 'Moon phase and sunrise/sunset deferred past v1'],
   ['QA', 'Ultra 2 primary, one Wear OS 6 round emulator check', 'Before publishing'],
 ];
 
-const COMPASS = [
-  ['A heading readout in a slot', 'best', 'If Samsung\'s Compass app — or any compass app you install — publishes a complication, a slot can show a real heading like <code>347° NW</code>. That is genuine data from the magnetometer, routed through an app that can read it. Two caveats: it updates at complication speed, seconds to minutes, so it is a readout rather than a needle you would navigate by; and I cannot confirm from here that such a provider exists on your watch. It is the first thing I check in Phase 4.'],
-  ['A tap target that opens Compass', 'good', 'A slot can carry a compass icon and open the real Compass app the instant you tap it. Real function, no invented data, and it works whether or not a complication provider exists. This is what I would build regardless — it costs nothing and it is what you actually want when you need a bearing.'],
-  ['A live compass rose on the dial', 'no', 'Not possible. WFF exposes no magnetometer, no heading, no bearing, at any format version — I checked every data source in Google\'s validator and every element in the v5 schemas. The only motion sensor is the accelerometer, which reports tilt against gravity, not direction. A rose driven by it would swing as you turned your wrist and point at nothing, which is the exact thing the spec forbids by name.'],
-  ['An inclinometer instead', 'extra', 'Not a compass, but worth knowing it exists: tilt <em>is</em> real and readable, so a true spirit-level or pitch readout is buildable and would be an honest field instrument. Say the word if you want it on either face; I would not add it uninvited.'],
+const NIGHT = [
+  ['no', 'Samsung\'s own night mode is not reachable', 'Samsung\'s night mode runs on exactly two faces — <em>Simple Ultra</em> and <em>Ultra Analog</em>, both first-party — and it triggers off the <strong>ambient light sensor</strong>, going red when the watch detects dim surroundings. A Watch Face Format face gets neither: there is no light-sensor data source, and <code>Variant</code> accepts one single mode, <code>AMBIENT</code>. No third-party face on any platform version can join that feature or read what triggers it.'],
+  ['best', 'What you get instead: the same three options, same place', 'Night mode ships as <strong>On / Off / Auto</strong> in the customization menu — long-press the face, Customize, swipe — which is exactly where you already change it on Samsung\'s faces, and it looks the same: everything dimmed, accent to deep red. On and Off behave identically to Samsung\'s.'],
+  ['warn', 'Auto switches on daylight, not on room light', 'This is the one difference you will notice, so I would rather say it now than have you find it. Samsung\'s Auto goes red when you walk into a dark room. Mine goes red when the sun goes down, driven by <code>WEATHER.IS_DAY</code> — real daylight at your location, not a guess. Walking into a dark garage at noon will not trigger it. If weather is unavailable it falls back to a fixed evening window so Auto always does something.'],
 ];
+
 
 const chip = { ok: ['Available', 'ok'], warn: ['Needs care', 'warn'], no: ['Not available', 'no'] };
 
@@ -221,6 +222,7 @@ section{margin-top:72px}
 .pill.c-good{background:var(--ok-bg);color:var(--ok)}
 .pill.c-no{background:var(--no-bg);color:var(--no)}
 .pill.c-extra{background:var(--sunk);color:var(--ink-3)}
+.pill.c-warn{background:var(--warn-bg);color:var(--warn)}
 .lock{display:flex;flex-direction:column}
 .lock-row{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:13px 0;border-bottom:1px solid var(--rule-soft)}
 .lock-row:first-child{border-top:1px solid var(--rule-soft)}
@@ -268,21 +270,21 @@ section{margin-top:72px}
   <div class="ticks">${Array.from({ length: 41 }, () => '<i></i>').join('')}</div>
   <p class="eyebrow">Phase 0 · Design Lock v1</p>
   <h1>Locked.</h1>
-  <p class="sub">Two tactical faces for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. <strong>MERIDIAN ships first, SECTOR second.</strong> Every question is answered and Design Lock v1 is written — Night&nbsp;Ops is in, and you can see it on the toggle. <strong>One request I cannot build: the compass.</strong> That is below, with what I can do instead.</p>
+  <p class="sub">Two tactical faces for the Galaxy&nbsp;Watch Ultra&nbsp;2, drawn at true watch size. <strong>MERIDIAN ships first, SECTOR second.</strong> The heading readout now has a slot on both faces, and night mode is on the toggle. <strong>One caveat on night mode:</strong> Samsung's own is first-party only, so Auto switches on daylight rather than on the light sensor. Detail below.</p>
   <dl class="meta">
     <div><dt>Target</dt><dd>Galaxy Watch Ultra 2</dd></div>
     <div><dt>Format</dt><dd>Watch Face Format v4</dd></div>
     <div><dt>Rendered at</dt><dd>498 × 498</dd></div>
     <div><dt>Faces</dt><dd>2</dd></div>
-    <div><dt>Accents</dt><dd>8 + Mono + Night Ops</dd></div>
-    <div><dt>Gate</dt><dd class="live">One open item</dd></div>
+    <div><dt>Accents</dt><dd>8 + Mono + night</dd></div>
+    <div><dt>Gate</dt><dd class="live">Met — Phase 1 next</dd></div>
   </dl>
 </header>
 
 <section>
   <div class="sec-head">
     <h2>The two faces</h2>
-    <p>Same time, same data, same moment. Both ship free, both support always-on and Night Ops.</p>
+    <p>Same time, same data, same moment. Both ship free, both support always-on and night mode.</p>
   </div>
 
   <div class="controls">
@@ -296,7 +298,7 @@ section{margin-top:72px}
       <div class="seg" id="seg-accent">
         <button data-v="amber" aria-pressed="true"><span class="swatch" style="background:#FFB000"></span>Phosphor Amber</button>
         <button data-v="ice" aria-pressed="false"><span class="swatch" style="background:#9AD8FF"></span>Ice</button>
-        <button data-v="night" aria-pressed="false"><span class="swatch" style="background:#B3261E"></span>Night Ops</button>
+        <button data-v="night" aria-pressed="false"><span class="swatch" style="background:#B3261E"></span>Night mode</button>
       </div>
     </div>
   </div>
@@ -316,11 +318,11 @@ section{margin-top:72px}
 
 <section>
   <div class="sec-head">
-    <h2>The compass</h2>
-    <p>You asked for it; I have to tell you what is actually possible.</p>
+    <h2>Night mode</h2>
+    <p>You asked for Samsung's. I can get you close, but not identical — here is the gap.</p>
   </div>
   <div class="finds">
-    ${COMPASS.map(([h, k, b]) => `<div class="find"><span class="pill c-${k}">${{best:'Recommended',good:'Also doing this',no:'Not possible',extra:'If you want it'}[k]}</span><div><h4>${h}</h4><p>${b}</p></div></div>`).join('')}
+    ${NIGHT.map(([k, h, b]) => `<div class="find"><span class="pill c-${k}">${{best:'What you get',warn:'The difference',no:'Not reachable'}[k]}</span><div><h4>${h}</h4><p>${b}</p></div></div>`).join('')}
   </div>
 </section>
 
@@ -336,7 +338,7 @@ section{margin-top:72px}
 
 <div class="next">
   <h2>What happens next</h2>
-  <p>One thing left: tell me whether the compass slot is worth a position on either face, or whether the tap-to-open shortcut is enough. Everything else is locked.</p>
+  <p>Nothing is waiting on you. Design Lock v1 is written and Phase 0 is closed.</p>
   <p>Then Design Lock v1 gets written down and Phase 1 starts on <strong>MERIDIAN</strong>: tooling on your Mac, the emulator, building Google's official sample end to end to prove the pipeline, then the project skeleton and a minimal version of the locked design running on your actual watch. SECTOR follows once MERIDIAN is published — it reuses the same repo, the same keystore, the same fonts and colour system, so the second face is far less work than the first.</p>
   <p>You will have two jobs in Phase 1, and I will write both out step by step for someone who has never done them: approving a couple of installs on the Mac, and turning on wireless debugging on the watch.</p>
 </div>

@@ -476,6 +476,19 @@ mode."*
   complication if a provider proves to exist on the device (Phase 4 check). Whether that readout
   earns a slot is still Vince's to decide.
 
+**Both settled the same day.** *"give the compass readout a slot and reading as you recommended and
+on both faces. night mode should be the native night mode Samsung ultra 2 watch faces have. on,
+off, or auto setting."*
+
+- **Heading takes a slot on both faces** (D-019): MERIDIAN's 3 o'clock sub-dial, and a fourth
+  compartment added to SECTOR's band so weather is not displaced.
+- **Night mode ships as On / Off / Auto** (D-018), but not Samsung's. Samsung's night mode is
+  first-party — it runs on *Simple Ultra* and *Ultra Analog* only and triggers off the ambient
+  light sensor. WFF exposes no light-sensor source and `Variant` accepts exactly one mode,
+  `AMBIENT`, so no third-party face can join the feature. Ours matches the options, the menu
+  location and the look; Auto switches on real daylight (`WEATHER.IS_DAY`) rather than room
+  brightness, with a fixed evening window as fallback when weather is unavailable.
+
 **Corrections to the spec's own assumptions,** all verified rather than assumed:
 
 - Day-of-year needs no computation — `DAY_OF_YEAR` is a v1 source, as is ISO week (§5.8 planned a

@@ -16,9 +16,9 @@ const T = {
 };
 const AMB = { primary: '#C8C8C8', secondary: '#6E6E6E', tertiary: '#4A4A4A', tick: '#4A4A4A', faint: '#3A3A3A', value: '#8A8A8A' };
 const ACCENTS = { amber: '#FFB000', ice: '#9AD8FF', night: '#B3261E' };
-// Night Ops (spec 5.5): every lit pixel dimmed ~35% and the accent shifted to a deep
-// red, the night-vision preservation convention. Modelled here as a group opacity,
-// which is also the simplest way to build it — black stays black, only lit pixels dim.
+// Night mode: every lit pixel dimmed ~35% and the accent shifted to a deep red, the
+// night-vision convention. Shipped as an On / Off / Auto setting (D-018). Modelled here
+// as a group opacity, the simplest build — black stays black, only lit pixels dim.
 const NIGHT_DIM = 0.65;
 
 // ---- sample state --------------------------------------------------------
@@ -27,7 +27,7 @@ const D = {
   hh: '14', mm: '38', ss: 22, utc: '18:38',
   dow: 'SUN', day: '30', mon: 'AUG', doy: '242',
   hr: '72', steps: '8,420', stepPct: 0.842, batt: 86,
-  temp: '74°',
+  temp: '74°', hdg: '347°',
 };
 
 // ---- geometry ------------------------------------------------------------
@@ -269,7 +269,7 @@ function optionB2(acc, amb) {
   }
 
   // recessed sub-dials at 3 and 9 — the hands pass over a dial, not over nothing
-  if (!amb) for (const sd of [{ x: 115, t: 'HR', v: D.hr }, { x: 383, t: 'STEPS', v: D.steps }]) {
+  if (!amb) for (const sd of [{ x: 115, t: 'HR', v: D.hr }, { x: 383, t: 'HDG', v: D.hdg }]) {
     g += `<circle cx="${sd.x}" cy="${C}" r="46" fill="${SUNK}" stroke="${RING}" stroke-width="1"/>`;
     g += text(sd.x, 236, sd.t, { fam: 'mono', size: 11, fill: T.tertiary, track: 1.6, anchor: 'middle' });
     g += text(sd.x, 274, sd.v, { size: 26, weight: 600, fill: T.primary, anchor: 'middle' });
@@ -344,23 +344,26 @@ function optionA3(acc, amb) {
   // the seated row: one ground, three compartments, hairline separators
   if (!amb) {
     g += `<g clip-path="url(#aband)"><rect x="30" y="${BY}" width="438" height="${BH}" rx="14" fill="${SUNK}"/></g>`;
-    for (const sx of [187.5, 310.5]) g += `<line x1="${sx}" y1="${BY + 12}" x2="${sx}" y2="${BY + BH - 12}" stroke="${RING}" stroke-width="1"/>`;
+    for (const sx of [161, 249, 337]) g += `<line x1="${sx}" y1="${BY + 12}" x2="${sx}" y2="${BY + BH - 12}" stroke="${RING}" stroke-width="1"/>`;
   }
 
+  // four compartments across the chord the band actually has at this height:
+  // half-width at the value baseline is sqrt(208^2 - 111^2) = 175.9, so 351.8 / 4 = 88 each
   const cells = [
-    { x: 126, l: 'STEPS', v: D.steps, bar: D.stepPct },
-    { x: 249, l: 'WEATHER', v: D.temp, slot: true },
-    { x: 372, l: 'BATT', v: `${D.batt}%`, bar: D.batt / 100 },
+    { x: 117, l: 'STEPS', v: D.steps, bar: D.stepPct },
+    { x: 205, l: 'WEATHER', v: D.temp, slot: true, wx: true },
+    { x: 293, l: 'HDG', v: D.hdg, slot: true },
+    { x: 381, l: 'BATT', v: `${D.batt}%`, bar: D.batt / 100 },
   ];
   for (const c of cells) {
-    if (amb && c.slot) continue;                     // the slot is not redrawn in ambient
+    if (amb && c.slot) continue;                     // neither slot is redrawn in ambient
     const low = D.batt <= 15 && c.l === 'BATT';
-    g += text(c.x, 332, c.l, { fam: 'mono', size: 12, fill: amb ? AMB.faint : ter, track: 1.6, anchor: 'middle' });
-    if (c.slot) { g += wxIcon(c.x - 25, 354, 0.8, T.secondary); g += text(c.x - 4, 360, c.v, { size: 28, weight: 600, fill: T.primary }); }
-    else g += text(c.x, 360, c.v, { size: 28, weight: 600, fill: low ? T.alert : (amb ? AMB.value : T.primary), anchor: 'middle' });
+    g += text(c.x, 332, c.l, { fam: 'mono', size: 11, fill: amb ? AMB.faint : ter, track: 1.5, anchor: 'middle' });
+    if (c.wx && !amb) { g += wxIcon(c.x - 22, 354, 0.7, T.secondary); g += text(c.x - 4, 360, c.v, { size: 26, weight: 600, fill: T.primary }); }
+    else g += text(c.x, 360, c.v, { size: 26, weight: 600, fill: low ? T.alert : (amb ? AMB.value : T.primary), anchor: 'middle' });
     if (c.bar != null && !amb) {                     // the gauge, directly under its own number
-      g += `<rect x="${c.x - 42}" y="366" width="84" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
-      g += `<rect x="${c.x - 42}" y="366" width="${f(84 * c.bar)}" height="3" rx="1.5" fill="${low ? T.alert : (c.l === 'STEPS' ? acc : T.tickMajor)}"/>`;
+      g += `<rect x="${c.x - 32}" y="366" width="64" height="3" rx="1.5" fill="${T.gaugeTrack}"/>`;
+      g += `<rect x="${c.x - 32}" y="366" width="${f(64 * c.bar)}" height="3" rx="1.5" fill="${low ? T.alert : (c.l === 'STEPS' ? acc : T.tickMajor)}"/>`;
     }
   }
   return g;

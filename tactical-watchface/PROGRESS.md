@@ -1,8 +1,7 @@
 # PROGRESS
 
 **Current phase:** 0 — Discovery & design lock
-**Gate status:** SATISFIED for the design lock — **Design Lock v1 written 2026-08-31**. One item
-open (whether the compass readout earns a slot); it does not block Phase 1.
+**Gate status:** MET — **Design Lock v1 written 2026-08-31**, all items closed. Phase 0 is done.
 **Scope:** Two faces — **MERIDIAN first, SECTOR second**. Two packages, two Play listings (D-015).
 **Next action:** Phase 1 on MERIDIAN — tooling, emulator, pipeline proof, skeleton, first deploy.
 Needs Vince at a Mac to approve installs and enable wireless ADB on the watch.
@@ -124,12 +123,29 @@ faces as well. also night mode."*
   shortcut on both faces, plus a heading complication if a provider turns out to exist on the
   device — a Phase 4 check. Vince decides whether the readout earns a slot.
 
+### Round 7 — compass slots and night mode (2026-08-31)
+
+Vince: *"give the compass readout a slot and reading as you recommended and on both faces. night
+mode should be the native night mode Samsung ultra 2 watch faces have. on, off, or auto setting."*
+
+- **Heading gets a slot on both faces** (D-019). MERIDIAN's 3 o'clock sub-dial; SECTOR's band grows
+  from three compartments to four so weather is not displaced. Both faces now carry two slots.
+- **Night mode ships as On / Off / Auto** (D-018) — but not Samsung's. Verified: Samsung's night
+  mode is first-party, runs on only *Simple Ultra* and *Ultra Analog*, and triggers off the
+  **ambient light sensor**. WFF exposes no light-sensor source, and `Variant` has exactly one legal
+  mode, `AMBIENT`, so no third-party face can join the feature or read its trigger. Ours matches the
+  options, the menu location and the look; **Auto differs** — it switches on real daylight
+  (`WEATHER.IS_DAY`) rather than room brightness, with a fixed evening window as fallback when
+  weather is unavailable.
+- Last open item is closed, so the Phase 0 gate is met.
+
 ### Blockers
 
 - **Vince at his Mac.** Phase 1 needs him to approve a couple of installs and enable wireless ADB
   on the watch. No Android SDK, emulator, or watch exists in this environment, so nothing further
   can be built here.
-- Open, not blocking: whether the compass heading readout earns a slot on either face.
+- To confirm in Phase 4: whether any provider on the device actually publishes a heading
+  complication. If none does, the tap-to-open Compass shortcut carries the feature alone.
 
 ---
 
@@ -157,6 +173,9 @@ faces as well. also night mode."*
 - `2026-08-31` — [re-read spec — §3.2 Hard constraints + §5.2 Forbidden + §5.5 Colour] on the
   compass and night-mode requests; §5.2's "fake compass roses" and §5.5's "red means something is
   wrong" are what produced D-017 and the intensity-based alert in D-016.
+- `2026-08-31` — [re-read spec — §5.8 Data & function + §5.10 Customization schema] before siting
+  the heading slots and the night-mode setting; §5.8's "propose the nearest real alternative" is
+  the rule both D-018 and D-019 are answering.
 
 ---
 
