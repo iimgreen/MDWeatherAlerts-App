@@ -53,3 +53,44 @@ Blocked on Q1 (repo home + Atomic access) and Q2 (blog pipeline). Once unblocked
 - Screenshots at 1440 and 390 only, at phase end.
 - Commit at phase end; update this file; suggest `/compact` or a new session if context is heavy.
 - Ask about a staging look after phases 2, 5 and 8.
+
+---
+
+## Resuming on Vince's Mac
+
+This branch (`claude/new-session-kp1kvx` on `iimgreen/MDWeatherAlerts-App`) holds
+everything from Phase 0. Start there:
+
+```sh
+git fetch origin claude/new-session-kp1kvx
+git checkout claude/new-session-kp1kvx
+```
+
+Then read `SITE-AUDIT.md` **first** — do not re-audit the live site, it costs
+tokens and the answers are already written down.
+
+### What the web session could not see (the reason for moving to the Mac)
+
+These are the gaps. Anything found here should be written back into
+`SITE-AUDIT.md` so it is only discovered once.
+
+| Gap | Where it probably is on the Mac | Unblocks |
+|---|---|---|
+| The active theme source `wp-content/themes/md-weather-alerts` | A local WP install, an SFTP mount, or a Local/MAMP site | **All of Phase 1** — the rebuild starts from this |
+| The `mdwa-live-nws` plugin source | Same place | Knowing what live data the site already renders |
+| Atomic SFTP/SSH credentials + whether a staging site exists | WordPress.com dashboard → Settings → Hosting Configuration | Deploying anything at all |
+| The 6 AM / 6 PM blog pipeline | Not in either repo. A local script, a cron, n8n/Zapier, or WP-side | Hard rule 4 — do not break it |
+| The Android repo | Not in this session's scope | Phase 9 only |
+
+### Useful to have open
+
+- The WordPress.com hosting panel (for SFTP details and the staging toggle).
+- Whatever writes the daily posts.
+- The private monorepo `iimgreen/md-weather-alerts` — it holds the Worker, the county GeoJSON (`MD Weather Alerts/Resources/MarylandCounties.geojson`) and the severity colors (`Theme/Colors.swift:780`).
+
+### Agreed starting point
+
+Vince asked to keep the Worker untouched at first. Phase 1 therefore runs as
+**theme shell only** — tokens, fonts, header, footer, base templates — with zero
+backend contact. The CORS change (D-003) happens later, deliberately, with Vince
+watching the app keep working before anything else proceeds.
