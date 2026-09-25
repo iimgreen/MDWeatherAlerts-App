@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Get the MD Weather Alerts App &mdash; iPhone &amp; Android</title>
+<meta name="description" content="Free Maryland weather app: National Weather Service alerts the moment they're issued, live radar, county forecasts and community storm reports. Download for iPhone or Android.">
+<link rel="canonical" href="https://app.mdweatheralerts.com/get/">
+<meta name="theme-color" content="#102b3f">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MD Weather Alerts">
+<meta property="og:url" content="https://app.mdweatheralerts.com/get/">
+<meta property="og:title" content="Get the MD Weather Alerts App">
+<meta property="og:description" content="Free Maryland weather app: National Weather Service alerts the moment they're issued, live radar, county forecasts and community storm reports. Download for iPhone or Android.">
+<meta property="og:image" content="https://app.mdweatheralerts.com/get/logo.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Get the MD Weather Alerts App">
+<meta name="twitter:description" content="Free Maryland weather app: National Weather Service alerts the moment they're issued, live radar, county forecasts and community storm reports. Download for iPhone or Android.">
+<meta name="twitter:image" content="https://app.mdweatheralerts.com/get/logo.png">
+
+<link rel="icon" href="../assets/app-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/icon-192.png">
+
+<style>
+  /* Palette lifted from the live site's own theme tokens
+     (wp-content/themes/md-weather-alerts/style.css :root).
+     The site is light-only, so this page commits to the same single look. */
+  :root {
+    color-scheme: light;
+    --navy: #102b3f;
+    --navy-deep: #0d2638;
+    --blue: #196e9b;
+    --sky: #dff3fa;
+    --cream: #fff9ef;
+    --yellow: #f5bd42;
+    --ink: #173346;
+    --muted: #637682;
+    --line: #d9e4e7;
+    --page: #fffdf9;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; }
+  img { max-width: 100%; height: auto; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ---- navy strip, same treatment as the site's alert bar ---- */
+  .strip {
+    background: var(--navy);
+    color: #dce8ed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 8px 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .strip svg { flex: none; color: var(--yellow); }
+
+  /* ---- header ---- */
+  .masthead {
+    background: var(--page);
+    border-bottom: 1px solid #e1ecef;
+  }
+  .masthead-in {
+    max-width: 1240px;
+    margin: auto;
+    height: 84px;
+    padding-inline: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .masthead img { height: 52px; width: auto; border-radius: 50%; }
+  .masthead .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  /* ---- hero, using the site's own gradient ---- */
+  .hero {
+    background: linear-gradient(122deg, #e6f6fb 0%, #f5fbfb 54%, #f8e8c6 100%);
+    border-bottom: 1px solid #e1ecef;
+  }
+  .hero-in {
+    max-width: 680px;
+    margin: auto;
+    padding-inline: 24px;
+    padding-block: 52px 56px;
+    text-align: center;
+  }
+  .kicker {
+    display: inline-block;
+    background: #ffffffcc;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 18px;
+  }
+  h1 {
+    margin: 0 0 14px;
+    font-size: clamp(29px, 7vw, 43px);
+    line-height: 1.12;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sub {
+    margin: 0 auto;
+    max-width: 30em;
+    font-size: clamp(16px, 4vw, 18px);
+    color: #3d5766;
+    text-wrap: pretty;
+  }
+
+  /* ---- store buttons ---- */
+  .stores {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 380px;
+    margin: 30px auto 0;
+  }
+  .store {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    background: var(--navy);
+    border: 1px solid var(--navy);
+    color: #fff;
+    text-decoration: none;
+    transition: background .18s ease, transform .18s ease;
+  }
+  .store:hover { background: #17405c; transform: translateY(-1px); }
+  .store:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  .store .glyph { flex: none; display: grid; place-items: center; width: 28px; }
+  .store .labels { display: flex; flex-direction: column; text-align: left; line-height: 1.25; }
+  .store .eyebrow {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: #a9c6d6;
+  }
+  .store .name { font-size: 17px; font-weight: 700; letter-spacing: .01em; }
+  .store .chev { margin-left: auto; flex: none; opacity: .65; }
+
+  /* The visitor's own platform gets the site's yellow. */
+  .store.mine { border-color: var(--yellow); box-shadow: 0 0 0 3px #f5bd4240; }
+  .store .tag {
+    position: absolute;
+    top: -9px;
+    right: 12px;
+    display: none;
+    background: var(--yellow);
+    color: #3d2a05;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+  .store.mine .tag { display: block; }
+
+  /* ---- body sections ---- */
+  .wrap {
+    max-width: 880px;
+    margin: auto;
+    padding-inline: 24px;
+    padding-block: 44px 52px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  h2 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 620px) { .cards { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .card .ic {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: #e6f4f7;
+    display: grid; place-items: center;
+    color: var(--blue);
+    flex: none;
+  }
+  .card h3 { margin: 0; font-size: 16.5px; font-weight: 800; color: var(--navy); }
+  .card p { margin: 0; font-size: 14.5px; color: var(--muted); line-height: 1.55; }
+
+  .notice {
+    background: var(--cream);
+    border: 1px solid #ecdfc4;
+    border-left: 4px solid var(--yellow);
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    color: #5c5340;
+    line-height: 1.55;
+  }
+  .notice svg { flex: none; margin-top: 2px; color: #c08a12; }
+
+  /* ---- footer ---- */
+  .site-footer {
+    background: var(--navy-deep);
+    color: #c8d8e0;
+    padding-block: 42px 28px;
+  }
+  .footer-in {
+    max-width: 880px;
+    margin: auto;
+    padding-inline: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .footer-in nav { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: center; }
+  .footer-in a { color: #9ccdea; text-decoration: none; font-weight: 700; }
+  .footer-in a:hover { text-decoration: underline; }
+  .footer-in a:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; border-radius: 3px; }
+  .footer-in p { margin: 0; }
+  .fine { color: #8aa3b1; font-size: 12.5px; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="strip">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path>
+  </svg>
+  <span>Maryland alerts &middot; Radar &middot; Community reports</span>
+</div>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <a href="https://mdweatheralerts.com/" aria-label="MDWeatherAlerts home">
+      <img src="logo.png" width="52" height="52" alt="MD Weather Alerts">
+    </a>
+    <span class="sr">MD Weather Alerts</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-in">
+    <span class="kicker">Free &middot; iPhone &amp; Android</span>
+    <h1>Maryland weather alerts, straight to your phone</h1>
+    <p class="sub">National Weather Service warnings the moment they&rsquo;re issued, live radar, county forecasts, and what your neighbours are seeing outside right now.</p>
+
+    <div class="stores" id="stores">
+      <a class="store" id="ios" href="https://apps.apple.com/us/app/md-weather-alerts/id6792140059">
+        <span class="tag">Your device</span>
+        <span class="glyph">
+          <svg width="21" height="25" viewBox="0 0 17 20" fill="currentColor" aria-hidden="true">
+            <path d="M14.02 10.62c.01-2.03 1.66-3 1.74-3.05-.95-1.39-2.43-1.58-2.95-1.6-1.26-.13-2.45.73-3.09.73-.65 0-1.63-.71-2.68-.69-1.38.02-2.65.8-3.36 2.03-1.43 2.49-.37 6.17 1.03 8.19.68.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.67 2.67-.67 1.24 0 1.59.67 2.68.65 1.11-.02 1.82-1.01 2.5-2 .78-1.14 1.1-2.25 1.12-2.31-.02-.01-2.15-.83-2.17-3.29z"></path>
+            <path d="M11.9 4.6c.56-.68.94-1.62.83-2.56-.83.03-1.83.55-2.41 1.23-.52.6-.98 1.56-.85 2.48.92.07 1.87-.47 2.43-1.15z"></path>
+          </svg>
+        </span>
+        <span class="labels">
+          <span class="eyebrow">Download on the</span>
+          <span class="name">App Store</span>
+        </span>
+        <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+      </a>
+
+      <a class="store" id="android" href="https://play.google.com/store/apps/details?id=com.mdweatheralerts.md">
+        <span class="tag">Your device</span>
+        <span class="glyph">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M6 9.6h12a.5.5 0 0 1 .5.5v5.9a2.5 2.5 0 0 1-2.5 2.5H8a2.5 2.5 0 0 1-2.5-2.5v-5.9a.5.5 0 0 1 .5-.5z"></path>
+            <path d="M3.6 10.3a1.1 1.1 0 0 1 1.1 1.1v3.3a1.1 1.1 0 0 1-2.2 0v-3.3a1.1 1.1 0 0 1 1.1-1.1zM20.4 10.3a1.1 1.1 0 0 1 1.1 1.1v3.3a1.1 1.1 0 0 1-2.2 0v-3.3a1.1 1.1 0 0 1 1.1-1.1z"></path>
+            <path d="M8.9 18.7h1.9v2.2a1.05 1.05 0 0 1-2.1 0v-2.2zM13.2 18.7h1.9v2.2a1.05 1.05 0 0 1-2.1 0v-2.2z"></path>
+            <path d="M8.3 4.4 7.5 3.1a.45.45 0 0 1 .78-.45l.84 1.38A6.3 6.3 0 0 1 12 3.5c.97 0 1.88.18 2.7.52l.83-1.37a.45.45 0 0 1 .78.45l-.8 1.32A5.3 5.3 0 0 1 18 8.7H6a5.3 5.3 0 0 1 2.3-4.3z"></path>
+          </svg>
+        </span>
+        <span class="labels">
+          <span class="eyebrow">Get it on</span>
+          <span class="name">Google Play</span>
+        </span>
+        <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <h2>What you get</h2>
+  <div class="cards">
+    <div class="card">
+      <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg></span>
+      <h3>Alerts that actually arrive</h3>
+      <p>Warnings, watches and advisories from the National Weather Service, checked every two minutes and pushed the moment one is issued for your county.</p>
+    </div>
+    <div class="card">
+      <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14.9A7 7 0 1 1 15.7 9h1.8a4.5 4.5 0 0 1 0 9H7"></path><path d="M8 20.5l1-2M12 20.5l1-2M16 20.5l1-2"></path></svg></span>
+      <h3>Radar and the seven-day</h3>
+      <p>Scrubbable radar loops, hour-by-hour detail, and day-and-night forecasts for all 24 Maryland regions &mdash; 23 counties plus Baltimore City.</p>
+    </div>
+    <div class="card">
+      <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.6-7-10a7 7 0 0 1 14 0c0 5.4-7 10-7 10z"></path><circle cx="12" cy="11" r="2.6"></circle></svg></span>
+      <h3>What your neighbours see</h3>
+      <p>Flooded roads, downed trees, hail and whiteouts &mdash; reported by people nearby and confirmed by others who can see the same thing.</p>
+    </div>
+    <div class="card">
+      <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6.5h13M3 12h18M3 17.5h9"></path></svg></span>
+      <h3>Rivers, air and roads</h3>
+      <p>USGS river gauges, EPA AirNow readings and Maryland CHART road incidents, gathered in one place instead of five.</p>
+    </div>
+  </div>
+
+  <div class="notice">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4.5M12 16v.5"></path></svg>
+    <span>Community reports are not official, and their locations are shown approximately. For warnings that affect your safety, the National Weather Service is always the authority.</span>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-in">
+    <nav>
+      <a href="https://mdweatheralerts.com/">mdweatheralerts.com</a>
+      <a href="https://mdweatheralerts.com/current-alerts/">Current alerts</a>
+      <a href="https://mdweatheralerts.com/privacy-policy/">Privacy Policy</a>
+      <a href="https://mdweatheralerts.com/contact/">Contact</a>
+    </nav>
+    <p class="fine">Independent. Not affiliated with NWS or NOAA. Data: NWS, RainViewer, EPA AirNow, USGS, Maryland CHART.</p>
+  </div>
+</footer>
+
+<script>
+  /* Badge the store the visitor can actually use, and put it first.
+     Desktop gets neither badge, since neither is the obvious choice. */
+  (function () {
+    var stores = document.getElementById("stores");
+    var ios = document.getElementById("ios");
+    var android = document.getElementById("android");
+    if (!stores || !ios || !android) return;
+
+    var ua = navigator.userAgent || "";
+    var isIOS = /iPad|iPhone|iPod/.test(ua) ||
+                (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    var isAndroid = /Android/.test(ua);
+
+    if (isIOS) {
+      ios.classList.add("mine");
+    } else if (isAndroid) {
+      android.classList.add("mine");
+      stores.insertBefore(android, ios);
+    }
+  })();
+</script>
+
+</body>
+</html>
